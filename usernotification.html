@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CITFUND ENTERPRISE | Messages</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    :root {
+        /* ===== CITFUND ENTERPRISE BRAND ===== */
+        --green: #0B7A2E;
+        --green-dark: #075C22;
+        --green-light: #14A344;
+        --gold: #FFC72C;
+        --gold-soft: #FFD75E;
+        --red: #E30613;
+
+        --bg: #f4f9f6;
+        --card: #ffffff;
+        --text: #1a2b4c;
+        --muted: #6b7a8f;
+        --border: #e6f0e9;
+        --success: #00a86b;
+        --danger: #e74c3c;
+        --warning: #ff9800;
+
+        --primary: var(--green);
+        --primary-dark: var(--green-dark);
+        --accent: var(--green);
+        --accent-light: var(--green-light);
+
+        --bubble-in: #ffffff;
+        --bubble-in-text: #1a2b4c;
+        --chat-bg: #f4f9f6;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+    .app-container {
+        max-width: 480px;
+        margin: 0 auto;
+        background: var(--chat-bg);
+        min-height: 100vh;
+        position: relative;
+        padding-bottom: 90px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* ===== CHAT HEADER (fixed) ===== */
+    .chat-header {
+        position: sticky; top: 0; z-index: 50;
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        padding: 14px 16px 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: white;
+        border-radius: 0 0 24px 24px;
+        box-shadow: 0 8px 25px rgba(11,122,46,0.18);
+        position: relative;
+        overflow: hidden;
+    }
+    .chat-header::before {
+        content: '';
+        position: absolute;
+        top: -60px; right: -40px;
+        width: 180px; height: 180px;
+        background: radial-gradient(circle, rgba(255,199,44,0.3), transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .chat-header .back-btn {
+        width: 38px; height: 38px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.15);
+        border: none;
+        color: white;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 15px;
+        cursor: pointer;
+        flex-shrink: 0;
+        text-decoration: none;
+        transition: 0.2s;
+        position: relative;
+        z-index: 1;
+    }
+    .chat-header .back-btn:hover { background: rgba(255,255,255,0.28); }
+    .chat-header .chat-avatar {
+        width: 46px; height: 46px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px;
+        font-weight: 900;
+        color: var(--green-dark);
+        flex-shrink: 0;
+        border: 2px solid rgba(255,255,255,0.4);
+        position: relative;
+        z-index: 1;
+        letter-spacing: -0.5px;
+    }
+    .chat-header .chat-avatar::after {
+        content: '';
+        position: absolute;
+        bottom: -1px; right: -1px;
+        width: 14px; height: 14px;
+        border-radius: 50%;
+        background: #00e676;
+        border: 2.5px solid var(--green-dark);
+    }
+    .chat-header .chat-info {
+        flex: 1; min-width: 0;
+        position: relative; z-index: 1;
+    }
+    .chat-header .chat-info h2 {
+        font-size: 16px;
+        font-weight: 800;
+        color: white;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .chat-header .chat-info p {
+        font-size: 11.5px;
+        color: rgba(255,255,255,0.8);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 1px;
+    }
+    .chat-header .chat-info p .status-dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: #00e676;
+        box-shadow: 0 0 0 2px rgba(0,230,118,0.25);
+    }
+    .chat-header .header-actions {
+        display: flex;
+        gap: 8px;
+        position: relative;
+        z-index: 1;
+    }
+    .chat-header .header-actions button {
+        width: 38px; height: 38px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.15);
+        border: none;
+        color: white;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 15px;
+        cursor: pointer;
+        transition: 0.2s;
+        position: relative;
+    }
+    .chat-header .header-actions button:hover { background: rgba(255,255,255,0.28); }
+    .chat-header .header-actions .unread-badge {
+        position: absolute;
+        top: -2px; right: -2px;
+        background: var(--red);
+        color: white;
+        font-size: 9px;
+        font-weight: 800;
+        min-width: 18px;
+        height: 18px;
+        padding: 0 5px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--green-dark);
+    }
+
+    /* ===== FILTER TABS ===== */
+    .filter-tabs {
+        display: flex;
+        gap: 8px;
+        padding: 14px 16px 8px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        position: sticky;
+        top: 74px;
+        z-index: 40;
+        background: linear-gradient(180deg, var(--chat-bg) 70%, transparent 100%);
+    }
+    .filter-tabs::-webkit-scrollbar { display: none; }
+    .filter-tab {
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: 30px;
+        padding: 8px 16px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--muted);
+        cursor: pointer;
+        white-space: nowrap;
+        transition: 0.25s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-family: inherit;
+    }
+    .filter-tab i { font-size: 11px; }
+    .filter-tab:hover { border-color: var(--green); color: var(--green); }
+    .filter-tab.active {
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white;
+        border-color: var(--green);
+        box-shadow: 0 6px 15px rgba(11,122,46,0.3);
+    }
+    .filter-tab.active i { color: var(--gold); }
+
+    /* ===== CHAT BODY ===== */
+    .chat-body {
+        flex: 1;
+        padding: 8px 16px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    /* Date separator */
+    .date-separator {
+        text-align: center;
+        margin: 18px 0 10px;
+        position: relative;
+    }
+    .date-separator span {
+        display: inline-block;
+        background: rgba(11,122,46,0.08);
+        color: var(--green-dark);
+        font-size: 10.5px;
+        font-weight: 800;
+        padding: 5px 14px;
+        border-radius: 20px;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+    }
+
+    /* Message row */
+    .msg-row {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        margin-bottom: 4px;
+        animation: msgIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes msgIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .msg-row.self { flex-direction: row-reverse; }
+
+    /* Avatar for incoming */
+    .msg-row .msg-avatar {
+        width: 30px; height: 30px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        display: flex; align-items: center; justify-content: center;
+        color: white;
+        font-size: 12px;
+        font-weight: 900;
+        flex-shrink: 0;
+        margin-bottom: 2px;
+    }
+    .msg-row .msg-avatar.gold {
+        background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+        color: var(--green-dark);
+    }
+    .msg-row .msg-avatar.red {
+        background: linear-gradient(135deg, var(--danger), #ff6b6b);
+    }
+
+    /* Bubble */
+    .msg-bubble {
+        max-width: 78%;
+        background: var(--bubble-in);
+        border-radius: 18px 18px 18px 4px;
+        padding: 12px 14px;
+        box-shadow: 0 3px 12px rgba(11,122,46,0.05);
+        border: 1px solid rgba(11,122,46,0.06);
+        position: relative;
+        word-wrap: break-word;
+    }
+    .msg-row.self .msg-bubble {
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
+        color: white;
+        border-radius: 18px 18px 4px 18px;
+        border-color: var(--green);
+        box-shadow: 0 6px 18px rgba(11,122,46,0.25);
+    }
+
+    /* Bubble header line */
+    .msg-bubble .bubble-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+        font-size: 12px;
+        font-weight: 800;
+        color: var(--green-dark);
+    }
+    .msg-row.self .msg-bubble .bubble-title { color: var(--gold-soft); }
+    .msg-bubble .bubble-title i {
+        width: 22px; height: 22px;
+        border-radius: 6px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 10px;
+        flex-shrink: 0;
+    }
+    .msg-bubble .bubble-title i.icon-deposit { background: #e6fff0; color: var(--success); }
+    .msg-bubble .bubble-title i.icon-withdraw { background: #ffe6e6; color: var(--danger); }
+    .msg-bubble .bubble-title i.icon-transfer { background: #e6f0ff; color: #1f6fff; }
+    .msg-bubble .bubble-title i.icon-system { background: #fff8e1; color: #a06d00; }
+    .msg-bubble .bubble-title i.icon-invest { background: #f0e6ff; color: #7c3aed; }
+    .msg-bubble .bubble-title i.icon-loan { background: #e8eaf6; color: #3f51b5; }
+    .msg-row.self .msg-bubble .bubble-title i {
+        background: rgba(255,255,255,0.2);
+        color: white;
+    }
+
+    /* Bubble body */
+    .msg-bubble .bubble-text {
+        font-size: 13px;
+        line-height: 1.55;
+        color: var(--text);
+        white-space: pre-line;
+    }
+    .msg-row.self .msg-bubble .bubble-text { color: rgba(255,255,255,0.95); }
+
+    /* Amount emphasis */
+    .msg-bubble .bubble-amount {
+        font-size: 18px;
+        font-weight: 900;
+        margin: 6px 0 4px;
+        color: var(--green);
+        letter-spacing: -0.3px;
+    }
+    .msg-row.self .msg-bubble .bubble-amount { color: var(--gold); }
+    .msg-bubble .bubble-amount.negative { color: var(--danger); }
+    .msg-row.self .msg-bubble .bubble-amount.negative { color: #ffd0d0; }
+
+    /* Bubble footer */
+    .msg-bubble .bubble-meta {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 6px;
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--muted);
+        margin-top: 6px;
+        opacity: 0.85;
+    }
+    .msg-row.self .msg-bubble .bubble-meta { color: rgba(255,255,255,0.75); }
+    .msg-bubble .bubble-meta .read-mark {
+        color: var(--success);
+        font-size: 11px;
+    }
+    .msg-row.self .msg-bubble .bubble-meta .read-mark { color: var(--gold); }
+    .msg-bubble .bubble-meta .unread-pill {
+        background: var(--gold);
+        color: var(--green-dark);
+        padding: 1px 7px;
+        border-radius: 20px;
+        font-size: 8.5px;
+        font-weight: 900;
+        letter-spacing: 0.4px;
+    }
+
+    /* Bubble action buttons (hover/tap) */
+    .msg-bubble .bubble-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px dashed rgba(11,122,46,0.15);
+    }
+    .msg-row.self .msg-bubble .bubble-actions {
+        border-top-color: rgba(255,255,255,0.2);
+    }
+    .msg-bubble .bubble-actions button {
+        background: none;
+        border: none;
+        color: var(--green);
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 2px 6px;
+        border-radius: 6px;
+        transition: 0.2s;
+        font-family: inherit;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .msg-row.self .msg-bubble .bubble-actions button { color: var(--gold-soft); }
+    .msg-bubble .bubble-actions button:hover { background: rgba(11,122,46,0.08); }
+    .msg-row.self .msg-bubble .bubble-actions button:hover { background: rgba(255,255,255,0.15); }
+
+    /* Empty state */
+    .empty-chat {
+        text-align: center;
+        padding: 60px 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+    }
+    .empty-chat .empty-icon {
+        width: 90px; height: 90px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(11,122,46,0.08), rgba(20,163,68,0.15));
+        display: flex; align-items: center; justify-content: center;
+        font-size: 40px;
+        color: var(--green);
+        margin-bottom: 6px;
+    }
+    .empty-chat h3 {
+        font-size: 17px;
+        font-weight: 800;
+        color: var(--green);
+    }
+    .empty-chat p {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.6;
+        max-width: 260px;
+    }
+
+    /* ===== QUICK REPLY / COMPOSE BAR ===== */
+    .chat-compose {
+        position: fixed;
+        bottom: 62px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 480px;
+        padding: 8px 14px 10px;
+        background: linear-gradient(180deg, rgba(244,249,246,0.6) 0%, var(--chat-bg) 30%);
+        z-index: 90;
+    }
+    .compose-inner {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: 30px;
+        padding: 8px 8px 8px 16px;
+        box-shadow: 0 6px 22px rgba(11,122,46,0.08);
+    }
+    .compose-inner i.compose-icon {
+        color: var(--green);
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+    .compose-inner .compose-text {
+        flex: 1;
+        font-size: 12.5px;
+        color: var(--muted);
+        font-weight: 600;
+        padding: 8px 0;
+    }
+    .compose-inner .compose-btn {
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white;
+        border: none;
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 15px;
+        cursor: pointer;
+        box-shadow: 0 6px 15px rgba(11,122,46,0.3);
+        transition: 0.2s;
+        flex-shrink: 0;
+    }
+    .compose-inner .compose-btn:hover { transform: scale(1.05); }
+    .compose-inner .compose-btn:active { transform: scale(0.95); }
+
+    /* ===== KYC BANNER ===== */
+    .kyc-banner {
+        background: linear-gradient(135deg, #fff8e1 0%, #ffeeba 100%);
+        border: 1px solid #ffe082;
+        border-radius: 14px;
+        padding: 12px 14px;
+        margin: 8px 16px 4px;
+        display: none;
+        align-items: center;
+        gap: 12px;
+    }
+    .kyc-banner.show { display: flex; }
+    .kyc-banner > i {
+        color: var(--green-dark);
+        background: var(--gold);
+        width: 36px; height: 36px;
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 15px;
+        flex-shrink: 0;
+    }
+    .kyc-banner .kyc-text { flex: 1; min-width: 0; }
+    .kyc-banner .kyc-text h4 {
+        font-size: 12.5px;
+        color: var(--green-dark);
+        font-weight: 800;
+        margin-bottom: 2px;
+    }
+    .kyc-banner .kyc-text p {
+        font-size: 11px;
+        color: #8a6d1a;
+        font-weight: 600;
+    }
+    .kyc-banner a {
+        background: var(--green);
+        color: white;
+        padding: 8px 14px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 800;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: 0.2s;
+    }
+    .kyc-banner a:hover { background: var(--green-dark); }
+
+    /* ===== BOTTOM NAV ===== */
+    .bottom-nav {
+        position: fixed; bottom: 0; left: 50%;
+        transform: translateX(-50%);
+        width: 100%; max-width: 480px; background: var(--card);
+        border-top: 1px solid var(--border);
+        display: flex; justify-content: space-around; align-items: center;
+        padding: 8px 0 12px; z-index: 100;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+    }
+    .bottom-nav a {
+        text-decoration: none; display: flex; flex-direction: column;
+        align-items: center; gap: 4px; font-size: 10px;
+        color: var(--muted); font-weight: 600; flex: 1; transition: 0.3s;
+        padding-top: 4px;
+    }
+    .bottom-nav a i { font-size: 22px; }
+    .bottom-nav a.active { color: var(--green); }
+    .bottom-nav a.active::after {
+        content: ''; display: block; width: 20px; height: 3px;
+        background: var(--gold); border-radius: 3px; margin-top: 2px;
+    }
+    .bottom-nav .center-btn {
+        width: 60px; height: 60px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 24px; margin-top: -25px;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.4);
+        cursor: pointer; border: 3px solid var(--bg); transition: 0.3s;
+    }
+    .bottom-nav .center-btn:active { transform: scale(0.92); }
+
+    /* ===== TOAST + LOADING ===== */
+    .toast {
+        position: fixed; top: 20px; left: 50%;
+        transform: translateX(-50%) translateY(-20px);
+        background: var(--green); color: white;
+        padding: 14px 24px; border-radius: 30px;
+        z-index: 99999; opacity: 0; visibility: hidden;
+        font-size: 13px; font-weight: 700;
+        max-width: 90%; text-align: center;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 30px rgba(11,122,46,0.3);
+        line-height: 1.4;
+    }
+    .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+    .toast.info { background: var(--green); }
+
+    #loading-overlay {
+        position: fixed; inset: 0;
+        background: rgba(244,249,246,0.96);
+        backdrop-filter: blur(6px);
+        display: flex; flex-direction: column;
+        justify-content: center; align-items: center;
+        z-index: 9998; color: var(--green);
+        transition: opacity 0.35s;
+    }
+    #loading-overlay.hide { opacity: 0; pointer-events: none; }
+    .spinner {
+        width: 46px; height: 46px;
+        border: 5px solid var(--border);
+        border-top-color: var(--green);
+        border-right-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <p style="margin-top:14px; font-weight:700; font-size:13px; letter-spacing:0.3px;">Loading messages...</p>
+</div>
+
+<div class="app-container">
+
+    <!-- ===== CHAT HEADER ===== -->
+    <header class="chat-header">
+        <a href="userdashboard.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+        <div class="chat-avatar">C</div>
+        <div class="chat-info">
+            <h2>CITFUND ENTERPRISE</h2>
+            <p><span class="status-dot"></span> Official account · verified</p>
+        </div>
+        <div class="header-actions">
+            <button id="markAllBtn" title="Mark all as read">
+                <i class="fa-solid fa-check-double"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- ===== KYC BANNER ===== -->
+    <div class="kyc-banner" id="kycBanner">
+        <i class="fa-solid fa-shield-halved"></i>
+        <div class="kyc-text">
+            <h4>Complete your KYC</h4>
+            <p>Verify identity to unlock all features</p>
+        </div>
+        <a href="kyc.html">Go to KYC</a>
+    </div>
+
+    <!-- ===== FILTER TABS ===== -->
+    <div class="filter-tabs" id="filterTabs">
+        <button class="filter-tab active" data-filter="all">
+            <i class="fa-solid fa-bell"></i> All
+        </button>
+        <button class="filter-tab" data-filter="deposit">
+            <i class="fa-solid fa-arrow-down"></i> Deposits
+        </button>
+        <button class="filter-tab" data-filter="withdraw">
+            <i class="fa-solid fa-arrow-up"></i> Withdrawals
+        </button>
+        <button class="filter-tab" data-filter="transfer">
+            <i class="fa-solid fa-right-left"></i> Transfers
+        </button>
+        <button class="filter-tab" data-filter="invest">
+            <i class="fa-solid fa-chart-line"></i> Investments
+        </button>
+        <button class="filter-tab" data-filter="loan">
+            <i class="fa-solid fa-hand-holding-dollar"></i> Loans
+        </button>
+        <button class="filter-tab" data-filter="system">
+            <i class="fa-solid fa-bullhorn"></i> Alerts
+        </button>
+    </div>
+
+    <!-- ===== CHAT BODY ===== -->
+    <div class="chat-body" id="chatBody">
+        <!-- Rendered dynamically -->
+    </div>
+
+    <!-- ===== COMPOSE BAR ===== -->
+    <div class="chat-compose">
+        <div class="compose-inner">
+            <i class="fa-solid fa-headset compose-icon"></i>
+            <div class="compose-text">Need help? Chat with our support team</div>
+            <button class="compose-btn" onclick="location.href='support.html'">
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <a href="userdashboard.html">
+        <i class="fa-solid fa-house"></i> Home
+    </a>
+    <a href="accountnumberupdate.html">
+        <i class="fa-solid fa-book"></i> Accounts
+    </a>
+    <button class="center-btn" onclick="location.href='userdeposit.html'">
+        <i class="fa-solid fa-plus"></i>
+    </button>
+    <a href="usernotification.html" class="active">
+        <i class="fa-solid fa-bell"></i> Alerts
+    </a>
+    <a href="myprofile.html">
+        <i class="fa-solid fa-user"></i> Profile
+    </a>
+</nav>
+
+<div id="toast" class="toast"></div>
+
+<script>
+    // ============================================================
+    // SESSION
+    // ============================================================
+    const session = JSON.parse(localStorage.getItem('cit_session') || 'null');
+    if (!session || !session.uid) window.location.href = 'userlogin.html';
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    let currentUser = null;
+    let allMessages = [];
+    let currentFilter = 'all';
+    let toastTimer = null;
+
+    // ============================================================
+    // HELPERS
+    // ============================================================
+    function showToast(msg, type = '') {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast ' + type + ' show';
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+    }
+    function hideLoading() {
+        const el = document.getElementById('loading-overlay');
+        if (el) { el.classList.add('hide'); setTimeout(() => el.style.display = 'none', 400); }
+    }
+    function esc(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+            .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+    function fmt(n) {
+        return 'GHS ' + Number(n || 0).toLocaleString(undefined, {
+            minimumFractionDigits: 2, maximumFractionDigits: 2
+        });
+    }
+    async function api(path, body) {
+        const res = await fetch(path + '?t=' + Date.now(), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body || {}),
+            cache: 'no-store'
+        });
+        try { return await res.json(); }
+        catch (e) { return { success: false, error: 'Invalid server response' }; }
+    }
+    function formatTime(dateStr) {
+        try {
+            const d = new Date(dateStr);
+            return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true });
+        } catch (e) { return ''; }
+    }
+    function formatDateKey(dateStr) {
+        try {
+            const d = new Date(dateStr);
+            const today = new Date();
+            const yest = new Date(); yest.setDate(today.getDate() - 1);
+            if (d.toDateString() === today.toDateString()) return 'Today';
+            if (d.toDateString() === yest.toDateString()) return 'Yesterday';
+            return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+        } catch (e) { return 'Earlier'; }
+    }
+    function startOfDay(dateStr) {
+        try {
+            const d = new Date(dateStr);
+            return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+        } catch (e) { return 0; }
+    }
+
+    // ============================================================
+    // BUILD MESSAGES FROM TRANSACTIONS
+    // ============================================================
+    function buildMessages(user) {
+        const messages = [];
+        const txs = user.transactions || {};
+
+        Object.entries(txs).forEach(([id, tx]) => {
+            const type = String(tx.type || '').toLowerCase();
+            const status = String(tx.status || 'success').toLowerCase();
+            const date = tx.date || new Date().toISOString();
+            const amount = Number(tx.grossAmount || tx.amount || 0);
+            const fee = Number(tx.transactionFee || tx.fee || 0);
+
+            // === DEPOSIT ===
+            if (type === 'deposit' && !type.includes('klasha')) {
+                let text;
+                if (status === 'success') {
+                    text = `Deposit confirmed ✅\n\nAmount: ${fmt(amount)}` +
+                        (fee > 0 ? `\nTransaction Fee (2.5%): ${fmt(fee)}` : '') +
+                        (tx.openingFee > 0 ? `\nAccount Opening Fee: ${fmt(tx.openingFee)}` : '') +
+                        `\nCredited: ${fmt(tx.creditedAmount || amount)}\nNew Balance: ${fmt(tx.newBalance)}` +
+                        (tx.network ? `\nNetwork: ${String(tx.network).toUpperCase()}` : '') +
+                        `\n\nThank you for banking with CITFUND.`;
+                } else if (status === 'pending') {
+                    text = `Deposit pending ⏳\n\nWe are waiting for confirmation from your mobile money provider.\n\nAmount: ${fmt(amount)}\nNetwork: ${String(tx.network || '').toUpperCase()}`;
+                } else {
+                    text = `Deposit failed ❌\n\nWe couldn't complete your deposit of ${fmt(amount)}.\nReason: ${tx.failureReason || 'Payment not completed'}\n\nIf you were charged, the amount will be reversed automatically.`;
+                }
+                messages.push({
+                    id, type: 'deposit', status, date,
+                    title: status === 'success' ? 'Deposit Successful' :
+                           status === 'pending' ? 'Deposit Pending' : 'Deposit Failed',
+                    amount, text,
+                    read: !!tx.read
+                });
+            }
+
+            // === WITHDRAW ===
+            else if (type === 'withdraw') {
+                let text;
+                if (status === 'success') {
+                    text = `Withdrawal confirmed ✅\n\nAmount: ${fmt(amount)}` +
+                        (fee > 0 ? `\nFee: ${fmt(fee)}` : '') +
+                        (tx.momoPhone ? `\nMoMo: ${tx.momoPhone}` : '') +
+                        `\nNew Balance: ${fmt(tx.newBalance)}` +
+                        `\n\nMoney is on its way to your mobile wallet.`;
+                } else if (status === 'pending' || status === 'processing') {
+                    text = `Withdrawal processing ⏳\n\nWe're processing your withdrawal of ${fmt(amount)}.\n\n${tx.momoPhone ? `MoMo: ${tx.momoPhone}\n` : ''}You'll receive an SMS once complete.`;
+                } else {
+                    text = `Withdrawal failed ❌\n\nAmount: ${fmt(amount)}\nReason: ${tx.failureReason || 'Could not complete withdrawal'}\n\nYour balance has been refunded.`;
+                }
+                messages.push({
+                    id, type: 'withdraw', status, date,
+                    title: status === 'success' ? 'Withdrawal Successful' :
+                           (status === 'pending' || status === 'processing') ? 'Withdrawal Processing' : 'Withdrawal Failed',
+                    amount, text,
+                    read: !!tx.read
+                });
+            }
+
+            // === TRANSFER ===
+            else if (type === 'transfer') {
+                const isSender = !!tx.receiver;
+                const counterparty = isSender ? (tx.receiverName || tx.receiver) : (tx.senderName || tx.sender);
+                let text;
+                if (status === 'success') {
+                    if (isSender) {
+                        text = `Transfer sent ✅\n\nYou sent ${fmt(amount)} to ${counterparty || 'a CIT member'}.\nAccount: ${tx.receiver || ''}\nNew Balance: ${fmt(tx.newBalance)}\n\nNo transfer fees. Instant credit.`;
+                    } else {
+                        text = `Money received 💰\n\nYou received ${fmt(amount)} from ${counterparty || 'a CIT member'}.\nAccount: ${tx.sender || ''}\nNew Balance: ${fmt(tx.newBalance)}\n\nThank you for banking with CITFUND.`;
+                    }
+                } else {
+                    text = `Transfer ${status === 'pending' ? 'pending ⏳' : 'failed ❌'}\n\nAmount: ${fmt(amount)}\nCounterparty: ${counterparty || '—'}`;
+                }
+                messages.push({
+                    id, type: 'transfer', status, date,
+                    title: status === 'success' ? (isSender ? 'Transfer Sent' : 'Money Received') :
+                           status === 'pending' ? 'Transfer Processing' : 'Transfer Failed',
+                    amount, text,
+                    read: !!tx.read
+                });
+            }
+
+            // === INVEST ===
+            else if (type === 'invest') {
+                let text;
+                if (status === 'success') {
+                    text = `Investment activated 📈\n\nPlan: ${tx.plan || 'Investment'}\nAmount: ${fmt(amount)}\nNew Balance: ${fmt(tx.newBalance)}\n\nYour investment has started earning.`;
+                } else {
+                    text = `Investment ${status}\n\nPlan: ${tx.plan || '—'}\nAmount: ${fmt(amount)}`;
+                }
+                messages.push({
+                    id, type: 'invest', status, date,
+                    title: 'Investment Confirmed',
+                    amount, text,
+                    read: !!tx.read
+                });
+            }
+
+            // === LOAN ===
+            else if (type === 'loan' || type === 'loan_disbursement') {
+                messages.push({
+                    id, type: 'loan', status, date,
+                    title: 'Loan Update',
+                    amount,
+                    text: `Loan ${status === 'success' ? 'approved ✅' : status}\n\nAmount: ${fmt(amount)}`,
+                    read: !!tx.read
+                });
+            }
+
+            // === KLA-SHA DEPOSIT (legacy) ===
+            else if (type === 'klasha_deposit') {
+                messages.push({
+                    id, type: 'deposit', status, date,
+                    title: status === 'success' ? 'Deposit Successful' : 'Deposit',
+                    amount,
+                    text: `Deposit of ${fmt(amount)} ${status === 'success' ? 'confirmed ✅' : status}`,
+                    read: !!tx.read
+                });
+            }
+
+            // === OTHER ===
+            else if (type === 'bill' || type === 'airtime' || type === 'order') {
+                messages.push({
+                    id, type: 'system', status, date,
+                    title: type === 'bill' ? 'Bill Payment' :
+                           type === 'airtime' ? 'Airtime Purchase' : 'Order',
+                    amount,
+                    text: `${type === 'bill' ? 'Paid ' + (tx.biller || 'bill') : type === 'airtime' ? 'Airtime for ' + (tx.phone || '') : 'Order'} — ${fmt(amount)}`,
+                    read: !!tx.read
+                });
+            }
+        });
+
+        // === ADD SYSTEM WELCOME MESSAGE (only once per user) ===
+        if (user.createdAt) {
+            messages.push({
+                id: 'welcome_' + user.uid,
+                type: 'system', status: 'success',
+                date: new Date(user.createdAt).toISOString(),
+                title: 'Welcome to CITFUND',
+                amount: 0,
+                text:
+`Welcome to CITFUND ENTERPRISE, ${user.fullName || 'Customer'}!
+
+Your account is ready.
+Account Number: ${user.accountNumber || '—'}
+Member ID: ${user.memberID || '—'}
+
+You can now:
+• Deposit via Mobile Money
+• Transfer to any CIT member — FREE
+• Withdraw to your MoMo
+• Invest and earn 5% every 15 days
+
+Need help? Call 0205720154
+
+CITFUND ENTERPRISE`,
+                read: true,
+                isWelcome: true
+            });
+        }
+
+        // Sort newest first
+        messages.sort((a, b) => new Date(b.date) - new Date(a.date));
+        return messages;
+    }
+
+    // ============================================================
+    // RENDER
+    // ============================================================
+    function render() {
+        const body = document.getElementById('chatBody');
+        const filtered = currentFilter === 'all'
+            ? allMessages
+            : allMessages.filter(m => m.type === currentFilter);
+
+        if (!filtered.length) {
+            body.innerHTML = `
+                <div class="empty-chat">
+                    <div class="empty-icon"><i class="fa-regular fa-comment-dots"></i></div>
+                    <h3>No messages yet</h3>
+                    <p>When you make a transaction, you'll receive an instant confirmation here.</p>
+                </div>`;
+            return;
+        }
+
+        // Group by day
+        const groups = new Map();
+        filtered.forEach(m => {
+            const dayKey = startOfDay(m.date);
+            if (!groups.has(dayKey)) groups.set(dayKey, []);
+            groups.get(dayKey).push(m);
+        });
+
+        // Sort day groups descending
+        const dayKeys = Array.from(groups.keys()).sort((a, b) => b - a);
+
+        let html = '';
+        dayKeys.forEach(dayKey => {
+            const msgs = groups.get(dayKey);
+            const dayLabel = formatDateKey(msgs[0].date);
+            html += `<div class="date-separator"><span>${esc(dayLabel)}</span></div>`;
+
+            // Within day, oldest first (chat style)
+            msgs.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            msgs.forEach(m => {
+                const iconMap = {
+                    deposit: { cls: 'icon-deposit', icon: 'fa-arrow-down' },
+                    withdraw: { cls: 'icon-withdraw', icon: 'fa-arrow-up' },
+                    transfer: { cls: 'icon-transfer', icon: 'fa-right-left' },
+                    invest: { cls: 'icon-invest', icon: 'fa-chart-line' },
+                    loan: { cls: 'icon-loan', icon: 'fa-hand-holding-dollar' },
+                    system: { cls: 'icon-system', icon: 'fa-bullhorn' }
+                };
+                const im = iconMap[m.type] || iconMap.system;
+
+                // Amount display: negative for withdraw, positive for deposit
+                let amountClass = '';
+                let amountDisplay = '';
+                if (m.amount > 0) {
+                    if (m.type === 'withdraw') {
+                        amountClass = 'negative';
+                        amountDisplay = `- ${fmt(m.amount)}`;
+                    } else if (m.type === 'deposit' || m.type === 'transfer') {
+                        amountDisplay = `+ ${fmt(m.amount)}`;
+                    } else {
+                        amountDisplay = fmt(m.amount);
+                    }
+                }
+
+                html += `
+                    <div class="msg-row" data-id="${esc(m.id)}">
+                        <div class="msg-avatar ${m.type === 'system' ? 'gold' : ''}">
+                            <i class="fa-solid ${m.type === 'system' ? 'fa-bullhorn' : 'fa-check'}"></i>
+                        </div>
+                        <div class="msg-bubble">
+                            <div class="bubble-title">
+                                <i class="fa-solid ${im.icon} ${im.cls}"></i>
+                                ${esc(m.title)}
+                            </div>
+                            ${amountDisplay ? `<div class="bubble-amount ${amountClass}">${esc(amountDisplay)}</div>` : ''}
+                            <div class="bubble-text">${esc(m.text)}</div>
+                            <div class="bubble-meta">
+                                ${!m.read ? '<span class="unread-pill">NEW</span>' : ''}
+                                <span>${esc(formatTime(m.date))}</span>
+                                ${m.read ? '<i class="fa-solid fa-check-double read-mark"></i>' : '<i class="fa-solid fa-check read-mark"></i>'}
+                            </div>
+                            <div class="bubble-actions">
+                                <button onclick="toggleRead('${esc(m.id)}')">
+                                    <i class="fa-solid fa-${m.read ? 'envelope' : 'envelope-open'}"></i>
+                                    ${m.read ? 'Mark unread' : 'Mark read'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+        });
+
+        body.innerHTML = html;
+
+        // Update unread count
+        const unreadCount = allMessages.filter(m => !m.read).length;
+        const badge = document.getElementById('markAllBtn');
+        if (unreadCount > 0) {
+            badge.innerHTML = `<i class="fa-solid fa-check-double"></i><span class="unread-badge">${unreadCount}</span>`;
+            badge.style.background = 'rgba(255,199,44,0.25)';
+        } else {
+            badge.innerHTML = `<i class="fa-solid fa-check-double"></i>`;
+            badge.style.background = 'rgba(255,255,255,0.15)';
+        }
+    }
+
+    // ============================================================
+    // TOGGLE READ
+    // ============================================================
+    async function toggleRead(id) {
+        const msg = allMessages.find(m => m.id === id);
+        if (!msg) return;
+        msg.read = !msg.read;
+
+        // Mirror to currentUser.transactions
+        if (currentUser && currentUser.transactions && currentUser.transactions[id]) {
+            currentUser.transactions[id].read = msg.read;
+        }
+
+        render();
+
+        // Persist
+        try {
+            await api('/api/mark-notification-read', {
+                uid: session.uid,
+                txId: id
+            });
+        } catch (e) { /* ignore */ }
+    }
+    window.toggleRead = toggleRead;
+
+    // ============================================================
+    // MARK ALL READ
+    // ============================================================
+    async function markAllRead() {
+        const unread = allMessages.filter(m => !m.read);
+        if (unread.length === 0) {
+            showToast('All messages already read', 'info');
+            return;
+        }
+        unread.forEach(m => {
+            m.read = true;
+            if (currentUser && currentUser.transactions && currentUser.transactions[m.id]) {
+                currentUser.transactions[m.id].read = true;
+            }
+        });
+        render();
+        showToast(`Marked ${unread.length} message(s) as read`, 'success');
+
+        // Persist each in parallel
+        await Promise.all(unread.map(m =>
+            api('/api/mark-notification-read', { uid: session.uid, txId: m.id }).catch(() => {})
+        ));
+    }
+    document.getElementById('markAllBtn').addEventListener('click', markAllRead);
+
+    // ============================================================
+    // FILTER TABS
+    // ============================================================
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentFilter = tab.dataset.filter;
+            render();
+        });
+    });
+
+    // ============================================================
+    // LOAD USER
+    // ============================================================
+    async function loadUser() {
+        try {
+            const data = await api('/api/user-data', { uid: session.uid });
+            if (data.success && data.user) {
+                currentUser = data.user;
+                currentUser.uid = session.uid;
+                allMessages = buildMessages(currentUser);
+                render();
+                checkKYC();
+            } else if (data.error && /not found/i.test(data.error)) {
+                localStorage.removeItem('cit_session');
+                window.location.href = 'userlogin.html';
+            } else {
+                throw new Error(data.error || 'Failed to load');
+            }
+        } catch (e) {
+            console.error(e);
+            showToast('Could not load messages', 'error');
+        } finally {
+            setTimeout(hideLoading, 300);
+        }
+    }
+
+    // ============================================================
+    // KYC CHECK
+    // ============================================================
+    async function checkKYC() {
+        try {
+            const data = await api('/api/kyc/status', { uid: session.uid });
+            if (data && data.success) {
+                const status = (data.status && data.status.status) || 'none';
+                if (status !== 'approved') {
+                    document.getElementById('kycBanner').classList.add('show');
+                }
+            }
+        } catch (e) { /* silent */ }
+    }
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    loadUser();
+    setTimeout(hideLoading, 6000);
+</script>
+</body>
+</html>

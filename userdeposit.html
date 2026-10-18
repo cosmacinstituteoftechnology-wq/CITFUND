@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CITFUND ENTERPRISE | Deposit</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    :root {
+        --green: #0B7A2E;
+        --green-dark: #075C22;
+        --green-light: #14A344;
+        --gold: #FFC72C;
+        --gold-soft: #FFD75E;
+        --red: #E30613;
+
+        --bg: #f4f9f6;
+        --card: #ffffff;
+        --text: #1a2b4c;
+        --muted: #6b7a8f;
+        --border: #e6f0e9;
+        --success: #00a86b;
+        --danger: #e74c3c;
+        --warning: #ff9800;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+    .app-container { max-width: 480px; margin: 0 auto; background: var(--bg); min-height: 100vh; position: relative; padding-bottom: 100px; }
+
+    /* ===== HEADER ===== */
+    .top-header {
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        padding: 22px 20px 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 0 0 30px 30px;
+        position: relative;
+        z-index: 1;
+        gap: 10px;
+        overflow: hidden;
+    }
+    .top-header::before {
+        content: '';
+        position: absolute;
+        top: -80px; right: -60px;
+        width: 220px; height: 220px;
+        background: radial-gradient(circle, rgba(255,199,44,0.28), transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .top-header::after {
+        content: '';
+        position: absolute;
+        bottom: -100px; left: -80px;
+        width: 200px; height: 200px;
+        background: radial-gradient(circle, rgba(227,6,19,0.12), transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .top-header .header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+        flex: 1;
+        position: relative;
+        z-index: 2;
+    }
+    .top-header .back-btn {
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.15);
+        color: white;
+        display: flex; align-items: center; justify-content: center;
+        text-decoration: none;
+        font-size: 15px;
+        flex-shrink: 0;
+        transition: 0.2s;
+        cursor: pointer;
+        border: none;
+    }
+    .top-header .back-btn:hover { background: rgba(255,255,255,0.28); }
+    .top-header .profile-section { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
+    .top-header .avatar-wrapper { position: relative; flex-shrink: 0; }
+    .top-header .avatar-wrapper img {
+        width: 46px; height: 46px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2.5px solid var(--gold);
+        background: rgba(255,255,255,0.1);
+    }
+    .top-header .avatar-wrapper .verified-badge {
+        position: absolute;
+        bottom: -1px; right: -1px;
+        background: var(--gold);
+        color: var(--green-dark);
+        width: 18px; height: 18px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 8px;
+        border: 2px solid var(--green-dark);
+    }
+    .top-header .greeting { min-width: 0; flex: 1; }
+    .top-header .greeting h4 {
+        font-size: 11.5px;
+        color: rgba(255,255,255,0.75);
+        font-weight: 400;
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .top-header .greeting h2 {
+        font-size: 15.5px;
+        font-weight: 700;
+        color: white;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.2;
+    }
+    .top-header .greeting .acc-num {
+        font-size: 10.5px;
+        color: rgba(255,255,255,0.6);
+        font-weight: 500;
+        letter-spacing: 0.4px;
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .top-header .notification-btn {
+        position: relative;
+        background: rgba(255,255,255,0.15);
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        width: 42px; height: 42px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        text-decoration: none;
+        flex-shrink: 0;
+        z-index: 2;
+        transition: 0.2s;
+    }
+    .shimmer {
+        background: linear-gradient(90deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.28) 50%, rgba(255,255,255,0.12) 100%);
+        background-size: 200% 100%;
+        border-radius: 6px;
+        display: inline-block;
+        animation: shimmer 1.4s ease-in-out infinite;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* ===== BALANCE CARD ===== */
+    .balance-card {
+        background: var(--card);
+        border-radius: 24px;
+        padding: 22px 22px 20px;
+        margin: -45px 20px 18px;
+        box-shadow: 0 20px 45px rgba(11,122,46,0.08);
+        position: relative;
+        z-index: 2;
+        border: 1px solid rgba(11,122,46,0.06);
+    }
+    .balance-card .label {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 700;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .balance-card .label::before {
+        content: '';
+        width: 8px; height: 8px;
+        background: var(--gold);
+        border-radius: 50%;
+        box-shadow: 0 0 0 3px rgba(255,199,44,0.25);
+    }
+    .balance-card h1 {
+        font-size: 30px;
+        font-weight: 900;
+        color: var(--green);
+        letter-spacing: -0.5px;
+        margin-bottom: 16px;
+    }
+    .balance-card .mini-stats {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+        padding-top: 16px; border-top: 1px dashed var(--border);
+    }
+    .mini-stat .s-label {
+        font-size: 10.5px;
+        color: var(--muted);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 3px;
+    }
+    .mini-stat .s-value { font-size: 15px; font-weight: 800; color: var(--green); }
+
+    /* ===== FORM CARD ===== */
+    .form-card {
+        background: var(--card); border-radius: 20px;
+        padding: 20px; margin: 0 20px 16px;
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 15px rgba(11,122,46,0.03);
+    }
+    .form-card .card-title {
+        font-size: 14px; font-weight: 800; color: var(--green);
+        margin-bottom: 16px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .form-card .card-title::before {
+        content: '';
+        width: 4px; height: 16px;
+        background: var(--gold);
+        border-radius: 2px;
+    }
+    .field-group { margin-bottom: 16px; }
+    .field-group:last-child { margin-bottom: 0; }
+    .field-group label {
+        display: block; font-size: 11px; font-weight: 800;
+        color: var(--green-dark); margin-bottom: 8px;
+        text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .input-wrap {
+        position: relative; display: flex; align-items: center;
+        background: var(--bg); border: 1.5px solid var(--border);
+        border-radius: 14px; transition: 0.2s;
+    }
+    .input-wrap:focus-within { border-color: var(--green); background: white; box-shadow: 0 0 0 4px rgba(11,122,46,0.1); }
+    .input-wrap i { color: var(--green); font-size: 16px; margin-left: 16px; flex-shrink: 0; }
+    .input-wrap input {
+        border: none; background: transparent; padding: 15px 16px; flex: 1;
+        font-size: 16px; font-weight: 600; color: var(--green-dark); outline: none;
+        font-family: inherit;
+    }
+    .input-wrap input::placeholder { color: #b8c4d1; font-weight: 500; }
+
+    .amount-input-wrap {
+        position: relative; display: flex; align-items: center;
+        background: var(--bg); border: 1.5px solid var(--border);
+        border-radius: 14px; transition: 0.2s;
+    }
+    .amount-input-wrap:focus-within { border-color: var(--green); background: white; box-shadow: 0 0 0 4px rgba(11,122,46,0.1); }
+    .amount-input-wrap .prefix {
+        position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+        font-size: 16px; font-weight: 900; color: var(--green); pointer-events: none;
+    }
+    .amount-input-wrap input {
+        width: 100%; padding: 15px 16px 15px 58px;
+        border: none; background: transparent;
+        font-family: inherit; font-size: 18px; font-weight: 700;
+        color: var(--green-dark); outline: none;
+    }
+    .amount-input-wrap input::placeholder { color: #b8c4d1; font-weight: 500; }
+
+    .quick-amounts { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .quick-amounts button {
+        flex: 1; min-width: 60px; padding: 10px;
+        background: var(--bg); border: 1.5px solid var(--border);
+        border-radius: 10px; font-family: inherit; font-size: 12px;
+        font-weight: 700; color: var(--green-dark); cursor: pointer; transition: 0.2s;
+    }
+    .quick-amounts button:hover, .quick-amounts button.active {
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white; border-color: var(--green);
+        box-shadow: 0 4px 12px rgba(11,122,46,0.25);
+    }
+
+    /* ===== NETWORK PICKER ===== */
+    .network-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .network-option {
+        display: flex; align-items: center; gap: 10px;
+        padding: 12px 14px; border: 1.5px solid var(--border);
+        border-radius: 14px; background: var(--bg); cursor: pointer;
+        transition: 0.25s; position: relative; font-family: inherit;
+    }
+    .network-option:hover { border-color: var(--green); background: white; }
+    .network-option.selected {
+        border-color: var(--green);
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
+        color: white;
+        box-shadow: 0 6px 15px rgba(11,122,46,0.3);
+    }
+    .network-option .logo {
+        width: 34px; height: 34px; border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 900; font-size: 11px; color: white;
+        flex-shrink: 0;
+    }
+    .network-option .logo.mtn { background: #FFCC00; color: #000; }
+    .network-option .logo.telecel { background: #E60000; }
+    .network-option .logo.airteltigo { background: #0066CC; }
+    .network-option .name {
+        font-size: 11.5px; font-weight: 800; color: var(--green-dark);
+        line-height: 1.2; flex: 1; min-width: 0;
+    }
+    .network-option.selected .name { color: white; }
+    .network-option .check {
+        position: absolute; top: 6px; right: 6px;
+        width: 16px; height: 16px; border-radius: 50%;
+        background: var(--gold); color: var(--green-dark);
+        display: none; align-items: center; justify-content: center;
+        font-size: 8px;
+    }
+    .network-option.selected .check { display: flex; }
+
+    /* ===== INFO BOX ===== */
+    .info-box {
+        background: linear-gradient(135deg, #fff8e1 0%, #ffeeba 100%);
+        border: 1px solid #ffe082;
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 16px;
+        display: flex; align-items: flex-start; gap: 12px;
+        font-size: 12.5px;
+        color: #8a6d1a;
+        font-weight: 600;
+        line-height: 1.5;
+    }
+    .info-box i {
+        width: 32px; height: 32px;
+        background: var(--gold);
+        color: var(--green-dark);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+    .info-box strong { color: var(--green-dark); }
+
+    /* ===== BUTTONS ===== */
+    .btn-primary {
+        width: 100%; padding: 16px; border-radius: 14px; border: none;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white; font-family: inherit; font-size: 15px; font-weight: 800;
+        cursor: pointer; transition: 0.25s;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.3);
+        letter-spacing: 0.3px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 8px;
+    }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(11,122,46,0.4); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* ===== POLL BANNER ===== */
+    .poll-banner {
+        display: none;
+        background: linear-gradient(135deg, #fff8e1 0%, #ffeeba 100%);
+        border: 1px solid #ffe082;
+        border-radius: 16px;
+        padding: 16px 18px;
+        margin: 0 20px 16px;
+        align-items: center;
+        gap: 14px;
+        box-shadow: 0 8px 20px rgba(255,199,44,0.15);
+    }
+    .poll-banner.show { display: flex; }
+    .poll-banner > i {
+        color: var(--green-dark);
+        background: var(--gold);
+        width: 42px; height: 42px;
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+        animation: pulse 1.6s ease-in-out infinite;
+    }
+    .poll-banner .text h4 { font-size: 14px; color: var(--green-dark); font-weight: 800; margin-bottom: 2px; }
+    .poll-banner .text p { font-size: 12px; color: #8a6d1a; font-weight: 600; }
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+    /* ===== HISTORY ===== */
+    .section-header {
+        display: flex; justify-content: space-between;
+        align-items: center; padding: 0 20px;
+        margin-bottom: 12px; margin-top: 8px;
+    }
+    .section-header h3 { font-size: 15px; font-weight: 800; color: var(--green); }
+    .section-header span {
+        font-size: 11px; color: var(--green); font-weight: 700;
+        display: flex; align-items: center; gap: 4px;
+    }
+    .tx-list { padding: 0 20px; }
+    .history-item {
+        background: var(--card); border-radius: 16px;
+        padding: 14px 15px; display: flex; align-items: center; gap: 14px;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 15px rgba(11,122,46,0.03);
+        border: 1px solid var(--border);
+        transition: 0.2s;
+    }
+    .history-item .big-icon {
+        width: 56px; height: 56px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 26px; flex-shrink: 0;
+    }
+    .history-item .big-icon.success {
+        background: linear-gradient(135deg, var(--success), #00c853);
+        color: white;
+        box-shadow: 0 6px 20px rgba(0,200,83,0.35);
+    }
+    .history-item .big-icon.failed {
+        background: linear-gradient(135deg, var(--danger), #ff6b6b);
+        color: white;
+        box-shadow: 0 6px 20px rgba(231,76,60,0.35);
+    }
+    .history-item .big-icon.pending {
+        background: linear-gradient(135deg, var(--warning), #ffb74d);
+        color: white;
+        box-shadow: 0 6px 20px rgba(255,152,0,0.35);
+        animation: pulseGlow 2s ease-in-out infinite;
+    }
+    @keyframes pulseGlow {
+        0%,100% { box-shadow: 0 6px 20px rgba(255,152,0,0.35); }
+        50% { box-shadow: 0 6px 30px rgba(255,152,0,0.6); }
+    }
+    .history-item .info { flex: 1; min-width: 0; }
+    .history-item .info .title {
+        font-size: 14px; font-weight: 800; color: var(--green-dark);
+        display: flex; align-items: center; gap: 6px;
+    }
+    .history-item .info .sub {
+        font-size: 11px; color: var(--muted); margin-top: 3px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .history-item .amount { text-align: right; flex-shrink: 0; }
+    .history-item .amount .value { font-size: 15px; font-weight: 900; }
+    .history-item .amount .value.positive { color: var(--success); }
+    .history-item .amount .value.negative { color: var(--danger); }
+    .history-item .amount .value.pending { color: var(--warning); }
+    .history-item .amount .status-text {
+        font-size: 9.5px; font-weight: 800; letter-spacing: 0.5px;
+        text-transform: uppercase; margin-top: 2px;
+    }
+    .history-item .amount .status-text.success { color: var(--success); }
+    .history-item .amount .status-text.failed { color: var(--danger); }
+    .history-item .amount .status-text.pending { color: var(--warning); }
+
+    .empty-history {
+        text-align: center; padding: 35px 20px;
+        background: var(--card); border-radius: 16px;
+        border: 1px dashed var(--border); margin: 0 20px;
+    }
+    .empty-history i { font-size: 36px; color: #cfe3d6; margin-bottom: 12px; display: block; }
+    .empty-history p { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+
+    /* ===== BOTTOM NAV ===== */
+    .bottom-nav {
+        position: fixed; bottom: 0; left: 50%;
+        transform: translateX(-50%);
+        width: 100%; max-width: 480px; background: var(--card);
+        border-top: 1px solid var(--border);
+        display: flex; justify-content: space-around; align-items: center;
+        padding: 8px 0 12px; z-index: 100;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+    }
+    .bottom-nav a {
+        text-decoration: none; display: flex; flex-direction: column;
+        align-items: center; gap: 4px; font-size: 10px;
+        color: var(--muted); font-weight: 600; flex: 1; transition: 0.3s;
+        padding-top: 4px;
+    }
+    .bottom-nav a i { font-size: 22px; }
+    .bottom-nav a.active { color: var(--green); }
+    .bottom-nav a.active::after {
+        content: ''; display: block; width: 20px; height: 3px;
+        background: var(--gold); border-radius: 3px; margin-top: 2px;
+    }
+    .bottom-nav .center-btn {
+        width: 60px; height: 60px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 24px; margin-top: -25px;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.4);
+        cursor: pointer; border: 3px solid var(--bg); transition: 0.3s;
+    }
+
+    /* ===== TOAST ===== */
+    .toast {
+        position: fixed; top: 20px; left: 50%;
+        transform: translateX(-50%) translateY(-20px);
+        background: var(--green); color: white;
+        padding: 14px 24px; border-radius: 30px;
+        z-index: 99999; opacity: 0; visibility: hidden;
+        font-size: 13px; font-weight: 700;
+        max-width: 90%; text-align: center;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 30px rgba(11,122,46,0.3);
+        line-height: 1.4;
+    }
+    .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+    .toast.info { background: var(--green); }
+
+    /* ===== LOADING OVERLAY ===== */
+    #loading-overlay {
+        position: fixed; inset: 0;
+        background: rgba(244,249,246,0.96);
+        backdrop-filter: blur(6px);
+        display: flex; flex-direction: column;
+        justify-content: center; align-items: center;
+        z-index: 9998; color: var(--green);
+        transition: opacity 0.35s;
+    }
+    #loading-overlay.hide { opacity: 0; pointer-events: none; }
+    .spinner {
+        width: 46px; height: 46px;
+        border: 5px solid var(--border);
+        border-top-color: var(--green);
+        border-right-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ============================================================
+       ===== v8.4 — MODALS (phone approval, OTP, success, error) =====
+       ============================================================ */
+    .modal-bg {
+        position: fixed; inset: 0;
+        background: rgba(7,92,34,0.85);
+        backdrop-filter: blur(8px);
+        z-index: 9999;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+    .modal-bg.show { display: flex; }
+    .modal-box {
+        background: white;
+        border-radius: 26px;
+        padding: 34px 26px 28px;
+        max-width: 400px;
+        width: 100%;
+        text-align: center;
+        animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 25px 70px rgba(0,0,0,0.4);
+        position: relative;
+        overflow: hidden;
+    }
+    @keyframes popIn {
+        from { transform: scale(0.9); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    /* Phone animation for "approve on your phone" */
+    .phone-icon {
+        width: 100px; height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 44px;
+        margin: 0 auto 20px;
+        box-shadow: 0 15px 40px rgba(11,122,46,0.4);
+        position: relative;
+    }
+    .phone-icon::before,
+    .phone-icon::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 3px solid var(--green);
+        animation: ringPulse 2s ease-out infinite;
+    }
+    .phone-icon::after { animation-delay: 1s; }
+    @keyframes ringPulse {
+        0% { transform: scale(0.85); opacity: 0.7; }
+        100% { transform: scale(1.7); opacity: 0; }
+    }
+
+    /* Success / Error icons */
+    .status-icon {
+        width: 100px; height: 100px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 46px;
+        margin: 0 auto 20px;
+        animation: bounceIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .status-icon.success {
+        background: linear-gradient(135deg, var(--success), #00c853);
+        color: white;
+        box-shadow: 0 15px 40px rgba(0,200,83,0.4);
+    }
+    .status-icon.error {
+        background: linear-gradient(135deg, var(--danger), #ff6b6b);
+        color: white;
+        box-shadow: 0 15px 40px rgba(231,76,60,0.4);
+    }
+    @keyframes bounceIn {
+        0% { transform: scale(0); }
+        60% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+
+    .modal-box h2 {
+        font-size: 20px;
+        font-weight: 900;
+        color: var(--green-dark);
+        margin-bottom: 8px;
+        letter-spacing: 0.2px;
+    }
+    .modal-box p {
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 600;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+    .modal-box p strong { color: var(--green-dark); font-weight: 800; }
+
+    .modal-amount {
+        background: linear-gradient(135deg, #f4f9f6 0%, #eaf6ee 100%);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 18px;
+    }
+    .modal-amount .ma-label {
+        font-size: 10.5px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 800;
+        margin-bottom: 4px;
+    }
+    .modal-amount .ma-value {
+        font-size: 24px;
+        font-weight: 900;
+        color: var(--green);
+    }
+
+    .modal-btn {
+        width: 100%;
+        padding: 15px;
+        border-radius: 14px;
+        border: none;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white;
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.3);
+        margin-top: 8px;
+        transition: 0.25s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    .modal-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(11,122,46,0.4); }
+    .modal-btn.secondary {
+        background: transparent;
+        color: var(--muted);
+        box-shadow: none;
+        border: 1.5px solid var(--border);
+    }
+    .modal-btn.secondary:hover { background: #f4f9f6; box-shadow: none; color: var(--green-dark); }
+    .modal-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* OTP Inputs */
+    .otp-inputs {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin: 22px 0 16px;
+    }
+    .otp-inputs input {
+        width: 46px; height: 58px;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        text-align: center;
+        font-size: 24px;
+        font-weight: 900;
+        color: var(--green-dark);
+        background: var(--bg);
+        outline: none;
+        font-family: inherit;
+        transition: 0.2s;
+    }
+    .otp-inputs input:focus {
+        border-color: var(--green);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(11,122,46,0.1);
+    }
+    .otp-inputs input.error {
+        border-color: var(--danger);
+        animation: shake 0.35s ease;
+    }
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-6px); }
+        75% { transform: translateX(6px); }
+    }
+
+    /* Progress dots (for processing modal) */
+    .progress-dots {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin: 18px 0 4px;
+    }
+    .progress-dots .dot {
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        background: #e6f0e9;
+        transition: 0.4s;
+    }
+    .progress-dots .dot.active {
+        background: var(--gold);
+        box-shadow: 0 0 0 4px rgba(255,199,44,0.25);
+        animation: dotPulse 1s infinite;
+    }
+    .progress-dots .dot.done {
+        background: var(--success);
+    }
+    @keyframes dotPulse {
+        0%,100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    @media (max-width: 360px) {
+        .balance-card h1 { font-size: 26px; }
+        .history-item .big-icon { width: 48px; height: 48px; font-size: 22px; }
+        .network-option .name { font-size: 10.5px; }
+        .otp-inputs input { width: 40px; height: 52px; font-size: 20px; }
+    }
+</style>
+</head>
+<body>
+
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <p style="margin-top:14px; font-weight:700; font-size:13px; letter-spacing:0.3px;">Loading deposit...</p>
+</div>
+
+<div class="app-container">
+
+    <!-- ===== HEADER ===== -->
+    <header class="top-header">
+        <div class="header-left">
+            <button class="back-btn" onclick="window.location.href='userdashboard.html'">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="profile-section">
+                <div class="avatar-wrapper">
+                    <img id="profilePic"
+                         src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230B7A2E'/><circle cx='50' cy='38' r='18' fill='%23FFC72C'/><path d='M18 92c0-20 14-34 32-34s32 14 32 34' fill='%23FFC72C'/></svg>"
+                         alt="Profile">
+                    <div class="verified-badge"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="greeting">
+                    <h4 id="greetingTime">Welcome,</h4>
+                    <h2 id="userName"><span class="shimmer" style="width: 90px; height: 14px;"></span></h2>
+                    <div class="acc-num" id="userAccNum">•••• ••••</div>
+                </div>
+            </div>
+        </div>
+        <a href="usernotification.html" class="notification-btn">
+            <i class="fa-regular fa-bell"></i>
+        </a>
+    </header>
+
+    <!-- BALANCE -->
+    <div class="balance-card">
+        <div class="label">Current Balance</div>
+        <h1 id="balanceDisplay">GHS 0.00</h1>
+        <div class="mini-stats">
+            <div class="mini-stat">
+                <div class="s-label">Today Deposited</div>
+                <div class="s-value" id="todayDeposited">GHS 0.00</div>
+            </div>
+            <div class="mini-stat">
+                <div class="s-label">Transaction Fee</div>
+                <div class="s-value">2.5%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- POLL BANNER (persistent reminder while waiting) -->
+    <div class="poll-banner" id="pollBanner">
+        <i class="fa-solid fa-circle-notch fa-spin"></i>
+        <div class="text">
+            <h4 id="pollTitle">Waiting for payment...</h4>
+            <p id="pollMessage">Approve the prompt on your phone</p>
+        </div>
+    </div>
+
+    <!-- DEPOSIT FORM -->
+    <div class="form-card">
+        <div class="card-title">Deposit Details</div>
+
+        <div class="info-box">
+            <i class="fa-solid fa-circle-info"></i>
+            <div>
+                <strong>Instant Deposit.</strong> Select your network, enter your phone number and amount. A prompt will be sent to your phone — approve it with your MoMo PIN. No redirects.
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label>Select Network</label>
+            <div class="network-grid" id="networkGrid">
+                <div class="network-option" data-network="mtn" onclick="selectNetwork('mtn')">
+                    <div class="logo mtn">MTN</div>
+                    <div class="name">MTN MoMo</div>
+                    <div class="check"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="network-option" data-network="telecel" onclick="selectNetwork('telecel')">
+                    <div class="logo telecel">TC</div>
+                    <div class="name">Telecel Cash</div>
+                    <div class="check"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="network-option" data-network="airteltigo" onclick="selectNetwork('airteltigo')">
+                    <div class="logo airteltigo">AT</div>
+                    <div class="name">AirtelTigo</div>
+                    <div class="check"><i class="fa-solid fa-check"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label>MoMo Number</label>
+            <div class="input-wrap">
+                <i class="fa-solid fa-phone"></i>
+                <input type="tel" id="phoneNumber" placeholder="0201234567" inputmode="numeric" maxlength="13">
+            </div>
+            <div class="hint">Number that will receive the USSD prompt</div>
+        </div>
+
+        <div class="field-group">
+            <label>Amount (GHS)</label>
+            <div class="amount-input-wrap">
+                <span class="prefix">GHS</span>
+                <input type="number" id="amountInput" placeholder="0.00" inputmode="decimal" min="1">
+            </div>
+            <div class="quick-amounts">
+                <button type="button" onclick="setAmount(10)">10</button>
+                <button type="button" onclick="setAmount(50)">50</button>
+                <button type="button" onclick="setAmount(100)">100</button>
+                <button type="button" onclick="setAmount(200)">200</button>
+            </div>
+        </div>
+
+        <button class="btn-primary" id="depositBtn" onclick="processDeposit()">
+            <i class="fa-solid fa-bolt"></i> Deposit Now
+        </button>
+    </div>
+
+    <!-- RECENT DEPOSITS -->
+    <div class="section-header">
+        <h3>Recent Deposits</h3>
+        <span><i class="fa-solid fa-clock-rotate-left"></i> Last 8</span>
+    </div>
+    <div class="tx-list" id="depositHistory">
+        <div class="empty-history">
+            <i class="fa-solid fa-inbox"></i>
+            <p>No deposits yet</p>
+        </div>
+    </div>
+    <div style="height: 20px;"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <a href="userdashboard.html"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="accountnumberupdate.html"><i class="fa-solid fa-book"></i> Accounts</a>
+    <button class="center-btn" onclick="location.href='scan_and_pay.html'"><i class="fa-solid fa-qrcode"></i></button>
+    <a href="usernotification.html"><i class="fa-solid fa-bell"></i> Alerts</a>
+    <a href="myprofile.html"><i class="fa-solid fa-user"></i> Profile</a>
+</nav>
+
+<!-- ============================================================
+     ===== MODAL: APPROVE ON YOUR PHONE =====
+     ============================================================ -->
+<div class="modal-bg" id="phoneModal" onclick="if(event.target===this) cancelCharge()">
+    <div class="modal-box">
+        <div class="phone-icon">
+            <i class="fa-solid fa-mobile-screen-button"></i>
+        </div>
+        <h2>Approve on Your Phone</h2>
+        <p id="phoneModalText">A payment prompt has been sent to your phone. Enter your MoMo PIN to complete the deposit.</p>
+
+        <div class="modal-amount">
+            <div class="ma-label">Amount to Pay</div>
+            <div class="ma-value" id="phoneModalAmount">GHS 0.00</div>
+        </div>
+
+        <div class="progress-dots" id="progressDots">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+
+        <button class="modal-btn secondary" onclick="cancelCharge()">
+            <i class="fa-solid fa-times"></i> Cancel
+        </button>
+    </div>
+</div>
+
+<!-- ============================================================
+     ===== MODAL: OTP =====
+     ============================================================ -->
+<div class="modal-bg" id="otpModal">
+    <div class="modal-box">
+        <div class="phone-icon" style="background: linear-gradient(135deg, var(--gold), var(--gold-soft)); color: var(--green-dark); box-shadow: 0 15px 40px rgba(255,199,44,0.4);">
+            <i class="fa-solid fa-key"></i>
+        </div>
+        <h2>Enter Verification Code</h2>
+        <p>We sent a 6-digit code to <strong id="otpPhone">your phone</strong>. Enter it below to complete your deposit.</p>
+
+        <div class="otp-inputs" id="otpInputs">
+            <input type="tel" maxlength="1" inputmode="numeric" id="otp0">
+            <input type="tel" maxlength="1" inputmode="numeric" id="otp1">
+            <input type="tel" maxlength="1" inputmode="numeric" id="otp2">
+            <input type="tel" maxlength="1" inputmode="numeric" id="otp3">
+            <input type="tel" maxlength="1" inputmode="numeric" id="otp4">
+            <input type="tel" maxlength="1" inputmode="numeric" id="otp5">
+        </div>
+
+        <button class="modal-btn" id="otpSubmitBtn" onclick="submitOTP()">
+            <i class="fa-solid fa-check"></i> Verify & Complete
+        </button>
+        <button class="modal-btn secondary" onclick="cancelCharge()">
+            <i class="fa-solid fa-times"></i> Cancel
+        </button>
+    </div>
+</div>
+
+<!-- ============================================================
+     ===== MODAL: SUCCESS =====
+     ============================================================ -->
+<div class="modal-bg" id="successModal">
+    <div class="modal-box">
+        <div class="status-icon success">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <h2>Deposit Successful!</h2>
+        <p>Your wallet has been credited successfully.</p>
+
+        <div class="modal-amount">
+            <div class="ma-label">New Balance</div>
+            <div class="ma-value" id="successNewBalance">GHS 0.00</div>
+        </div>
+
+        <button class="modal-btn" onclick="closeSuccessAndReload()">
+            <i class="fa-solid fa-check"></i> Done
+        </button>
+    </div>
+</div>
+
+<!-- ============================================================
+     ===== MODAL: ERROR =====
+     ============================================================ -->
+<div class="modal-bg" id="errorModal">
+    <div class="modal-box">
+        <div class="status-icon error">
+            <i class="fa-solid fa-xmark"></i>
+        </div>
+        <h2 id="errorTitle">Deposit Failed</h2>
+        <p id="errorText">Something went wrong. Please try again.</p>
+        <button class="modal-btn" onclick="closeError()">
+            <i class="fa-solid fa-rotate"></i> Try Again
+        </button>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+// ============================================================
+// SESSION
+// ============================================================
+const session = JSON.parse(localStorage.getItem('cit_session') || 'null');
+if (!session || !session.uid) window.location.href = 'userlogin.html';
+
+// ============================================================
+// STATE
+// ============================================================
+let selectedNetwork = null;
+let currentUser = null;
+let currentBalance = 0;
+let lastKnownBalance = 0;
+let toastTimer = null;
+let activeTxRef = null;
+let chargePollTimer = null;
+let chargePollAttempts = 0;
+const MAX_CHARGE_POLL_ATTEMPTS = 80; // 80 * 3s = 4 min max
+
+const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230B7A2E'/><circle cx='50' cy='38' r='18' fill='%23FFC72C'/><path d='M18 92c0-20 14-34 32-34s32 14 32 34' fill='%23FFC72C'/></svg>";
+
+// ============================================================
+// HELPERS
+// ============================================================
+function fmt(n) {
+    return 'GHS ' + Number(n || 0).toLocaleString(undefined, {
+        minimumFractionDigits: 2, maximumFractionDigits: 2
+    });
+}
+function esc(s) {
+    return String(s == null ? '' : s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+function hideLoading() {
+    const el = document.getElementById('loading-overlay');
+    if (el) { el.classList.add('hide'); setTimeout(() => el.style.display = 'none', 400); }
+}
+function setGreeting() {
+    const el = document.getElementById('greetingTime');
+    const hour = new Date().getHours();
+    if (hour < 12) el.textContent = 'Good Morning,';
+    else if (hour < 17) el.textContent = 'Good Afternoon,';
+    else el.textContent = 'Good Evening,';
+}
+
+// ============================================================
+// UI ACTIONS
+// ============================================================
+function selectNetwork(network) {
+    selectedNetwork = network;
+    document.querySelectorAll('.network-option').forEach(el => {
+        el.classList.toggle('selected', el.dataset.network === network);
+    });
+}
+window.selectNetwork = selectNetwork;
+
+function setAmount(amt) {
+    document.getElementById('amountInput').value = Number(amt).toFixed(2);
+    document.querySelectorAll('.quick-amounts button').forEach(b => {
+        b.classList.toggle('active', Number(b.textContent) === Number(amt));
+    });
+}
+window.setAmount = setAmount;
+
+// ============================================================
+// API HELPER
+// ============================================================
+async function api(path, body, timeoutMs = 35000) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    try {
+        const res = await fetch(path + '?t=' + Date.now(), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body || {}),
+            cache: 'no-store',
+            signal: ctrl.signal
+        });
+        clearTimeout(timer);
+        const raw = await res.text();
+        try { return JSON.parse(raw); }
+        catch (e) { return { success: false, error: 'Invalid server response' }; }
+    } catch (e) {
+        clearTimeout(timer);
+        if (e.name === 'AbortError') return { success: false, error: 'Request timed out' };
+        return { success: false, error: 'Network error: ' + e.message };
+    }
+}
+
+// ============================================================
+// MODAL HELPERS
+// ============================================================
+function showModal(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('show');
+}
+function hideModal(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('show');
+}
+function hideAllModals() {
+    ['phoneModal','otpModal','successModal','errorModal'].forEach(hideModal);
+}
+
+// ============================================================
+// LOAD USER
+// ============================================================
+async function loadUser() {
+    try {
+        const data = await api('/api/user-data', { uid: session.uid }, 20000);
+        if (data.success && data.user) {
+            currentUser = data.user;
+            currentBalance = parseFloat(currentUser.balance) || 0;
+            lastKnownBalance = currentBalance;
+
+            document.getElementById('balanceDisplay').textContent = fmt(currentBalance);
+            document.getElementById('userName').textContent = currentUser.fullName || 'Customer';
+            document.getElementById('userAccNum').textContent =
+                currentUser.accountNumber ? ('Acc ' + currentUser.accountNumber) : 'CITFUND Member';
+
+            const pic = document.getElementById('profilePic');
+            if (currentUser.photo && String(currentUser.photo).trim().length > 0) {
+                pic.src = currentUser.photo;
+            } else {
+                pic.src = DEFAULT_AVATAR;
+            }
+            pic.onerror = () => { pic.onerror = null; pic.src = DEFAULT_AVATAR; };
+
+            renderHistory(currentUser.transactions || {});
+        } else if (data.error && /not found/i.test(data.error)) {
+            localStorage.removeItem('cit_session');
+            window.location.href = 'userlogin.html';
+        }
+    } catch (e) {
+        console.error('Load user error:', e);
+    }
+}
+
+// ============================================================
+// RENDER HISTORY
+// ============================================================
+function renderHistory(transactions) {
+    const deposits = Object.values(transactions)
+        .filter(tx => tx.type === 'deposit')
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 8);
+
+    const container = document.getElementById('depositHistory');
+    if (deposits.length === 0) {
+        container.innerHTML = `
+            <div class="empty-history">
+                <i class="fa-solid fa-inbox"></i>
+                <p>No deposits yet</p>
+            </div>`;
+        document.getElementById('todayDeposited').textContent = fmt(0);
+        return;
+    }
+
+    // Today total
+    let todayTotal = 0;
+    const today = new Date().toDateString();
+    Object.values(transactions).forEach(t => {
+        if (t.type === 'deposit' && t.status === 'success' &&
+            new Date(t.date).toDateString() === today) {
+            todayTotal += Number(t.grossAmount || t.amount || 0);
+        }
+    });
+    document.getElementById('todayDeposited').textContent = fmt(todayTotal);
+
+    container.innerHTML = deposits.map(tx => {
+        const rawStatus = String(tx.status || 'success').toLowerCase();
+        let statusClass, statusIcon, statusText;
+        if (rawStatus === 'success' || rawStatus === 'successful' || rawStatus === 'completed') {
+            statusClass = 'success'; statusIcon = 'fa-check'; statusText = 'Success';
+        } else if (rawStatus === 'failed' || rawStatus === 'failure' || rawStatus === 'cancelled' || rawStatus === 'abandoned' || rawStatus === 'reversed') {
+            statusClass = 'failed'; statusIcon = 'fa-xmark'; statusText = 'Failed';
+        } else {
+            statusClass = 'pending'; statusIcon = 'fa-clock'; statusText = 'Pending';
+        }
+
+        const isCredit = statusClass === 'success';
+        const amountClass = isCredit ? 'positive' : (statusClass === 'failed' ? 'negative' : 'pending');
+        const prefix = isCredit ? '+' : (statusClass === 'failed' ? '✗' : '');
+        const gross = Number(tx.grossAmount || tx.amount || 0);
+        const amountDisplay = statusClass === 'failed' ? fmt(gross) : `${prefix} ${fmt(gross)}`;
+
+        const date = tx.date ? new Date(tx.date).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Just now';
+        const subtitle = statusClass === 'failed'
+            ? (tx.failureReason || 'Payment not completed')
+            : (tx.network ? tx.network.toUpperCase() : 'MoMo') + ' · ' + (tx.phone || String(tx.reference || '').slice(0, 14));
+
+        return `
+            <div class="history-item">
+                <div class="big-icon ${statusClass}">
+                    <i class="fa-solid ${statusIcon}"></i>
+                </div>
+                <div class="info">
+                    <div class="title">${statusClass === 'success' ? 'Deposit Successful' : statusClass === 'failed' ? 'Deposit Failed' : 'Deposit Pending'}</div>
+                    <div class="sub">${esc(date)} • ${esc(subtitle)}</div>
+                </div>
+                <div class="amount">
+                    <div class="value ${amountClass}">${esc(amountDisplay)}</div>
+                    <div class="status-text ${statusClass}">${statusText}</div>
+                </div>
+            </div>`;
+    }).join('');
+}
+
+// ============================================================
+// PROCESS DEPOSIT — NEW: server charges MoMo directly
+// ============================================================
+async function processDeposit() {
+    const phone = document.getElementById('phoneNumber').value.trim();
+    const amount = parseFloat(document.getElementById('amountInput').value);
+    const btn = document.getElementById('depositBtn');
+
+    // Validations
+    if (!selectedNetwork) return showToast('Please select a network', 'error');
+    if (!phone || phone.replace(/\D/g, '').length < 9) return showToast('Enter a valid phone number', 'error');
+    if (!amount || amount < 1) return showToast('Enter amount (min GHS 1.00)', 'error');
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending request...';
+
+    try {
+        const data = await api('/api/paystack/momo-charge', {
+            uid: session.uid,
+            amount: amount,
+            network: selectedNetwork,
+            phoneNumber: phone
+        }, 40000);
+
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Deposit Now';
+
+        if (!data.success) {
+            showErrorModal('Could Not Start Deposit', data.error || 'Please try again.');
+            return;
+        }
+
+        activeTxRef = data.txRef;
+        const status = String(data.status || '').toLowerCase();
+
+        // Save amount for later
+        document.getElementById('phoneModalAmount').textContent = fmt(amount);
+        document.getElementById('otpPhone').textContent = phone;
+
+        // Branch on status
+        if (status === 'send_otp' || data.requiresOtp) {
+            openOTPModal();
+            return;
+        }
+
+        if (status === 'success') {
+            await handleChargeSuccess();
+            return;
+        }
+
+        if (status === 'failed' || status === 'reversed') {
+            showErrorModal('Deposit Failed', data.displayText || data.message || 'Payment was not completed.');
+            return;
+        }
+
+        // pay_offline / pending / processing → show phone modal + start polling
+        showPhoneModal(data.displayText);
+        startChargePolling();
+
+    } catch (e) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Deposit Now';
+        showErrorModal('Network Error', e.message || 'Could not reach server.');
+    }
+}
+window.processDeposit = processDeposit;
+
+// ============================================================
+// PHONE MODAL
+// ============================================================
+function showPhoneModal(displayText) {
+    if (displayText) {
+        document.getElementById('phoneModalText').textContent = displayText;
+    } else {
+        document.getElementById('phoneModalText').textContent =
+            'A payment prompt has been sent to your phone. Enter your MoMo PIN to complete the deposit.';
+    }
+    showModal('phoneModal');
+    showPollBanner('Waiting for approval...', 'Approve the prompt on your phone');
+    updateProgressDots(0);
+}
+
+function showPollBanner(title, message) {
+    document.getElementById('pollTitle').textContent = title;
+    document.getElementById('pollMessage').textContent = message;
+    document.getElementById('pollBanner').classList.add('show');
+}
+function hidePollBanner() {
+    document.getElementById('pollBanner').classList.remove('show');
+}
+
+function updateProgressDots(active) {
+    const dots = document.querySelectorAll('#progressDots .dot');
+    dots.forEach((d, i) => {
+        d.classList.remove('active', 'done');
+        if (i < active) d.classList.add('done');
+        else if (i === active) d.classList.add('active');
+    });
+}
+
+// ============================================================
+// POLL CHARGE STATUS
+// ============================================================
+function startChargePolling() {
+    stopChargePolling();
+    chargePollAttempts = 0;
+
+    chargePollTimer = setInterval(async () => {
+        chargePollAttempts++;
+
+        // Update progress dots (rotate every 5 attempts)
+        updateProgressDots(Math.floor(chargePollAttempts / 5) % 3);
+
+        if (chargePollAttempts > MAX_CHARGE_POLL_ATTEMPTS) {
+            stopChargePolling();
+            hideAllModals();
+            hidePollBanner();
+            showErrorModal('Payment Timeout', 'We did not receive confirmation from your mobile money provider. Please check your phone and try again.');
+            return;
+        }
+
+        try {
+            const data = await api('/api/paystack/momo-status', {
+                uid: session.uid,
+                txRef: activeTxRef
+            }, 15000);
+
+            if (!data.success) return;
+
+            const status = String(data.status || '').toLowerCase();
+
+            if (status === 'success') {
+                stopChargePolling();
+                await handleChargeSuccess();
+                return;
+            }
+
+            if (status === 'failed' || status === 'reversed' || status === 'abandoned') {
+                stopChargePolling();
+                hideModal('phoneModal');
+                hidePollBanner();
+                showErrorModal('Deposit Failed',
+                    data.message || data.gatewayResponse || 'Your payment was not completed. Please try again.');
+                return;
+            }
+
+            if (status === 'send_otp') {
+                stopChargePolling();
+                hideModal('phoneModal');
+                hidePollBanner();
+                openOTPModal();
+                return;
+            }
+
+            // Still pay_offline / pending — update banner text if server sent something new
+            if (data.displayText) {
+                document.getElementById('pollMessage').textContent = data.displayText;
+            }
+        } catch (e) {
+            // silent — keep polling
+        }
+    }, 3000);
+}
+
+function stopChargePolling() {
+    if (chargePollTimer) {
+        clearInterval(chargePollTimer);
+        chargePollTimer = null;
+    }
+}
+
+// ============================================================
+// SUCCESS HANDLER
+// ============================================================
+async function handleChargeSuccess() {
+    stopChargePolling();
+    hideModal('phoneModal');
+    hideModal('otpModal');
+    hidePollBanner();
+
+    // Refresh user data to get updated balance
+    await loadUser();
+
+    document.getElementById('successNewBalance').textContent = fmt(currentBalance);
+    showModal('successModal');
+
+    // Clear form
+    document.getElementById('amountInput').value = '';
+    document.getElementById('phoneNumber').value = '';
+    document.querySelectorAll('.quick-amounts button').forEach(b => b.classList.remove('active'));
+    selectedNetwork = null;
+    document.querySelectorAll('.network-option').forEach(el => el.classList.remove('selected'));
+    activeTxRef = null;
+}
+
+function closeSuccessAndReload() {
+    hideModal('successModal');
+    showToast('Deposit complete!', 'success');
+    // Refresh once more to be safe
+    loadUser();
+}
+window.closeSuccessAndReload = closeSuccessAndReload;
+
+// ============================================================
+// ERROR HANDLER
+// ============================================================
+function showErrorModal(title, message) {
+    document.getElementById('errorTitle').textContent = title || 'Error';
+    document.getElementById('errorText').textContent = message || 'Please try again.';
+    showModal('errorModal');
+}
+function closeError() {
+    hideModal('errorModal');
+    activeTxRef = null;
+}
+window.closeError = closeError;
+
+// ============================================================
+// OTP MODAL
+// ============================================================
+function openOTPModal() {
+    // Clear inputs
+    for (let i = 0; i < 6; i++) {
+        const el = document.getElementById('otp' + i);
+        el.value = '';
+        el.classList.remove('error');
+    }
+    showModal('otpModal');
+    showPollBanner('Waiting for OTP...', 'Enter the 6-digit code from your phone');
+    setTimeout(() => document.getElementById('otp0').focus(), 300);
+}
+
+// OTP input auto-advance
+document.addEventListener('DOMContentLoaded', () => {
+    for (let i = 0; i < 6; i++) {
+        const el = document.getElementById('otp' + i);
+        el.addEventListener('input', (e) => {
+            el.value = el.value.replace(/\D/g, '').slice(0, 1);
+            if (el.value && i < 5) document.getElementById('otp' + (i + 1)).focus();
+            if (getOTP().length === 6) setTimeout(submitOTP, 150);
+        });
+        el.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !el.value && i > 0) {
+                document.getElementById('otp' + (i - 1)).focus();
+            }
+        });
+    }
+});
+
+function getOTP() {
+    let v = '';
+    for (let i = 0; i < 6; i++) v += document.getElementById('otp' + i).value || '';
+    return v;
+}
+
+async function submitOTP() {
+    const otp = getOTP();
+    if (otp.length !== 6) {
+        showToast('Please enter all 6 digits', 'error');
+        return;
+    }
+
+    const btn = document.getElementById('otpSubmitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying...';
+
+    try {
+        const data = await api('/api/paystack/momo-submit-otp', {
+            uid: session.uid,
+            txRef: activeTxRef,
+            otp: otp
+        }, 30000);
+
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Verify & Complete';
+
+        if (!data.success) {
+            markOTPError();
+            showToast(data.error || 'Invalid OTP', 'error');
+            return;
+        }
+
+        const status = String(data.status || '').toLowerCase();
+
+        if (status === 'success') {
+            await handleChargeSuccess();
+            return;
+        }
+
+        if (status === 'send_otp') {
+            markOTPError();
+            showToast('Incorrect code. Please try again.', 'error');
+            return;
+        }
+
+        if (status === 'failed' || status === 'reversed') {
+            hideModal('otpModal');
+            hidePollBanner();
+            showErrorModal('Deposit Failed', data.displayText || 'Payment was not completed.');
+            return;
+        }
+
+        // Still pending — keep polling
+        hideModal('otpModal');
+        showPhoneModal(data.displayText || 'Processing your payment...');
+        startChargePolling();
+
+    } catch (e) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Verify & Complete';
+        showToast('Network error: ' + e.message, 'error');
+    }
+}
+window.submitOTP = submitOTP;
+
+function markOTPError() {
+    for (let i = 0; i < 6; i++) {
+        const el = document.getElementById('otp' + i);
+        el.classList.add('error');
+        setTimeout(() => el.classList.remove('error'), 400);
+    }
+    for (let i = 0; i < 6; i++) {
+        document.getElementById('otp' + i).value = '';
+    }
+    setTimeout(() => document.getElementById('otp0').focus(), 100);
+}
+
+// ============================================================
+// CANCEL
+// ============================================================
+function cancelCharge() {
+    stopChargePolling();
+    hideAllModals();
+    hidePollBanner();
+    activeTxRef = null;
+    showToast('Payment cancelled', 'info');
+}
+window.cancelCharge = cancelCharge;
+
+// ============================================================
+// INIT
+// ============================================================
+(async function init() {
+    setGreeting();
+    await loadUser();
+    hideLoading();
+})();
+
+setTimeout(hideLoading, 6000);
+</script>
+</body>
+</html>

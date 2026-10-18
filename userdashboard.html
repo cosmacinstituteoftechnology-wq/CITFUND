@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CIT Fund | Premium Banking Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    
+    <!-- Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- Styles (same as before) -->
+    <style>
+        :root {
+            --royal-blue: #0a2540;
+            --royal-blue-dark: #051525;
+            --royal-gold: #d4af37;
+            --royal-gold-light: #ffd700;
+            --royal-bg: #f4f7fb;
+            --royal-card: #ffffff;
+            --royal-border: #e6eaf2;
+            --royal-success: #00c853;
+            --royal-danger: #d32f2f;
+            --radius-xxl: 32px;
+            --radius-xl: 24px;
+            --radius-lg: 16px;
+            --shadow-premium: 0 15px 40px rgba(10, 37, 64, 0.08);
+            --shadow-gold: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        html, body { background: var(--royal-bg); color: var(--royal-blue); height: 100%; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat; opacity: 0.03; z-index: -1; }
+        
+        /* ================= MODALS ================= */
+        #loading-modal, #result-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(4, 21, 37, 0.95); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(15px); }
+        #loading-modal.show, #result-modal.show { display: flex; }
+        #result-modal.hide { opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+        .loader-wrapper { width: 160px; height: 160px; position: relative; }
+        .loader { width: 100%; height: 100%; border: 8px solid rgba(255,255,255,0.1); border-top: 8px solid var(--royal-gold); border-radius: 50%; animation: spin 1s linear infinite; }
+        .loader-wrapper i { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 40px; color: var(--royal-gold); }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #loading-modal h2, #result-modal h2 { font-size: 32px; margin-top: 30px; font-weight: 800; color: white; }
+        #loading-modal p, #result-modal p { font-size: 16px; color: #a0b4d0; margin-top: 10px; font-weight: 500; text-align: center; }
+
+        .result-icon-wrapper { width: 180px; height: 180px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 50px rgba(0, 200, 83, 0.5); border: 5px solid var(--royal-success); }
+        .result-icon-wrapper.error { border-color: var(--royal-danger); box-shadow: 0 0 50px rgba(211, 47, 47, 0.4); }
+        .result-icon-wrapper i { font-size: 90px; color: var(--royal-success); }
+        .result-icon-wrapper.error i { color: var(--royal-danger); }
+
+        /* ================= SIDEBAR & OVERLAY ================= */
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .sidebar-overlay.open { opacity: 1; pointer-events: all; }
+        .close-sidebar { display: none; position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 18px; z-index: 101; align-items: center; justify-content: center; transition: background 0.3s; }
+
+        .sidebar { width: 280px; background: linear-gradient(180deg, var(--royal-blue) 0%, #03101d 100%); color: white; display: flex; flex-direction: column; flex-shrink: 0; padding: 25px; position: fixed; top: 0; left: 0; height: 100vh; z-index: 100; overflow-y: auto; transition: transform 0.3s ease; }
+        .sidebar .brand-side { text-align: center; padding-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 25px; }
+        .sidebar .brand-side .logo-icon { width: 70px; height: 70px; background: url('https://cdn-icons-png.flaticon.com/512/3135/3135755.png') center/contain no-repeat; margin: 0 auto 15px; filter: drop-shadow(0 10px 20px rgba(212,175,55,0.5)); }
+        .sidebar .brand-side h1 { font-size: 26px; font-weight: 800; letter-spacing: 1px; }
+        .sidebar .brand-side h1 span { color: var(--royal-gold); }
+        .sidebar .brand-side p { font-size: 10px; letter-spacing: 3px; color: #a0b4d0; }
+
+        .sidebar .user-area { text-align: center; padding: 20px; background: rgba(255,255,255,0.05); border-radius: var(--radius-lg); margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.1); }
+        .sidebar .user-area img { width: 70px; height: 70px; border-radius: 50%; border: 3px solid var(--royal-gold); object-fit: cover; margin-bottom: 15px; cursor: pointer; }
+        .sidebar .user-area h4 { font-size: 18px; margin-bottom: 5px; }
+        .sidebar .user-area p { font-size: 13px; color: var(--royal-gold); }
+
+        .sidebar nav { flex: 1; }
+        .sidebar nav a { display: flex; align-items: center; gap: 15px; padding: 15px; margin-bottom: 5px; text-decoration: none; color: #c0cee0; font-size: 15px; border-radius: 12px; transition: all 0.3s; }
+        .sidebar nav a i { width: 22px; text-align: center; font-size: 18px; }
+        .sidebar nav a:hover, .sidebar nav a.active { background: rgba(212,175,55,0.15); color: var(--royal-gold); transform: translateX(5px); }
+        .sidebar .logout-btn { background: rgba(211,47,47,0.2); color: #ff6b6b !important; }
+
+        .premium-banner { margin-top: 20px; background: linear-gradient(135deg, var(--royal-gold), #b8860b); border-radius: var(--radius-lg); padding: 20px; text-align: center; color: var(--royal-blue); }
+        .premium-banner img { width: 50px; margin-bottom: 10px; }
+
+        /* ================= MAIN CONTENT ================= */
+        .main-content-wrap { flex: 1; display: flex; flex-direction: column; margin-left: 280px; }
+        .top-header { background: var(--royal-card); padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--royal-border); position: sticky; top: 0; z-index: 50; }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .menu-toggle { display: none; background: var(--royal-bg); border: none; width: 45px; height: 45px; border-radius: 12px; cursor: pointer; color: var(--royal-blue); font-size: 20px; }
+        .search-box { background: var(--royal-bg); border-radius: 30px; padding: 12px 20px; display: flex; align-items: center; gap: 12px; color: var(--royal-blue); width: 350px; border: 1px solid transparent; }
+        .search-box input { border: none; background: transparent; outline: none; color: var(--royal-blue); font-size: 15px; width: 100%; }
+        .search-box:focus-within { border-color: var(--royal-gold); }
+
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .icon-btn { width: 45px; height: 45px; background: var(--royal-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--royal-blue); cursor: pointer; position: relative; border: 1px solid var(--royal-border); }
+        .icon-btn .dot { position: absolute; top: 5px; right: 5px; width: 12px; height: 12px; background: var(--royal-danger); border-radius: 50%; border: 2px solid white; }
+
+        /* ================= DASHBOARD BODY ================= */
+        .dashboard-body { padding: 40px; display: grid; grid-template-columns: 1fr 380px; gap: 40px; opacity: 0; transition: opacity 0.5s ease; }
+        .left-col { min-width: 0; }
+
+        .balance-card { 
+            background: url('https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=1200&auto=format&fit=crop') center/cover; 
+            border-radius: var(--radius-xxl); padding: 40px; color: white; position: relative; overflow: hidden; margin-bottom: 40px; box-shadow: 0 20px 50px rgba(5, 21, 37, 0.3); 
+        }
+        .balance-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(10,37,64,0.95) 0%, rgba(5,21,37,0.7) 100%); }
+        .balance-content { position: relative; z-index: 1; }
+        .balance-content h3 { font-size: 16px; color: #ddd; font-weight: 500; text-transform: uppercase; letter-spacing: 2px; }
+        .balance-amount { font-size: 50px; font-weight: 800; margin: 15px 0 25px; display: flex; align-items: center; gap: 20px; }
+        .eye-toggle { cursor: pointer; font-size: 24px; color: rgba(255,255,255,0.7); transition: 0.3s; }
+        .eye-toggle:hover { color: var(--royal-gold); }
+        .balance-actions { display: flex; gap: 15px; }
+        .btn-gold { background: linear-gradient(135deg, var(--royal-gold), #b8860b); color: white; padding: 15px 30px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 15px; transition: 0.3s; box-shadow: var(--shadow-gold); }
+        .btn-gold:hover { transform: translateY(-3px); }
+        .btn-ghost { background: rgba(255,255,255,0.15); color: white; padding: 15px 30px; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 15px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3); }
+        .btn-ghost:hover { background: rgba(255,255,255,0.3); }
+
+        .balance-meta { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; color: rgba(255,255,255,0.8); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .balance-meta span:last-child { font-weight: 600; letter-spacing: 1px; }
+
+        /* Quick Actions - Glass Cards */
+        .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px; }
+        .quick-btn { background: var(--royal-card); border-radius: var(--radius-lg); padding: 25px 20px; cursor: pointer; transition: all 0.4s; text-align: center; box-shadow: var(--shadow-premium); border: 1px solid var(--royal-border); position: relative; overflow: hidden; text-decoration: none; display: block; }
+        .quick-btn:hover { border-color: var(--royal-gold); transform: translateY(-8px); box-shadow: 0 20px 40px rgba(212,175,55,0.15); }
+        .quick-btn i { font-size: 35px; margin-bottom: 15px; color: var(--royal-blue); }
+        .quick-btn:hover i { color: var(--royal-gold); }
+        .quick-btn p { font-size: 15px; font-weight: 600; color: var(--royal-blue); }
+        .quick-btn::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, var(--royal-gold), transparent); opacity: 0; transition: 0.3s; }
+        .quick-btn:hover::after { opacity: 1; }
+
+        /* Account Overview */
+        .account-overview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+        .stat-card { background: var(--royal-card); border-radius: var(--radius-lg); padding: 25px; border: 1px solid var(--royal-border); box-shadow: var(--shadow-premium); position: relative; overflow: hidden; }
+        .stat-card.blue { background: var(--royal-blue); color: white; border: none; }
+        .stat-card.gold { background: linear-gradient(135deg, var(--royal-gold), #b8860b); color: white; border: none; }
+        .stat-card h4 { font-size: 14px; opacity: 0.8; font-weight: 500; }
+        .stat-card h2 { font-size: 28px; font-weight: 800; margin-top: 10px; }
+        .stat-card img { position: absolute; right: -10px; bottom: -10px; width: 80px; opacity: 0.1; }
+
+        /* Transactions */
+        .transactions-box { background: var(--royal-card); border-radius: var(--radius-xl); border: 1px solid var(--royal-border); padding: 30px; margin-bottom: 40px; box-shadow: var(--shadow-premium); }
+        .transactions-box h4 { margin-bottom: 20px; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .tx-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--royal-border); }
+        .tx-item:last-child { border-bottom: none; }
+        .tx-left { display: flex; align-items: center; gap: 15px; }
+        .tx-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .tx-icon.deposit { background: rgba(0,200,83,0.1); color: var(--royal-success); }
+        .tx-icon.withdraw { background: rgba(211,47,47,0.1); color: var(--royal-danger); }
+        .tx-icon.transfer { background: rgba(10,37,64,0.1); color: var(--royal-blue); }
+
+        /* Charts */
+        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
+        .chart-box { background: var(--royal-card); padding: 25px; border-radius: var(--radius-lg); border: 1px solid var(--royal-border); height: 300px; overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow-premium); }
+        .chart-box h4 { margin-bottom: 15px; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+
+        /* Right Sidebar */
+        .right-col { display: flex; flex-direction: column; gap: 30px; }
+        .savings-card, .quick-transfer, .security-card { background: var(--royal-card); border-radius: var(--radius-xl); padding: 30px; border: 1px solid var(--royal-border); box-shadow: var(--shadow-premium); }
+        .savings-card img { width: 80px; margin: 0 auto 15px; display: block; }
+        .savings-card h2 { font-size: 32px; font-weight: 800; margin-bottom: 10px; text-align: center; }
+        .progress-bar { width: 100%; height: 12px; background: var(--royal-bg); border-radius: 10px; margin-top: 15px; overflow: hidden; }
+        .progress-inner { height: 100%; background: linear-gradient(90deg, var(--royal-gold), var(--royal-gold-light)); border-radius: 10px; }
+
+        .avatars { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
+        .avatars img { width: 60px; height: 60px; border-radius: 50%; border: 3px solid var(--royal-gold); object-fit: cover; cursor: pointer; transition: 0.3s; }
+        .avatars img:hover { transform: scale(1.1); }
+
+        /* Bottom Nav for Mobile */
+        .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: var(--royal-card); border-top: 1px solid var(--royal-border); padding: 10px 0; z-index: 100; justify-content: space-around; align-items: center; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); }
+        .bottom-nav a { color: var(--royal-blue); font-size: 12px; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .bottom-nav a.active { color: var(--royal-gold); }
+        .bottom-nav .nav-center { background: var(--royal-gold); color: white; border-radius: 50%; width: 50px; height: 50px; justify-content: center; margin-top: -20px; box-shadow: var(--shadow-gold); }
+
+        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--royal-blue); color: white; padding: 15px 30px; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); opacity: 0; transition: all 0.3s; z-index: 1000; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) {
+            .main-content-wrap { margin-left: 0; }
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .menu-toggle { display: block; }
+            .close-sidebar { display: flex; }
+            .dashboard-body { grid-template-columns: 1fr; padding: 20px; }
+        }
+        @media (max-width: 768px) {
+            .search-box { display: none; }
+            .bottom-nav { display: flex; }
+            .dashboard-body { padding: 15px; padding-bottom: 90px; }
+            .quick-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .account-overview { grid-template-columns: 1fr; gap: 15px; }
+            .charts-grid { grid-template-columns: 1fr; }
+            .balance-amount { font-size: 35px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<div id="loading-modal" class="show">
+    <div class="loader-wrapper"><div class="loader"></div><i class="fa-solid fa-building-columns"></i></div>
+    <h2>Decrypting Your Vault...</h2>
+    <p>Fetching your ultra-secure data</p>
+</div>
+
+<div id="result-modal">
+    <div class="result-icon-wrapper" id="resultIconWrapper"><i class="fa-solid fa-check" id="resultIcon"></i></div>
+    <h2 id="resultTitle">SUCCESS!</h2>
+    <p id="resultMessage">Data Loaded & Securely Decrypted</p>
+</div>
+
+<aside class="sidebar" id="sidebar">
+    <button class="close-sidebar" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="brand-side">
+        <div class="logo-icon"></div> <!-- Gold Bank Icon -->
+        <h1>CIT <span>FUND</span></h1>
+        <p>PREMIER WEALTH BANKING</p>
+    </div>
+
+    <a href="myprofile.html" style="text-decoration: none; color: inherit;">
+    <div class="user-area">
+        <img id="sidebarPic" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop" alt="Profile">
+        <h4 id="sidebarName">Loading...</h4>
+        <p id="sidebarAccount">CITF...</p>
+    </div>
+    </a>
+
+    <nav>
+        <a href="userdashboard.html" class="active"><i class="fa fa-home"></i> Dashboard</a>
+        <a href="accountnumberupdate.html.html"><i class="fa fa-arrow-right-arrow-left"></i> Accounts</a>
+        <a href="usertransfer.html"><i class="fa fa-arrow-down"></i> Transfers</a>
+        <a href="userdeposit.html"><i class="fa fa-money-bill-1-wave"></i> Deposit Funds</a>
+        <a href="userwithdrawal.html"><i class="fa fa-hand-holding-dollar"></i> Withdraw Funds</a>
+        <a href="loanapplication.html"><i class="fa fa-file-invoice-dollar"></i> Loans</a>
+        <a href="investmentplans.html"><i class="fa fa-chart-line"></i> Investments</a>
+        <a href="card.html"><i class="fa fa-credit-card"></i> Cards</a>
+        <a href="usernotification.html"><i class="fa fa-bell"></i> Notifications</a>
+        <a href="profileedit.html"><i class="fa fa-gear"></i> Settings</a>
+    </nav>
+
+    <!-- Premium Sidebar Banner -->
+    <div class="premium-banner">
+        <img src="https://cdn-icons-png.flaticon.com/512/3063/3063822.png" alt="Diamond">
+        <h4>Unlock Premier Benefits</h4>
+        <p style="font-size: 12px; margin-top: 5px;">Upgrade to Gold today!</p>
+    </div>
+
+    <nav style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+        <a href="userlogin.html" onclick="logout()" class="logout-btn"><i class="fa fa-right-from-bracket"></i> Logout</a>
+    </nav>
+</aside>
+
+<div class="main-content-wrap">
+    <header class="top-header">
+        <div class="header-left">
+            <button class="menu-toggle" onclick="toggleSidebar()"><i class="fa fa-bars"></i></button>
+            <h2 style="font-size: 22px; font-weight: 800;">Dashboard</h2>
+        </div>
+        <div class="header-right">
+            <div class="search-box">
+                <i class="fa fa-search"></i>
+                <input type="text" placeholder="Search accounts, transactions...">
+            </div>
+            <a href="usernotification.html" class="icon-btn">
+                <i class="fa-regular fa-bell"></i>
+                <span class="dot"></span>
+            </a>
+            <a href="myprofile.html">
+                <img id="profilePic" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&auto=format&fit=crop" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--royal-gold); object-fit: cover; cursor: pointer;">
+            </a>
+        </div>
+    </header>
+
+    <main class="dashboard-body" id="dashBody">
+        <div class="left-col">
+            <!-- Premium Balance Card -->
+            <div class="balance-card">
+                <div class="balance-content">
+                    <div class="balance-meta">
+                        <span id="accountType">Savings Account</span>
+                        <span id="accountNumber">**** 1234</span>
+                    </div>
+
+                    <h3>Total Vault Balance</h3>
+                    <div class="balance-amount">
+                        <span class="currency">GHS</span> <span id="balance">0.00</span>
+                        <i class="fa-solid fa-eye eye-toggle" id="eyeIcon" onclick="toggleBalance()"></i>
+                    </div>
+                    
+                    <div class="balance-actions">
+                        <a href="userdeposit.html" class="btn-gold"><i class="fa fa-plus"></i> Deposit</a>
+                        <a href="userwithdrawal.html" class="btn-ghost"><i class="fa fa-arrow-down"></i> Withdraw</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions - ALL LINKS CONNECTED -->
+            <div class="quick-grid">
+                <a href="userdeposit.html" class="quick-btn"><i class="fa fa-plus"></i><p>Deposit</p></a>
+                <a href="userwithdrawal.html" class="quick-btn"><i class="fa fa-money-bill-wave"></i><p>Withdraw</p></a>
+                <a href="usertransfer.html" class="quick-btn"><i class="fa fa-arrow-right-arrow-left"></i><p>Transfer</p></a>
+                <a href="usermomopay.html" class="quick-btn"><i class="fa fa-mobile-screen"></i><p>Momopay</p></a>
+                <a href="loanapplication.html" class="quick-btn"><i class="fa fa-file-invoice-dollar"></i><p>Apply Loan</p></a>
+                <a href="investmentplans.html" class="quick-btn"><i class="fa fa-chart-line"></i><p>Investments</p></a>
+                <a href="card.html" class="quick-btn"><i class="fa fa-credit-card"></i><p>Cards</p></a>
+                <a href="usernotification.html" class="quick-btn"><i class="fa fa-bell"></i><p>Notifications</p></a>
+            </div>
+
+            <!-- Account Overview -->
+            <div class="account-overview">
+                <div class="stat-card blue">
+                    <h4>Available Balance</h4>
+                    <h2>GHS <span id="overviewBalance">0.00</span></h2>
+                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png" alt="Money">
+                </div>
+                <div class="stat-card gold">
+                    <h4>Total Deposits</h4>
+                    <h2>GHS <span id="overviewDeposits">0.00</span></h2>
+                    <img src="https://cdn-icons-png.flaticon.com/512/2921/2921822.png" alt="Deposit">
+                </div>
+                <div class="stat-card blue">
+                    <h4>Total Withdrawals</h4>
+                    <h2>GHS <span id="overviewWithdrawals">0.00</span></h2>
+                    <img src="https://cdn-icons-png.flaticon.com/512/3095/3095202.png" alt="Withdraw">
+                </div>
+            </div>
+
+            <!-- Premium Transactions -->
+            <div class="transactions-box">
+                <h4><i class="fa fa-clock-rotate-left" style="color: var(--royal-gold);"></i> Recent Transactions</h4>
+                <div id="txList"></div>
+            </div>
+
+            <!-- Premium Charts -->
+            <div class="charts-grid">
+                <div class="chart-box">
+                    <h4>Portfolio Growth</h4>
+                    <canvas id="lineChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h4>Fund Allocation</h4>
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Premium Right Sidebar -->
+        <div class="right-col">
+            <div class="savings-card">
+                <img src="https://cdn-icons-png.flaticon.com/512/2838/2838898.png" alt="Savings Goal">
+                <h4 style="text-align: center; margin-bottom: 10px;">Savings Goal</h4>
+                <h2>GHS 15,400.00</h2>
+                <p style="font-size: 12px; color: var(--royal-blue); text-align: center;">Target: GHS 20,000.00</p>
+                <div class="progress-bar"><div class="progress-inner"></div></div>
+                <p style="font-size: 12px; color: var(--royal-gold); margin-top: 10px; font-weight: 700; text-align: center;">77% Achieved</p>
+                <a href="investmentplans.html" style="display: block; text-align: center; margin-top: 15px; background: var(--royal-blue); color: white; padding: 10px; border-radius: 8px; text-decoration: none; font-size: 13px;">View Plan Details</a>
+            </div>
+
+            <div class="quick-transfer">
+                <h4>Quick Transfer</h4>
+                <p style="font-size: 13px; color: var(--royal-blue);">Your frequent contacts</p>
+                <div class="avatars">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format&fit=crop" onclick="window.location.href='usertransfer.html'">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100&auto=format&fit=crop" onclick="window.location.href='usertransfer.html'">
+                    <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=100&auto=format&fit=crop" onclick="window.location.href='usertransfer.html'">
+                </div>
+            </div>
+
+            <div class="security-card">
+                <h4><i class="fa fa-shield-halved" style="color: var(--royal-gold);"></i> Security Center</h4>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;">
+                    <p style="font-size: 14px;">Two-Factor Auth</p>
+                    <i class="fa fa-check-circle" style="color: var(--royal-success); font-size: 22px;"></i>
+                </div>
+                <p style="font-size: 12px; color: var(--royal-blue); margin-top: 15px;">Last login: Today, 09:45 AM</p>
+                <a href="profileedit.html" style="display: block; text-align: center; margin-top: 15px; background: var(--royal-blue); color: white; padding: 10px; border-radius: 8px; text-decoration: none; font-size: 13px;">Manage Security</a>
+            </div>
+        </div>
+    </main>
+</div>
+
+<nav class="bottom-nav">
+    <a href="userdashboard.html" class="active"><i class="fa fa-house"></i> Home</a>
+    <a href="usertransfer.html"><i class="fa fa-arrow-right-arrow-left"></i> Transfer</a>
+    <a href="card.html"><i class="fa fa-credit-card"></i> Cards</a>
+    <a href="myprofile.html"><i class="fa fa-user"></i> Profile</a>
+</nav>
+
+<div class="toast" id="toast">
+    <span class="toast-icon"><i class="fa fa-check-circle"></i></span>
+    <span id="toastMsg">Done</span>
+</div>
+
+<!-- ============ NEW SCRIPT: Uses Server, Not Firebase ============ -->
+<script>
+    // ########## NO FIREBASE SDK – ALL DATA COMES FROM SERVER ##########
+
+    const loadingModal = document.getElementById('loading-modal');
+    const resultModal = document.getElementById('result-modal');
+    const dashBody = document.getElementById('dashBody');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const defaultPic = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop';
+
+    let lineChartInstance = null;
+    let pieChartInstance = null;
+    let rawBalance = 0;
+    let totalDeposits = 0;
+    let totalWithdrawals = 0;
+
+    window.showToast = function(msg) { const t = document.getElementById("toast"); document.getElementById("toastMsg").textContent = msg; t.classList.add("show"); clearTimeout(t._hide); t._hide = setTimeout(() => t.classList.remove("show"), 2200); };
+    window.toggleSidebar = function() { const sidebar = document.getElementById("sidebar"); sidebar.classList.toggle("open"); sidebarOverlay.classList.toggle("open"); };
+    window.logout = function() { localStorage.removeItem('cit_session'); showToast('Logged out successfully'); setTimeout(() => { window.location = 'userlogin.html'; }, 500); };
+
+    window.toggleBalance = function() {
+        const balanceEl = document.getElementById('balance');
+        const overviewEl = document.getElementById('overviewBalance');
+        const eyeEl = document.getElementById('eyeIcon');
+        if (balanceEl.dataset.hidden === 'true') {
+            balanceEl.innerText = rawBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            overviewEl.innerText = rawBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            eyeEl.className = 'fa-solid fa-eye eye-toggle';
+            balanceEl.dataset.hidden = 'false';
+        } else {
+            balanceEl.innerText = '****';
+            overviewEl.innerText = '****';
+            eyeEl.className = 'fa-solid fa-eye-slash eye-toggle';
+            balanceEl.dataset.hidden = 'true';
+        }
+    };
+
+    function showSuccess() {
+        loadingModal.classList.remove('show');
+        const wrapper = document.getElementById('resultIconWrapper');
+        const title = document.getElementById('resultTitle');
+        const message = document.getElementById('resultMessage');
+        wrapper.classList.remove('error');
+        document.getElementById('resultIcon').className = 'fa-solid fa-check';
+        title.innerText = "SUCCESS!"; title.style.color = "var(--royal-success)";
+        message.innerText = "Data Loaded & Securely Decrypted";
+        resultModal.classList.add('show');
+        setTimeout(() => {
+            resultModal.classList.add('hide');
+            dashBody.style.opacity = '1';
+            setTimeout(() => { resultModal.style.display = 'none'; resultModal.classList.remove('hide'); }, 500);
+        }, 2000);
+    }
+
+    function showError(errorMsg) {
+        loadingModal.classList.remove('show');
+        const wrapper = document.getElementById('resultIconWrapper');
+        const title = document.getElementById('resultTitle');
+        const message = document.getElementById('resultMessage');
+        wrapper.classList.add('error');
+        document.getElementById('resultIcon').className = 'fa-solid fa-triangle-exclamation';
+        title.innerText = "ERROR!"; title.style.color = "var(--royal-danger)";
+        message.innerText = errorMsg || "Failed to load user data";
+        resultModal.classList.add('show');
+        setTimeout(() => {
+            resultModal.classList.add('hide');
+            dashBody.style.opacity = '1';
+            setTimeout(() => { resultModal.style.display = 'none'; resultModal.classList.remove('hide'); }, 3000);
+        }, 3000);
+    }
+
+    // Load dashboard data via server (calls '/api/dashboard' with uid)
+    async function fetchDashboardData() {
+        const session = JSON.parse(localStorage.getItem('cit_session') || 'null');
+        if (!session || !session.uid) {
+            showError("You are not logged in. Please login.");
+            setTimeout(() => { window.location = 'userlogin.html'; }, 3000);
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/dashboard', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ uid: session.uid })
+            });
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error || 'Failed to fetch data');
+            renderDashboard(data.user);
+        } catch (e) {
+            console.error(e);
+            showError(e.message);
+        }
+    }
+
+    function renderDashboard(userData) {
+        // Set profile
+        const picUrl = userData.photo || defaultPic;
+        document.getElementById('sidebarPic').src = picUrl;
+        document.getElementById('profilePic').src = picUrl;
+        document.getElementById("sidebarName").textContent = userData.fullName || "Customer";
+        document.getElementById("sidebarAccount").textContent = userData.memberID || "CITF...";
+
+        const accType = userData.accType || "Savings";
+        const accNum = userData.accountNumber || "**** 5678";
+        const accNumShort = accNum ? accNum.slice(-4) : "5678";
+        document.getElementById("accountType").innerText = accType;
+        document.getElementById("accountNumber").innerText = "Account: " + accNumShort;
+
+        // Calculate balance
+        let bal = parseFloat(userData.balance) || 0;
+        totalDeposits = bal;
+        totalWithdrawals = 0;
+        if (userData.transactions) {
+            Object.values(userData.transactions).forEach(t => {
+                if (t.type === "deposit") { bal += Number(t.amount); totalDeposits += Number(t.amount); }
+                else if (t.type === "transfer") { bal -= Number(t.amount); totalWithdrawals += Number(t.amount); }
+            });
+        }
+        rawBalance = bal;
+        const fmt = new Intl.NumberFormat('en-GH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById("balance").innerText = fmt.format(rawBalance);
+        document.getElementById("overviewBalance").innerText = fmt.format(rawBalance);
+        document.getElementById("overviewDeposits").innerText = fmt.format(totalDeposits);
+        document.getElementById("overviewWithdrawals").innerText = fmt.format(totalWithdrawals);
+
+        // Transactions
+        const txListEl = document.getElementById("txList");
+        let txHtml = `<div class="empty-state" style="text-align:center; color:#888; padding:20px;">No recent transactions</div>`;
+        if (userData.transactions) {
+            const txns = Object.values(userData.transactions).reverse().slice(0, 5);
+            if (txns.length > 0) {
+                txHtml = "";
+                txns.forEach(t => {
+                    const isDeposit = t.type === "deposit";
+                    const iconClass = isDeposit ? "deposit" : "withdraw";
+                    const icon = isDeposit ? "fa-arrow-down" : "fa-arrow-up";
+                    const prefix = isDeposit ? "+" : "-";
+                    txHtml += `
+                        <div class="tx-item">
+                            <div class="tx-left">
+                                <div class="tx-icon ${iconClass}"><i class="fa ${icon}"></i></div>
+                                <div>
+                                    <div class="tx-name" style="font-weight:600;">${isDeposit ? 'Deposit' : 'Withdrawal/Transfer'}</div>
+                                    <div class="tx-date" style="font-size:12px; color:#888;">${t.date || 'Just now'}</div>
+                                </div>
+                            </div>
+                            <div class="tx-amount" style="font-weight:700; color:${isDeposit ? 'var(--royal-success)' : 'var(--royal-danger)'};">${prefix} GHS ${fmt.format(Number(t.amount))}</div>
+                        </div>
+                    `;
+                });
+            }
+        }
+        document.getElementById("txList").innerHTML = txHtml;
+
+        // Charts
+        renderCharts(rawBalance);
+        showSuccess();
+    }
+
+    function renderCharts(deposit) {
+        const ctx1 = document.getElementById("lineChart");
+        const ctx2 = document.getElementById("pieChart");
+        if (lineChartInstance) lineChartInstance.destroy();
+        if (pieChartInstance) pieChartInstance.destroy();
+        lineChartInstance = new Chart(ctx1, {
+            type: 'line',
+            data: { labels: ["Day 1", "Day 2", "Day 3", "Day 4", "Today"], datasets: [{ label: 'Balance', data: [0, 0, 0, 0, deposit], borderColor: '#d4af37', backgroundColor: 'rgba(212,175,55,0.1)', tension: 0.4, fill: true }] },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+        pieChartInstance = new Chart(ctx2, {
+            type: 'doughnut',
+            data: { labels: ['Available Balance'], datasets: [{ data: [deposit], backgroundColor: ['#0a2540', '#d4af37'], borderWidth: 0 }] },
+            options: { responsive: true, maintainAspectRatio: false, cutout: '70%' }
+        });
+    }
+
+    // Start fetching data when page loads
+    document.addEventListener('DOMContentLoaded', fetchDashboardData);
+</script>
+</body>
+</html>

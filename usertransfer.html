@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CITFUND ENTERPRISE | Transfer</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    :root {
+        /* ===== CITFUND ENTERPRISE BRAND ===== */
+        --green: #0B7A2E;
+        --green-dark: #075C22;
+        --green-light: #14A344;
+        --gold: #FFC72C;
+        --gold-soft: #FFD75E;
+        --red: #E30613;
+
+        --bg: #f4f9f6;
+        --card: #ffffff;
+        --text: #1a2b4c;
+        --muted: #6b7a8f;
+        --border: #e6f0e9;
+        --success: #00a86b;
+        --danger: #e74c3c;
+        --warning: #ff9800;
+
+        --primary: var(--green);
+        --primary-dark: var(--green-dark);
+        --accent: var(--green);
+        --accent-light: var(--green-light);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+    .app-container { max-width: 480px; margin: 0 auto; background: var(--bg); min-height: 100vh; position: relative; padding-bottom: 100px; }
+
+    /* ===== TOP HEADER ===== */
+    .top-header {
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        padding: 22px 20px 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 0 0 30px 30px;
+        position: relative;
+        z-index: 1;
+        gap: 10px;
+        overflow: hidden;
+    }
+    .top-header::before {
+        content: '';
+        position: absolute;
+        top: -80px; right: -60px;
+        width: 220px; height: 220px;
+        background: radial-gradient(circle, rgba(255,199,44,0.28), transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .top-header::after {
+        content: '';
+        position: absolute;
+        bottom: -100px; left: -80px;
+        width: 200px; height: 200px;
+        background: radial-gradient(circle, rgba(227,6,19,0.12), transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .top-header .header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+        flex: 1;
+        position: relative;
+        z-index: 2;
+    }
+    .top-header .back-btn {
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.15);
+        color: white;
+        display: flex; align-items: center; justify-content: center;
+        text-decoration: none;
+        font-size: 15px;
+        flex-shrink: 0;
+        transition: 0.2s;
+        cursor: pointer;
+        border: none;
+    }
+    .top-header .back-btn:hover { background: rgba(255,255,255,0.28); }
+    .top-header .profile-section {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+        flex: 1;
+    }
+    .top-header .avatar-wrapper { position: relative; flex-shrink: 0; }
+    .top-header .avatar-wrapper img {
+        width: 46px; height: 46px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2.5px solid var(--gold);
+        background: rgba(255,255,255,0.1);
+    }
+    .top-header .avatar-wrapper .verified-badge {
+        position: absolute;
+        bottom: -1px; right: -1px;
+        background: var(--gold);
+        color: var(--green-dark);
+        width: 18px; height: 18px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 8px;
+        border: 2px solid var(--green-dark);
+    }
+    .top-header .greeting { min-width: 0; flex: 1; }
+    .top-header .greeting h4 {
+        font-size: 11.5px;
+        color: rgba(255,255,255,0.75);
+        font-weight: 400;
+        margin-bottom: 2px;
+        letter-spacing: 0.2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .top-header .greeting h2 {
+        font-size: 15.5px;
+        font-weight: 700;
+        color: white;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.2;
+    }
+    .top-header .greeting .acc-num {
+        font-size: 10.5px;
+        color: rgba(255,255,255,0.6);
+        font-weight: 500;
+        letter-spacing: 0.4px;
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .top-header .notification-btn {
+        position: relative;
+        background: rgba(255,255,255,0.15);
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        width: 42px; height: 42px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        text-decoration: none;
+        flex-shrink: 0;
+        z-index: 2;
+        transition: 0.2s;
+    }
+    .top-header .notification-btn:hover { background: rgba(255,255,255,0.25); }
+
+    .shimmer {
+        background: linear-gradient(90deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.28) 50%, rgba(255,255,255,0.12) 100%);
+        background-size: 200% 100%;
+        border-radius: 6px;
+        display: inline-block;
+        animation: shimmer 1.4s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    /* ===== BALANCE CARD ===== */
+    .balance-card {
+        background: var(--card);
+        border-radius: 24px;
+        padding: 22px 22px 20px;
+        margin: -45px 20px 18px;
+        box-shadow: 0 20px 45px rgba(11,122,46,0.08);
+        position: relative;
+        z-index: 2;
+        border: 1px solid rgba(11,122,46,0.06);
+    }
+    .balance-card .label {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 700;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .balance-card .label::before {
+        content: '';
+        width: 8px; height: 8px;
+        background: var(--gold);
+        border-radius: 50%;
+        box-shadow: 0 0 0 3px rgba(255,199,44,0.25);
+    }
+    .balance-card h1 {
+        font-size: 30px;
+        font-weight: 900;
+        color: var(--green);
+        letter-spacing: -0.5px;
+        margin-bottom: 16px;
+    }
+    .balance-card .mini-stats {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+        padding-top: 16px; border-top: 1px dashed var(--border);
+    }
+    .mini-stat .s-label {
+        font-size: 10.5px;
+        color: var(--muted);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 3px;
+    }
+    .mini-stat .s-value { font-size: 15px; font-weight: 800; color: var(--green); }
+
+    /* ===== STEP INDICATOR ===== */
+    .steps {
+        display: flex; align-items: center; justify-content: center;
+        gap: 8px; padding: 0 20px 18px;
+    }
+    .step-dot {
+        width: 30px; height: 30px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 12px; font-weight: 800;
+        background: var(--border); color: var(--muted);
+        transition: 0.3s;
+    }
+    .step-dot.active {
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white;
+        box-shadow: 0 4px 12px rgba(11,122,46,0.35);
+    }
+    .step-dot.done { background: var(--gold); color: var(--green-dark); }
+    .step-line {
+        flex: 1; height: 2px; background: var(--border); max-width: 40px;
+        transition: 0.3s; border-radius: 2px;
+    }
+    .step-line.done { background: var(--gold); }
+
+    /* ===== CARD / FORM ===== */
+    .form-card {
+        background: var(--card); border-radius: 20px;
+        padding: 20px; margin: 0 20px 16px;
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 15px rgba(11,122,46,0.03);
+    }
+    .form-card .card-title {
+        font-size: 14px; font-weight: 800; color: var(--green);
+        margin-bottom: 16px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .form-card .card-title::before {
+        content: '';
+        width: 4px; height: 16px;
+        background: var(--gold);
+        border-radius: 2px;
+    }
+
+    .field-group { margin-bottom: 16px; }
+    .field-group:last-child { margin-bottom: 0; }
+    .field-group label {
+        display: block; font-size: 11px; font-weight: 800;
+        color: var(--green-dark); margin-bottom: 8px;
+        text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .field-group input, .field-group select {
+        width: 100%; padding: 15px 16px; border-radius: 14px;
+        border: 1.5px solid var(--border);
+        font-family: inherit; font-size: 16px; font-weight: 600;
+        color: var(--green-dark); background: var(--bg);
+        transition: 0.2s; outline: none;
+    }
+    .field-group input:focus, .field-group select:focus {
+        border-color: var(--green); background: white;
+        box-shadow: 0 0 0 4px rgba(11,122,46,0.1);
+    }
+    .field-group .hint { font-size: 11px; color: var(--muted); margin-top: 6px; font-weight: 500; }
+
+    .input-wrap { position: relative; display: flex; align-items: center; background: var(--bg); border: 1.5px solid var(--border); border-radius: 14px; transition: 0.2s; }
+    .input-wrap:focus-within { border-color: var(--green); background: white; box-shadow: 0 0 0 4px rgba(11,122,46,0.1); }
+    .input-wrap > i { color: var(--green); font-size: 16px; margin-left: 16px; flex-shrink: 0; }
+    .input-wrap input, .input-wrap select {
+        border: none; background: transparent; padding: 15px 16px; flex: 1;
+        font-size: 16px; font-weight: 600; color: var(--green-dark);
+        outline: none; font-family: inherit;
+        -webkit-appearance: none; appearance: none;
+    }
+    .input-wrap input::placeholder { color: #b8c4d1; font-weight: 500; }
+    .input-wrap select { cursor: pointer; }
+
+    .amount-input-wrap { position: relative; display: flex; align-items: center; background: var(--bg); border: 1.5px solid var(--border); border-radius: 14px; transition: 0.2s; }
+    .amount-input-wrap:focus-within { border-color: var(--green); background: white; box-shadow: 0 0 0 4px rgba(11,122,46,0.1); }
+    .amount-input-wrap .prefix {
+        position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+        font-size: 16px; font-weight: 900; color: var(--green);
+        pointer-events: none;
+    }
+    .amount-input-wrap input {
+        width: 100%; padding: 15px 16px 15px 58px; border: none; background: transparent;
+        font-family: inherit; font-size: 18px; font-weight: 700;
+        color: var(--green-dark); outline: none;
+    }
+    .amount-input-wrap input::placeholder { color: #b8c4d1; font-weight: 500; }
+
+    .quick-amounts { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .quick-amounts button {
+        flex: 1; min-width: 60px; padding: 10px;
+        background: var(--bg); border: 1.5px solid var(--border);
+        border-radius: 10px; font-family: inherit; font-size: 12px;
+        font-weight: 700; color: var(--green-dark); cursor: pointer; transition: 0.2s;
+    }
+    .quick-amounts button:hover, .quick-amounts button.active {
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white; border-color: var(--green);
+        box-shadow: 0 4px 12px rgba(11,122,46,0.25);
+    }
+
+    /* ===== RECEIVER CONFIRMATION BOX ===== */
+    .receiver-name-box {
+        background: linear-gradient(135deg, #e6fff0 0%, #d3f5df 100%);
+        border: 1.5px solid rgba(0,168,107,0.25);
+        border-left: 5px solid var(--success);
+        padding: 14px 16px;
+        border-radius: 14px;
+        margin-top: -8px;
+        margin-bottom: 16px;
+        display: none;
+        align-items: center;
+        gap: 12px;
+    }
+    .receiver-name-box.show { display: flex; animation: slideIn 0.3s ease; }
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(-8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .receiver-name-box .rn-icon {
+        width: 38px; height: 38px;
+        background: var(--success);
+        color: white;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 15px;
+        flex-shrink: 0;
+    }
+    .receiver-name-box .rn-text { flex: 1; min-width: 0; }
+    .receiver-name-box .rn-label {
+        font-size: 10px;
+        color: #006b3c;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-bottom: 2px;
+    }
+    .receiver-name-box .rn-name {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--green-dark);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .receiver-name-box.error {
+        background: linear-gradient(135deg, #ffe6e6 0%, #ffd3d3 100%);
+        border-color: rgba(231,76,60,0.25);
+        border-left-color: var(--danger);
+    }
+    .receiver-name-box.error .rn-icon { background: var(--danger); }
+    .receiver-name-box.error .rn-label { color: #a30000; }
+    .receiver-name-box.error .rn-name { color: #a30000; }
+    .receiver-name-box.loading .rn-icon {
+        background: var(--warning);
+        animation: pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+    /* ===== TRANSFER TYPE TOGGLE ===== */
+    .method-toggle {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+        background: var(--bg); padding: 6px;
+        border-radius: 16px; border: 1px solid var(--border);
+        margin-bottom: 0;
+    }
+    .method-toggle button {
+        display: flex; flex-direction: column; align-items: center; gap: 6px;
+        padding: 14px 8px; border: none; background: transparent;
+        border-radius: 12px; cursor: pointer;
+        font-family: inherit; font-size: 12px; font-weight: 800;
+        color: var(--muted); transition: 0.25s;
+        position: relative;
+    }
+    .method-toggle button i { font-size: 20px; }
+    .method-toggle button .fee-tag {
+        font-size: 9.5px;
+        font-weight: 800;
+        padding: 2px 8px;
+        border-radius: 20px;
+        background: rgba(255,199,44,0.25);
+        color: var(--gold);
+        margin-top: 2px;
+        letter-spacing: 0.3px;
+    }
+    .method-toggle button.active {
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white;
+        box-shadow: 0 6px 15px rgba(11,122,46,0.3);
+    }
+    .method-toggle button.active .fee-tag {
+        background: var(--gold);
+        color: var(--green-dark);
+    }
+
+    /* ===== INFO BOX ===== */
+    .info-box {
+        background: linear-gradient(135deg, #fff8e1 0%, #ffeeba 100%);
+        border: 1px solid #ffe082;
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 16px;
+        display: flex; align-items: flex-start; gap: 12px;
+        font-size: 12.5px;
+        color: #8a6d1a;
+        font-weight: 600;
+        line-height: 1.5;
+    }
+    .info-box > i {
+        width: 32px; height: 32px;
+        background: var(--gold);
+        color: var(--green-dark);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+    .info-box strong { color: var(--green-dark); }
+
+    /* ===== BANK PREVIEW ===== */
+    .bank-preview {
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        border-radius: 18px; padding: 18px; margin-bottom: 16px;
+        color: white; position: relative; overflow: hidden;
+    }
+    .bank-preview::before {
+        content: ''; position: absolute; right: -40px; top: -40px;
+        width: 140px; height: 140px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(255,199,44,0.35), transparent 70%);
+        pointer-events: none;
+    }
+    .bank-preview .bp-label {
+        font-size: 10px; opacity: 0.8; text-transform: uppercase;
+        letter-spacing: 1.2px; margin-bottom: 6px; font-weight: 800;
+        position: relative;
+        z-index: 1;
+    }
+    .bank-preview .bp-amount {
+        font-size: 28px;
+        font-weight: 900;
+        letter-spacing: -0.5px;
+        margin: 4px 0 12px;
+        position: relative; z-index: 1;
+        color: var(--gold);
+    }
+    .bank-preview .bp-row {
+        display: flex; justify-content: space-between;
+        font-size: 12px; opacity: 0.9; position: relative; z-index: 1;
+        gap: 10px;
+    }
+    .bank-preview .bp-row span:last-child {
+        font-weight: 700;
+        text-align: right;
+        word-break: break-all;
+    }
+
+    /* ===== SUMMARY BOX ===== */
+    .summary-box {
+        background: linear-gradient(135deg, #f4f9f6 0%, #eaf6ee 100%);
+        border-radius: 16px;
+        padding: 16px; margin-bottom: 16px;
+        border: 1px solid rgba(11,122,46,0.1);
+    }
+    .summary-box .row {
+        display: flex; justify-content: space-between;
+        padding: 9px 0; font-size: 13px;
+        border-bottom: 1px dashed rgba(11,122,46,0.15);
+    }
+    .summary-box .row:last-child {
+        border-bottom: none; padding-top: 12px;
+        border-top: 2px solid var(--gold); margin-top: 6px;
+    }
+    .summary-box .row span { color: var(--muted); font-weight: 600; }
+    .summary-box .row strong { color: var(--green-dark); font-weight: 800; word-break: break-all; text-align: right; }
+    .summary-box .row.total strong { color: var(--green); font-size: 17px; }
+    .summary-box .row.fee strong { color: var(--success); }
+
+    /* ===== BUTTONS ===== */
+    .btn-primary {
+        width: 100%; padding: 16px; border-radius: 14px; border: none;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white; font-family: inherit; font-size: 15px; font-weight: 800;
+        cursor: pointer; transition: 0.25s;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.3);
+        letter-spacing: 0.3px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 8px;
+    }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(11,122,46,0.4); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .btn-secondary {
+        width: 100%; padding: 14px; border-radius: 14px;
+        border: 1.5px solid var(--border); background: white;
+        color: var(--green-dark); font-family: inherit; font-size: 14px;
+        font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--green); background: #f4f9f6; }
+
+    /* ===== ERROR BANNER ===== */
+    .error-banner {
+        background: #ffe6e6; border: 1px solid rgba(231,76,60,0.25);
+        color: var(--danger); padding: 12px 14px; border-radius: 12px;
+        font-size: 12.5px; font-weight: 700; margin: 0 20px 14px;
+        display: none; align-items: center; gap: 10px;
+    }
+    .error-banner.show { display: flex; }
+
+    /* ===== PROCESSING VIEW ===== */
+    .processing-view {
+        text-align: center; padding: 32px 22px;
+        background: var(--card); border-radius: 20px;
+        margin: 0 20px 16px;
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 15px rgba(11,122,46,0.03);
+    }
+    .pulse-ring {
+        width: 96px; height: 96px; margin: 0 auto 22px;
+        position: relative;
+    }
+    .pulse-ring::before, .pulse-ring::after {
+        content: ''; position: absolute; inset: 0;
+        border-radius: 50%; border: 3px solid var(--green);
+        animation: pulse-ring 2s ease-out infinite;
+    }
+    .pulse-ring::after { animation-delay: 1s; }
+    .pulse-ring .center {
+        position: absolute; inset: 15px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 26px;
+        box-shadow: 0 8px 25px rgba(11,122,46,0.4);
+    }
+    @keyframes pulse-ring {
+        0% { transform: scale(0.85); opacity: 0.7; }
+        100% { transform: scale(1.5); opacity: 0; }
+    }
+    .processing-view h3 {
+        font-size: 19px; color: var(--green);
+        font-weight: 800; margin-bottom: 8px;
+    }
+    .processing-view p {
+        font-size: 13px; color: var(--muted);
+        line-height: 1.7; margin-bottom: 20px;
+    }
+    .processing-view p strong { color: var(--green-dark); }
+
+    .processing-steps {
+        text-align: left; background: var(--bg);
+        border-radius: 14px; padding: 14px 16px;
+        border: 1px solid var(--border); margin-bottom: 18px;
+    }
+    .processing-steps .ps-item {
+        display: flex; align-items: center; gap: 10px;
+        padding: 7px 0; font-size: 12.5px;
+        color: var(--muted); font-weight: 600;
+    }
+    .processing-steps .ps-item i {
+        width: 20px; height: 20px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 9px; flex-shrink: 0;
+    }
+    .processing-steps .ps-item.done { color: var(--green-dark); }
+    .processing-steps .ps-item.done i { background: var(--success); color: white; }
+    .processing-steps .ps-item.active { color: var(--green); font-weight: 700; }
+    .processing-steps .ps-item.active i { background: var(--green); color: white; }
+    .processing-steps .ps-item.pending i { background: var(--border); color: var(--muted); }
+
+    /* ===== RESULT VIEW ===== */
+    .result-view {
+        text-align: center; padding: 32px 22px;
+        background: var(--card); border-radius: 20px;
+        margin: 0 20px 16px; border: 1px solid var(--border);
+        box-shadow: 0 4px 15px rgba(11,122,46,0.03);
+    }
+    .result-icon {
+        width: 88px; height: 88px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 44px; margin: 0 auto 18px;
+        animation: pop 0.5s ease;
+        position: relative;
+    }
+    .result-icon.success {
+        background: linear-gradient(135deg, rgba(11,122,46,0.15), rgba(20,163,68,0.2));
+        color: var(--green);
+        box-shadow: 0 0 0 12px rgba(11,122,46,0.05);
+    }
+    .result-icon.failed {
+        background: linear-gradient(135deg, rgba(231,76,60,0.15), rgba(255,71,87,0.2));
+        color: var(--danger);
+        box-shadow: 0 0 0 12px rgba(231,76,60,0.05);
+    }
+    @keyframes pop {
+        0% { transform: scale(0); }
+        80% { transform: scale(1.15); }
+        100% { transform: scale(1); }
+    }
+    .result-view h3 {
+        font-size: 21px; font-weight: 800;
+        color: var(--green); margin-bottom: 8px;
+    }
+    .result-view .sub {
+        font-size: 13px; color: var(--muted);
+        margin-bottom: 20px; line-height: 1.7;
+    }
+    .receipt {
+        text-align: left;
+        background: linear-gradient(135deg, #f4f9f6 0%, #eaf6ee 100%);
+        border-radius: 14px; padding: 16px;
+        margin-bottom: 18px;
+        border: 1px solid rgba(11,122,46,0.1);
+    }
+    .receipt .r-row {
+        display: flex; justify-content: space-between;
+        padding: 9px 0; font-size: 12.5px;
+        border-bottom: 1px dashed rgba(11,122,46,0.15); gap: 10px;
+    }
+    .receipt .r-row:last-child { border-bottom: none; }
+    .receipt .r-row span { color: var(--muted); font-weight: 700; flex-shrink: 0; text-transform: uppercase; letter-spacing: 0.3px; font-size: 11px; }
+    .receipt .r-row strong {
+        color: var(--green-dark); font-weight: 800;
+        text-align: right; word-break: break-all;
+    }
+
+    /* ===== RECENT TRANSFERS ===== */
+    .section-header {
+        display: flex; justify-content: space-between;
+        align-items: center; padding: 0 20px;
+        margin-bottom: 12px; margin-top: 8px;
+    }
+    .section-header h3 {
+        font-size: 15px; font-weight: 800; color: var(--green);
+        letter-spacing: 0.2px;
+    }
+    .section-header span {
+        font-size: 11px;
+        color: var(--green);
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .tx-list { padding: 0 20px; }
+    .tx-item {
+        background: var(--card); border-radius: 16px;
+        padding: 14px 15px; display: flex; align-items: center;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 15px rgba(11,122,46,0.03);
+        border: 1px solid var(--border);
+        transition: 0.2s;
+    }
+    .tx-item:hover { border-color: var(--green); transform: translateX(3px); }
+    .tx-item .icon {
+        width: 42px; height: 42px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 16px; margin-right: 12px; flex-shrink: 0;
+        background: #ffe6e6; color: var(--danger);
+    }
+    .tx-item .icon.received { background: #e6fff0; color: var(--success); }
+    .tx-item .details { flex: 1; min-width: 0; }
+    .tx-item .details .name {
+        font-weight: 800; font-size: 13px; color: var(--green-dark);
+        display: flex; align-items: center; gap: 6px;
+    }
+    .tx-item .details .subtitle {
+        font-size: 11px; color: var(--muted); margin-top: 3px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .tx-item .amount { text-align: right; flex-shrink: 0; margin-left: 10px; }
+    .tx-item .amount .value { font-weight: 800; font-size: 13px; color: var(--danger); }
+    .tx-item .amount .value.received { color: var(--success); }
+    .tx-item .amount .date { font-size: 10.5px; color: var(--muted); margin-top: 2px; }
+    .status-pill {
+        font-size: 9px; font-weight: 800; padding: 3px 8px;
+        border-radius: 20px; text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+    .status-pill.success { background: #e6fff0; color: var(--success); }
+    .status-pill.pending { background: #fff8e1; color: #a06d00; }
+    .status-pill.failed { background: #ffe6e6; color: var(--danger); }
+
+    .empty-state {
+        text-align: center; padding: 35px 20px;
+        background: var(--card); border-radius: 16px;
+        border: 1px dashed var(--border); margin: 0 20px;
+    }
+    .empty-state i { font-size: 36px; color: #cfe3d6; margin-bottom: 12px; display: block; }
+    .empty-state p { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+
+    /* ===== BOTTOM NAV ===== */
+    .bottom-nav {
+        position: fixed; bottom: 0; left: 50%;
+        transform: translateX(-50%);
+        width: 100%; max-width: 480px; background: var(--card);
+        border-top: 1px solid var(--border);
+        display: flex; justify-content: space-around; align-items: center;
+        padding: 8px 0 12px; z-index: 100;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+    }
+    .bottom-nav a {
+        text-decoration: none; display: flex; flex-direction: column;
+        align-items: center; gap: 4px; font-size: 10px;
+        color: var(--muted); font-weight: 600; flex: 1; transition: 0.3s;
+        padding-top: 4px;
+    }
+    .bottom-nav a i { font-size: 22px; }
+    .bottom-nav a.active { color: var(--green); }
+    .bottom-nav a.active::after {
+        content: ''; display: block; width: 20px; height: 3px;
+        background: var(--gold); border-radius: 3px; margin-top: 2px;
+    }
+    .bottom-nav .center-btn {
+        width: 60px; height: 60px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 24px; margin-top: -25px;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.4);
+        cursor: pointer; border: 3px solid var(--bg); transition: 0.3s;
+    }
+    .bottom-nav .center-btn:active { transform: scale(0.92); }
+
+    /* ===== TOAST + LOADING ===== */
+    .toast {
+        position: fixed; top: 20px; left: 50%;
+        transform: translateX(-50%) translateY(-20px);
+        background: var(--green); color: white;
+        padding: 14px 24px; border-radius: 30px;
+        z-index: 99999; opacity: 0; visibility: hidden;
+        font-size: 13px; font-weight: 700;
+        max-width: 90%; text-align: center;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 30px rgba(11,122,46,0.3);
+        line-height: 1.4;
+    }
+    .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+    .toast.info { background: var(--green); }
+
+    #loading-overlay {
+        position: fixed; inset: 0;
+        background: rgba(244,249,246,0.96);
+        backdrop-filter: blur(6px);
+        display: flex; flex-direction: column;
+        justify-content: center; align-items: center;
+        z-index: 9998; color: var(--green);
+        transition: opacity 0.35s;
+    }
+    #loading-overlay.hide { opacity: 0; pointer-events: none; }
+    .spinner {
+        width: 46px; height: 46px;
+        border: 5px solid var(--border);
+        border-top-color: var(--green);
+        border-right-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    @media (max-width: 360px) {
+        .balance-card h1 { font-size: 26px; }
+    }
+</style>
+</head>
+<body>
+
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <p style="margin-top:14px; font-weight:700; font-size:13px; letter-spacing:0.3px;">Loading transfer...</p>
+</div>
+
+<div class="app-container">
+
+    <!-- ===== HEADER ===== -->
+    <header class="top-header">
+        <div class="header-left">
+            <button class="back-btn" onclick="window.location.href='userdashboard.html'">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="profile-section">
+                <div class="avatar-wrapper">
+                    <img id="profilePic"
+                         src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230B7A2E'/><circle cx='50' cy='38' r='18' fill='%23FFC72C'/><path d='M18 92c0-20 14-34 32-34s32 14 32 34' fill='%23FFC72C'/></svg>"
+                         alt="Profile">
+                    <div class="verified-badge"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="greeting">
+                    <h4 id="greetingTime">Welcome,</h4>
+                    <h2 id="userName"><span class="shimmer" style="width: 90px; height: 14px;"></span></h2>
+                    <div class="acc-num" id="userAccNum">•••• ••••</div>
+                </div>
+            </div>
+        </div>
+        <a href="usernotification.html" class="notification-btn">
+            <i class="fa-regular fa-bell"></i>
+        </a>
+    </header>
+
+    <!-- BALANCE -->
+    <div class="balance-card">
+        <div class="label">Available Balance</div>
+        <h1 id="balanceDisplay">GHS 0.00</h1>
+        <div class="mini-stats">
+            <div class="mini-stat">
+                <div class="s-label">Today Sent</div>
+                <div class="s-value" id="todaySent">GHS 0.00</div>
+            </div>
+            <div class="mini-stat">
+                <div class="s-label">Transfer Fee</div>
+                <div class="s-value" style="color:var(--success);">FREE</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP INDICATOR -->
+    <div class="steps" id="stepsBar">
+        <div class="step-dot active" data-step="1">1</div>
+        <div class="step-line" data-line="1"></div>
+        <div class="step-dot" data-step="2">2</div>
+        <div class="step-line" data-line="2"></div>
+        <div class="step-dot" data-step="3">3</div>
+    </div>
+
+    <div class="error-banner" id="errorBanner">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span id="errorText"></span>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- STEP 1: FORM                                  -->
+    <!-- ============================================= -->
+    <div class="screen active" id="screenForm">
+
+        <!-- FROM ACCOUNT -->
+        <div class="form-card">
+            <div class="card-title">From Account</div>
+
+            <div class="field-group" style="margin-bottom:0;">
+                <div class="input-wrap">
+                    <i class="fa-solid fa-building-columns"></i>
+                    <select id="fromAccount">
+                        <option>Loading...</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRANSFER TYPE -->
+        <div class="form-card">
+            <div class="card-title">Transfer To</div>
+
+            <div class="method-toggle" id="typeToggle">
+                <button type="button" class="active" data-type="cit">
+                    <i class="fa-solid fa-user"></i>
+                    CIT Member
+                    <span class="fee-tag">Instant · Free</span>
+                </button>
+                <button type="button" data-type="other">
+                    <i class="fa-solid fa-building-columns"></i>
+                    Other Bank
+                    <span class="fee-tag">Coming Soon</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- RECIPIENT -->
+        <div class="form-card">
+            <div class="card-title">Recipient Details</div>
+
+            <div class="field-group">
+                <label>Recipient Account Number</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="toAccount" placeholder="Enter CIT account number" oninput="detectReceiver()" inputmode="numeric">
+                </div>
+                <div class="hint">Enter the 10-digit CITFUND account number</div>
+            </div>
+
+            <div class="receiver-name-box" id="receiverNameBox">
+                <div class="rn-icon"><i class="fa-solid fa-user-check"></i></div>
+                <div class="rn-text">
+                    <div class="rn-label" id="rnLabel">Verified Recipient</div>
+                    <div class="rn-name" id="receiverName">Verifying...</div>
+                </div>
+            </div>
+
+            <div class="field-group" style="margin-bottom:0;">
+                <label>Amount (GHS)</label>
+                <div class="amount-input-wrap">
+                    <span class="prefix">GHS</span>
+                    <input type="number" id="amountInput" placeholder="0.00" inputmode="decimal" min="1">
+                </div>
+                <div class="hint">No transfer fees · Instant credit to recipient</div>
+                <div class="quick-amounts" id="quickAmounts">
+                    <button type="button" onclick="setAmount(20)">20</button>
+                    <button type="button" onclick="setAmount(50)">50</button>
+                    <button type="button" onclick="setAmount(100)">100</button>
+                    <button type="button" onclick="setAmount(200)">200</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="padding: 0 20px 20px;">
+            <button class="btn-primary" id="continueBtn" onclick="goToReview()">
+                Continue <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- RECENT TRANSFERS -->
+        <div class="section-header">
+            <h3>Recent Transfers</h3>
+            <span><i class="fa-solid fa-clock-rotate-left"></i> Last 5</span>
+        </div>
+        <div class="tx-list" id="recentTransfers"></div>
+        <div style="height: 20px;"></div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- STEP 2: REVIEW                                -->
+    <!-- ============================================= -->
+    <div class="screen" id="screenReview">
+        <div class="form-card">
+            <div class="card-title">Confirm Transfer</div>
+
+            <div class="bank-preview">
+                <div class="bp-label">You Are Sending</div>
+                <div class="bp-amount" id="reviewAmount">GHS 0.00</div>
+                <div class="bp-row">
+                    <span>To</span>
+                    <span id="reviewRecipientName">—</span>
+                </div>
+            </div>
+
+            <div class="summary-box">
+                <div class="row"><span>Recipient Account</span><strong id="revAccount">—</strong></div>
+                <div class="row"><span>Recipient Name</span><strong id="revName">—</strong></div>
+                <div class="row"><span>Transfer Amount</span><strong id="revAmount">GHS 0.00</strong></div>
+                <div class="row fee"><span>Transfer Fee</span><strong>FREE</strong></div>
+                <div class="row total"><span>Total Deducted</span><strong id="revTotal">GHS 0.00</strong></div>
+            </div>
+
+            <p style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:16px;background:var(--bg);padding:12px;border-radius:12px;border:1px solid var(--border);">
+                <i class="fa-solid fa-shield-halved" style="color:var(--green);"></i>
+                <strong style="color:var(--green-dark);">Instant & free.</strong>
+                The amount will be deducted from your wallet immediately and credited to the recipient's account within seconds.
+            </p>
+
+            <button class="btn-primary" id="submitBtn" onclick="submitTransfer()">
+                <i class="fa-solid fa-paper-plane"></i>&nbsp; Confirm & Send
+            </button>
+            <button class="btn-secondary" onclick="goToForm()">Edit Details</button>
+        </div>
+        <div style="height: 20px;"></div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- STEP 3: PROCESSING                            -->
+    <!-- ============================================= -->
+    <div class="screen" id="screenProcessing">
+        <div class="processing-view">
+            <div class="pulse-ring">
+                <div class="center"><i class="fa-solid fa-paper-plane"></i></div>
+            </div>
+            <h3 id="processingTitle">Sending Money</h3>
+            <p id="processingMsg">Transferring <strong id="processingAmount">GHS 0.00</strong> to <strong id="processingRecipient">recipient</strong>. Please wait...</p>
+
+            <div class="processing-steps">
+                <div class="ps-item done" id="ps1"><i class="fa-solid fa-check"></i> Request received</div>
+                <div class="ps-item active" id="ps2"><i class="fa-solid fa-circle-notch fa-spin"></i> Verifying recipient</div>
+                <div class="ps-item pending" id="ps3"><i class="fa-solid fa-clock"></i> Debiting your wallet</div>
+                <div class="ps-item pending" id="ps4"><i class="fa-solid fa-clock"></i> Crediting recipient</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- STEP 4: RESULT                                -->
+    <!-- ============================================= -->
+    <div class="screen" id="screenResult">
+        <div class="result-view">
+            <div class="result-icon success" id="resultIcon">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 id="resultTitle">Transfer Successful</h3>
+            <p class="sub" id="resultSub">Money sent successfully.</p>
+
+            <div class="receipt" id="resultReceipt"></div>
+
+            <button class="btn-primary" onclick="goToForm()">
+                <i class="fa-solid fa-plus"></i> Send Another Transfer
+            </button>
+            <button class="btn-secondary" onclick="location.href='userdashboard.html'">Back to Dashboard</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <a href="userdashboard.html">
+        <i class="fa-solid fa-house"></i> Home
+    </a>
+    <a href="accountnumberupdate.html">
+        <i class="fa-solid fa-book"></i> Accounts
+    </a>
+    <button class="center-btn" onclick="location.href='scan_and_pay.html'">
+        <i class="fa-solid fa-qrcode"></i>
+    </button>
+    <a href="usernotification.html">
+        <i class="fa-solid fa-bell"></i> Alerts
+    </a>
+    <a href="myprofile.html">
+        <i class="fa-solid fa-user"></i> Profile
+    </a>
+</nav>
+
+<div id="toast" class="toast"></div>
+
+<script>
+    // ============================================================
+    // SESSION
+    // ============================================================
+    const session = JSON.parse(localStorage.getItem('cit_session') || 'null');
+    if (!session || !session.uid) window.location.href = 'userlogin.html';
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    let currentUid = session.uid;
+    let currentBalance = 0;
+    let currentUserData = null;
+    let selectedTransferType = 'cit';
+    let verifiedReceiver = null; // { name, accountNumber, accountType }
+    let toastTimer = null;
+    let receiverTimer = null;
+
+    const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230B7A2E'/><circle cx='50' cy='38' r='18' fill='%23FFC72C'/><path d='M18 92c0-20 14-34 32-34s32 14 32 34' fill='%23FFC72C'/></svg>";
+
+    // ============================================================
+    // HELPERS
+    // ============================================================
+    function fmt(n) {
+        return 'GHS ' + Number(n || 0).toLocaleString(undefined, {
+            minimumFractionDigits: 2, maximumFractionDigits: 2
+        });
+    }
+    function esc(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+            .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+    function showToast(msg, type = '') {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast ' + type + ' show';
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+    }
+    function hideLoading() {
+        const el = document.getElementById('loading-overlay');
+        if (el) { el.classList.add('hide'); setTimeout(() => el.style.display = 'none', 400); }
+    }
+    function showScreen(name) {
+        ['screenForm','screenReview','screenProcessing','screenResult'].forEach(id => {
+            document.getElementById(id).classList.remove('active');
+        });
+        document.getElementById('screen' + name.charAt(0).toUpperCase() + name.slice(1)).classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function setStep(step) {
+        document.querySelectorAll('.step-dot').forEach(dot => {
+            const s = Number(dot.dataset.step);
+            dot.classList.remove('active', 'done');
+            if (s < step) dot.classList.add('done');
+            else if (s === step) dot.classList.add('active');
+        });
+        document.querySelectorAll('.step-line').forEach(line => {
+            const l = Number(line.dataset.line);
+            line.classList.toggle('done', l < step);
+        });
+    }
+    function showError(msg) {
+        const b = document.getElementById('errorBanner');
+        document.getElementById('errorText').textContent = msg;
+        b.classList.add('show');
+        setTimeout(() => b.classList.remove('show'), 5000);
+    }
+    function clearError() {
+        document.getElementById('errorBanner').classList.remove('show');
+    }
+    function setGreeting() {
+        const el = document.getElementById('greetingTime');
+        const hour = new Date().getHours();
+        if (hour < 12) el.textContent = 'Good Morning,';
+        else if (hour < 17) el.textContent = 'Good Afternoon,';
+        else el.textContent = 'Good Evening,';
+    }
+    async function api(path, body) {
+        const res = await fetch(path + '?t=' + Date.now(), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body || {}),
+            cache: 'no-store'
+        });
+        try { return await res.json(); }
+        catch (e) { return { success: false, error: 'Invalid server response' }; }
+    }
+
+    // ============================================================
+    // TRANSFER TYPE TOGGLE
+    // ============================================================
+    document.querySelectorAll('#typeToggle button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const type = btn.dataset.type;
+            if (type === 'other') {
+                showToast('Other bank transfers coming soon', 'info');
+                return;
+            }
+            document.querySelectorAll('#typeToggle button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedTransferType = type;
+            clearError();
+        });
+    });
+
+    // ============================================================
+    // QUICK AMOUNTS
+    // ============================================================
+    function setAmount(amt) {
+        document.getElementById('amountInput').value = Number(amt).toFixed(2);
+        document.querySelectorAll('#quickAmounts button').forEach(b => {
+            b.classList.toggle('active', Number(b.textContent) === Number(amt));
+        });
+    }
+    window.setAmount = setAmount;
+
+    // ============================================================
+    // DETECT RECEIVER (auto-verify with debounce)
+    // ============================================================
+    function detectReceiver() {
+        clearTimeout(receiverTimer);
+        const acc = document.getElementById('toAccount').value.trim();
+        const box = document.getElementById('receiverNameBox');
+        const nameSpan = document.getElementById('receiverName');
+        const labelSpan = document.getElementById('rnLabel');
+        const icon = box.querySelector('.rn-icon i');
+
+        verifiedReceiver = null;
+
+        if (!acc || acc.length < 5) {
+            box.classList.remove('show', 'error', 'loading');
+            return;
+        }
+
+        box.classList.add('show', 'loading');
+        box.classList.remove('error');
+        nameSpan.textContent = 'Verifying...';
+        labelSpan.textContent = 'Checking recipient';
+        icon.className = 'fa-solid fa-circle-notch fa-spin';
+
+        receiverTimer = setTimeout(async () => {
+            try {
+                const data = await api('/api/verify-receiver', { accountNumber: acc });
+                if (data.success && data.name) {
+                    verifiedReceiver = {
+                        name: data.name,
+                        accountNumber: acc,
+                        accountType: data.accountType || 'Savings'
+                    };
+                    box.classList.remove('loading', 'error');
+                    box.classList.add('show');
+                    labelSpan.textContent = 'Verified Recipient';
+                    nameSpan.textContent = data.name;
+                    icon.className = 'fa-solid fa-user-check';
+                } else {
+                    box.classList.remove('loading');
+                    box.classList.add('error');
+                    labelSpan.textContent = 'Not Found';
+                    nameSpan.textContent = data.error || 'Account not found';
+                    icon.className = 'fa-solid fa-user-xmark';
+                }
+            } catch (e) {
+                box.classList.remove('loading');
+                box.classList.add('error');
+                labelSpan.textContent = 'Error';
+                nameSpan.textContent = 'Could not verify account';
+                icon.className = 'fa-solid fa-triangle-exclamation';
+            }
+        }, 500);
+    }
+    window.detectReceiver = detectReceiver;
+
+    // ============================================================
+    // VALIDATION
+    // ============================================================
+    function validateForm() {
+        const acc = document.getElementById('toAccount').value.trim();
+        const amt = Number(document.getElementById('amountInput').value);
+
+        if (!acc || acc.length < 5) return 'Enter a valid recipient account number';
+        if (!verifiedReceiver) return 'Please wait for recipient verification';
+        if (verifiedReceiver.accountNumber === currentUserData.accountNumber) return 'You cannot transfer to your own account';
+        if (!amt || amt <= 0) return 'Enter a valid amount';
+        if (amt > currentBalance) return `Insufficient balance. Available: ${fmt(currentBalance)}`;
+        return null;
+    }
+
+    // ============================================================
+    // STEP NAVIGATION
+    // ============================================================
+    function goToReview() {
+        clearError();
+        const err = validateForm();
+        if (err) { showError(err); return; }
+
+        const amt = Number(document.getElementById('amountInput').value);
+
+        document.getElementById('revAccount').textContent = verifiedReceiver.accountNumber;
+        document.getElementById('revName').textContent = verifiedReceiver.name;
+        document.getElementById('revAmount').textContent = fmt(amt);
+        document.getElementById('revTotal').textContent = fmt(amt);
+
+        document.getElementById('reviewAmount').textContent = fmt(amt);
+        document.getElementById('reviewRecipientName').textContent = verifiedReceiver.name;
+
+        setStep(2);
+        showScreen('review');
+    }
+    window.goToReview = goToReview;
+
+    function goToForm() {
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('submitBtn').innerHTML = '<i class="fa-solid fa-paper-plane"></i>&nbsp; Confirm & Send';
+        setStep(1);
+        showScreen('form');
+        loadRecentTransfers();
+        loadUser();
+    }
+    window.goToForm = goToForm;
+
+    // ============================================================
+    // SUBMIT TRANSFER
+    // ============================================================
+    async function submitTransfer() {
+        clearError();
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>&nbsp; Sending...';
+
+        const amt = Number(document.getElementById('amountInput').value);
+        const toAccount = document.getElementById('toAccount').value.trim();
+
+        // Show processing view immediately
+        document.getElementById('processingAmount').textContent = fmt(amt);
+        document.getElementById('processingRecipient').textContent = verifiedReceiver.name;
+        setStep(3);
+        showScreen('processing');
+        startProcessingSteps();
+
+        try {
+            const data = await api('/api/transfer', {
+                senderUid: currentUid,
+                receiverAccount: toAccount,
+                amount: amt
+            });
+
+            if (data.success) {
+                finishTransfer('success', { amount: amt, newBalance: data.newBalance, receiver: verifiedReceiver });
+            } else {
+                finishTransfer('failed', { error: data.error || 'Transfer failed' });
+            }
+        } catch (e) {
+            finishTransfer('failed', { error: 'Network error: ' + (e.message || 'unknown') });
+        }
+    }
+    window.submitTransfer = submitTransfer;
+
+    // ============================================================
+    // PROCESSING STEPS ANIMATION
+    // ============================================================
+    function startProcessingSteps() {
+        const ps1 = document.getElementById('ps1');
+        const ps2 = document.getElementById('ps2');
+        const ps3 = document.getElementById('ps3');
+        const ps4 = document.getElementById('ps4');
+
+        ps1.classList.remove('active','pending'); ps1.classList.add('done');
+        ps1.innerHTML = '<i class="fa-solid fa-check"></i> Request received';
+
+        ps2.classList.remove('pending','done'); ps2.classList.add('active');
+        ps2.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Verifying recipient';
+
+        setTimeout(() => {
+            ps2.classList.remove('active'); ps2.classList.add('done');
+            ps2.innerHTML = '<i class="fa-solid fa-check"></i> Recipient verified';
+            ps3.classList.remove('pending'); ps3.classList.add('active');
+            ps3.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Debiting your wallet';
+        }, 1200);
+
+        setTimeout(() => {
+            ps3.classList.remove('active'); ps3.classList.add('done');
+            ps3.innerHTML = '<i class="fa-solid fa-check"></i> Debited';
+            ps4.classList.remove('pending'); ps4.classList.add('active');
+            ps4.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Crediting recipient';
+        }, 2200);
+    }
+
+    // ============================================================
+    // FINISH TRANSFER
+    // ============================================================
+    async function finishTransfer(outcome, data) {
+        const iconEl = document.getElementById('resultIcon');
+        const titleEl = document.getElementById('resultTitle');
+        const subEl = document.getElementById('resultSub');
+
+        if (outcome === 'success') {
+            await loadUser();
+            iconEl.className = 'result-icon success';
+            iconEl.innerHTML = '<i class="fa-solid fa-check"></i>';
+            titleEl.textContent = 'Transfer Successful';
+            subEl.textContent = 'Your money has been sent successfully.';
+
+            document.getElementById('resultReceipt').innerHTML = `
+                <div class="r-row"><span>Recipient</span><strong>${esc(data.receiver.name)}</strong></div>
+                <div class="r-row"><span>Account</span><strong>${esc(data.receiver.accountNumber)}</strong></div>
+                <div class="r-row"><span>Amount</span><strong>${fmt(data.amount)}</strong></div>
+                <div class="r-row"><span>Fee</span><strong style="color:var(--success);">FREE</strong></div>
+                <div class="r-row"><span>New Balance</span><strong>${fmt(data.newBalance)}</strong></div>
+                <div class="r-row"><span>Status</span><strong style="color:var(--success);">SUCCESS</strong></div>
+            `;
+
+            // Reset form
+            document.getElementById('toAccount').value = '';
+            document.getElementById('amountInput').value = '';
+            document.getElementById('receiverNameBox').classList.remove('show');
+            document.querySelectorAll('#quickAmounts button').forEach(b => b.classList.remove('active'));
+            verifiedReceiver = null;
+        } else {
+            iconEl.className = 'result-icon failed';
+            iconEl.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+            titleEl.textContent = 'Transfer Failed';
+            subEl.textContent = data.error || 'The transfer could not be completed.';
+
+            const amt = Number(document.getElementById('amountInput').value) || 0;
+            document.getElementById('resultReceipt').innerHTML = `
+                <div class="r-row"><span>Amount</span><strong>${fmt(amt)}</strong></div>
+                <div class="r-row"><span>Status</span><strong style="color:var(--danger);">FAILED</strong></div>
+                <div class="r-row"><span>Reason</span><strong style="color:var(--danger);">${esc(data.error || 'Unknown')}</strong></div>
+            `;
+        }
+
+        setStep(3);
+        showScreen('result');
+        loadRecentTransfers();
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('submitBtn').innerHTML = '<i class="fa-solid fa-paper-plane"></i>&nbsp; Confirm & Send';
+    }
+
+    // ============================================================
+    // LOAD USER
+    // ============================================================
+    async function loadUser() {
+        setGreeting();
+        try {
+            const data = await api('/api/dashboard', { uid: currentUid });
+            if (data.success && data.user) {
+                currentUserData = data.user;
+                currentBalance = parseFloat(currentUserData.balance) || 0;
+                document.getElementById('balanceDisplay').textContent = fmt(currentBalance);
+                document.getElementById('userName').textContent = currentUserData.fullName || 'Customer';
+                document.getElementById('userAccNum').textContent =
+                    currentUserData.accountNumber ? ('Acc ' + currentUserData.accountNumber) : 'CITFUND Member';
+                document.getElementById('fromAccount').innerHTML =
+                    `<option>${esc(currentUserData.accType || 'Savings')} (${esc(currentUserData.accountNumber || '')})</option>`;
+
+                const pic = document.getElementById('profilePic');
+                if (currentUserData.photo && String(currentUserData.photo).trim().length > 0) {
+                    pic.src = currentUserData.photo;
+                } else {
+                    pic.src = DEFAULT_AVATAR;
+                }
+                pic.onerror = () => { pic.onerror = null; pic.src = DEFAULT_AVATAR; };
+
+            } else if (data.error && /not found/i.test(data.error)) {
+                localStorage.removeItem('cit_session');
+                window.location.href = 'userlogin.html';
+            } else {
+                document.getElementById('userName').textContent = 'Customer';
+                document.getElementById('userAccNum').textContent = 'CITFUND Member';
+            }
+            loadRecentTransfers();
+        } catch (e) {
+            document.getElementById('userName').textContent = 'Customer';
+            document.getElementById('userAccNum').textContent = 'CITFUND Member';
+            showToast('Could not load account', 'error');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    // ============================================================
+    // RECENT TRANSFERS
+    // ============================================================
+    async function loadRecentTransfers() {
+        try {
+            const data = await api('/api/dashboard', { uid: currentUid });
+            const wrap = document.getElementById('recentTransfers');
+            if (!data.success || !data.user) {
+                wrap.innerHTML = '<div class="empty-state"><i class="fa-solid fa-inbox"></i><p>Could not load history</p></div>';
+                return;
+            }
+            const txs = data.user.transactions || {};
+            const list = Object.values(txs)
+                .filter(t => t.type === 'transfer')
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5);
+
+            // Today total
+            let todayTotal = 0;
+            const today = new Date().toDateString();
+            Object.values(txs).forEach(t => {
+                if (t.type === 'transfer' && new Date(t.date).toDateString() === today) {
+                    todayTotal += Number(t.amount || 0);
+                }
+            });
+            document.getElementById('todaySent').textContent = fmt(todayTotal);
+
+            if (!list.length) {
+                wrap.innerHTML = '<div class="empty-state"><i class="fa-solid fa-paper-plane"></i><p>No transfers yet</p></div>';
+                return;
+            }
+
+            wrap.innerHTML = list.map(t => {
+                const st = String(t.status || 'success').toLowerCase();
+                const statusClass = st === 'success' ? 'success' : (st === 'pending' ? 'pending' : 'failed');
+                const date = t.date ? new Date(t.date).toLocaleDateString('en-GB', { day:'2-digit', month:'short' }) : '—';
+                const recipientName = t.receiverName || t.receiver || 'CIT Member';
+                return `
+                    <div class="tx-item">
+                        <div class="icon"><i class="fa-solid fa-arrow-up"></i></div>
+                        <div class="details">
+                            <div class="name">
+                                To ${esc(recipientName)}
+                                <span class="status-pill ${statusClass}">${esc(st)}</span>
+                            </div>
+                            <div class="subtitle">${esc(t.receiver || '')}</div>
+                        </div>
+                        <div class="amount">
+                            <div class="value">- ${fmt(t.amount)}</div>
+                            <div class="date">${date}</div>
+                        </div>
+                    </div>`;
+            }).join('');
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    loadUser();
+    setTimeout(hideLoading, 6000);
+</script>
+</body>
+</html>

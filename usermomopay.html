@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CITFUND ENTERPRISE | Deposit</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    :root {
+        --green: #0B7A2E;
+        --green-dark: #075C22;
+        --green-light: #14A344;
+        --gold: #FFC72C;
+        --gold-soft: #FFD75E;
+        --red: #E30613;
+        --bg: #f4f9f6;
+        --card: #ffffff;
+        --text: #1a2b4c;
+        --muted: #6b7a8f;
+        --border: #e6f0e9;
+        --success: #00a86b;
+        --danger: #e74c3c;
+        --warning: #ff9800;
+        --primary: var(--green);
+        --primary-dark: var(--green-dark);
+        --accent: var(--green);
+        --accent-light: var(--green-light);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+    .app-container { max-width: 480px; margin: 0 auto; background: var(--bg); min-height: 100vh; position: relative; padding-bottom: 100px; }
+
+    /* ===== TOP HEADER ===== */
+    .top-header {
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        padding: 22px 20px 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 0 0 30px 30px;
+        position: relative;
+        z-index: 1;
+        gap: 10px;
+        overflow: hidden;
+    }
+    .top-header::before {
+        content: '';
+        position: absolute;
+        top: -80px; right: -60px;
+        width: 220px; height: 220px;
+        background: radial-gradient(circle, rgba(255,199,44,0.28), transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .top-header::after {
+        content: '';
+        position: absolute;
+        bottom: -100px; left: -80px;
+        width: 200px; height: 200px;
+        background: radial-gradient(circle, rgba(227,6,19,0.12), transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+        flex: 1;
+        position: relative;
+        z-index: 2;
+    }
+    .back-btn {
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.15);
+        color: white;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 15px;
+        flex-shrink: 0;
+        transition: 0.2s;
+        cursor: pointer;
+        border: none;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.28); }
+    .profile-section { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
+    .avatar-wrapper { position: relative; flex-shrink: 0; }
+    .avatar-wrapper img {
+        width: 46px; height: 46px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2.5px solid var(--gold);
+        background: rgba(255,255,255,0.1);
+    }
+    .verified-badge {
+        position: absolute;
+        bottom: -1px; right: -1px;
+        background: var(--gold);
+        color: var(--green-dark);
+        width: 18px; height: 18px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 8px;
+        border: 2px solid var(--green-dark);
+    }
+    .greeting { min-width: 0; flex: 1; }
+    .greeting h4 {
+        font-size: 11.5px;
+        color: rgba(255,255,255,0.75);
+        font-weight: 400;
+        margin-bottom: 2px;
+    }
+    .greeting h2 {
+        font-size: 15.5px;
+        font-weight: 700;
+        color: white;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.2;
+    }
+    .greeting .acc-num {
+        font-size: 10.5px;
+        color: rgba(255,255,255,0.6);
+        font-weight: 500;
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .notification-btn {
+        position: relative;
+        background: rgba(255,255,255,0.15);
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        width: 42px; height: 42px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        text-decoration: none;
+        flex-shrink: 0;
+        z-index: 2;
+    }
+
+    .shimmer {
+        background: linear-gradient(90deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.28) 50%, rgba(255,255,255,0.12) 100%);
+        background-size: 200% 100%;
+        border-radius: 6px;
+        display: inline-block;
+        animation: shimmer 1.4s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    .balance-card {
+        background: var(--card);
+        border-radius: 24px;
+        padding: 22px 22px 20px;
+        margin: -45px 20px 18px;
+        box-shadow: 0 20px 45px rgba(11,122,46,0.08);
+        position: relative;
+        z-index: 2;
+        border: 1px solid rgba(11,122,46,0.06);
+    }
+    .balance-card .label {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 700;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .balance-card .label::before {
+        content: '';
+        width: 8px; height: 8px;
+        background: var(--gold);
+        border-radius: 50%;
+        box-shadow: 0 0 0 3px rgba(255,199,44,0.25);
+    }
+    .balance-card h1 {
+        font-size: 30px;
+        font-weight: 900;
+        color: var(--green);
+        letter-spacing: -0.5px;
+        margin-bottom: 16px;
+    }
+    .mini-stats {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+        padding-top: 16px; border-top: 1px dashed var(--border);
+    }
+    .mini-stat .s-label {
+        font-size: 10.5px;
+        color: var(--muted);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 3px;
+    }
+    .mini-stat .s-value { font-size: 15px; font-weight: 800; color: var(--green); }
+
+    .form-card {
+        background: var(--card); border-radius: 20px;
+        padding: 20px; margin: 0 20px 16px;
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 15px rgba(11,122,46,0.03);
+    }
+    .card-title {
+        font-size: 14px; font-weight: 800; color: var(--green);
+        margin-bottom: 16px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .card-title::before {
+        content: '';
+        width: 4px; height: 16px;
+        background: var(--gold);
+        border-radius: 2px;
+    }
+
+    .field-group { margin-bottom: 16px; }
+    .field-group:last-child { margin-bottom: 0; }
+    .field-group label {
+        display: block; font-size: 11px; font-weight: 800;
+        color: var(--green-dark); margin-bottom: 8px;
+        text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .input-wrap { position: relative; display: flex; align-items: center; background: var(--bg); border: 1.5px solid var(--border); border-radius: 14px; transition: 0.2s; }
+    .input-wrap:focus-within { border-color: var(--green); background: white; box-shadow: 0 0 0 4px rgba(11,122,46,0.1); }
+    .input-wrap i { color: var(--green); font-size: 16px; margin-left: 16px; flex-shrink: 0; }
+    .input-wrap input { border: none; background: transparent; padding: 15px 16px; flex: 1; font-size: 16px; font-weight: 600; color: var(--green-dark); outline: none; width: 100%; }
+    .input-wrap input::placeholder { color: #b8c4d1; font-weight: 500; }
+
+    .amount-input-wrap { position: relative; display: flex; align-items: center; background: var(--bg); border: 1.5px solid var(--border); border-radius: 14px; transition: 0.2s; }
+    .amount-input-wrap:focus-within { border-color: var(--green); background: white; box-shadow: 0 0 0 4px rgba(11,122,46,0.1); }
+    .amount-input-wrap .prefix {
+        position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+        font-size: 16px; font-weight: 900; color: var(--green);
+        pointer-events: none;
+    }
+    .amount-input-wrap input {
+        width: 100%; padding: 15px 16px 15px 58px; border: none; background: transparent;
+        font-family: inherit; font-size: 18px; font-weight: 700;
+        color: var(--green-dark); outline: none;
+    }
+    .amount-input-wrap input::placeholder { color: #b8c4d1; font-weight: 500; }
+
+    .quick-amounts { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .quick-amounts button {
+        flex: 1; min-width: 60px; padding: 10px;
+        background: var(--bg); border: 1.5px solid var(--border);
+        border-radius: 10px; font-family: inherit; font-size: 12px;
+        font-weight: 700; color: var(--green-dark); cursor: pointer; transition: 0.2s;
+    }
+    .quick-amounts button:hover, .quick-amounts button.active {
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white; border-color: var(--green);
+        box-shadow: 0 4px 12px rgba(11,122,46,0.25);
+    }
+
+    .network-grid {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    .network-option {
+        display: flex; align-items: center; gap: 10px;
+        padding: 12px 14px; border: 1.5px solid var(--border);
+        border-radius: 14px; background: var(--bg); cursor: pointer;
+        transition: 0.25s; position: relative; font-family: inherit;
+    }
+    .network-option:hover { border-color: var(--green); background: white; }
+    .network-option.selected {
+        border-color: var(--green);
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
+        color: white;
+        box-shadow: 0 6px 15px rgba(11,122,46,0.3);
+    }
+    .network-option .logo {
+        width: 34px; height: 34px; border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 900; font-size: 11px; color: white;
+        flex-shrink: 0; letter-spacing: -0.3px;
+    }
+    .network-option .logo.mtn { background: #FFCC00; color: #000; }
+    .network-option .logo.telecel { background: #E60000; }
+    .network-option .logo.airteltigo { background: #0066CC; }
+    .network-option .name {
+        font-size: 11.5px; font-weight: 800; color: var(--green-dark);
+        line-height: 1.2; flex: 1; min-width: 0;
+    }
+    .network-option.selected .name { color: white; }
+    .network-option .check {
+        position: absolute; top: 6px; right: 6px;
+        width: 16px; height: 16px; border-radius: 50%;
+        background: var(--gold); color: var(--green-dark);
+        display: none; align-items: center; justify-content: center;
+        font-size: 8px;
+    }
+    .network-option.selected .check { display: flex; }
+
+    .info-box {
+        background: linear-gradient(135deg, #fff8e1 0%, #ffeeba 100%);
+        border: 1px solid #ffe082;
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 16px;
+        display: flex; align-items: flex-start; gap: 12px;
+        font-size: 12.5px;
+        color: #8a6d1a;
+        font-weight: 600;
+        line-height: 1.5;
+    }
+    .info-box i {
+        width: 32px; height: 32px;
+        background: var(--gold);
+        color: var(--green-dark);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+    .info-box strong { color: var(--green-dark); }
+
+    .btn-primary {
+        width: 100%; padding: 16px; border-radius: 14px; border: none;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white; font-family: inherit; font-size: 15px; font-weight: 800;
+        cursor: pointer; transition: 0.25s;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.3);
+        letter-spacing: 0.3px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 8px;
+    }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(11,122,46,0.4); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .poll-banner {
+        display: none;
+        background: linear-gradient(135deg, #fff8e1 0%, #ffeeba 100%);
+        border: 1px solid #ffe082;
+        border-radius: 16px;
+        padding: 16px 18px;
+        margin: 0 20px 16px;
+        align-items: center;
+        gap: 14px;
+        box-shadow: 0 8px 20px rgba(255,199,44,0.15);
+    }
+    .poll-banner.show { display: flex; }
+    .poll-banner > i {
+        color: var(--green-dark);
+        background: var(--gold);
+        width: 42px; height: 42px;
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+        animation: pulse 1.6s ease-in-out infinite;
+    }
+    .poll-banner .text h4 { font-size: 14px; color: var(--green-dark); font-weight: 800; margin-bottom: 2px; }
+    .poll-banner .text p { font-size: 12px; color: #8a6d1a; font-weight: 600; }
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+    .section-header {
+        display: flex; justify-content: space-between;
+        align-items: center; padding: 0 20px;
+        margin-bottom: 12px; margin-top: 8px;
+    }
+    .section-header h3 {
+        font-size: 15px; font-weight: 800; color: var(--green);
+    }
+    .section-header span {
+        font-size: 11px;
+        color: var(--green);
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .tx-list { padding: 0 20px; }
+
+    .history-item {
+        background: var(--card); border-radius: 16px;
+        padding: 14px 15px; display: flex; align-items: center; gap: 14px;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 15px rgba(11,122,46,0.03);
+        border: 1px solid var(--border);
+        transition: 0.2s;
+    }
+    .history-item:hover { border-color: var(--green); transform: translateX(3px); }
+    .history-item .big-icon {
+        width: 56px; height: 56px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 26px; flex-shrink: 0;
+    }
+    .history-item .big-icon.success {
+        background: linear-gradient(135deg, var(--success), #00c853);
+        color: white;
+        box-shadow: 0 6px 20px rgba(0,200,83,0.35);
+    }
+    .history-item .big-icon.failed {
+        background: linear-gradient(135deg, var(--danger), #ff6b6b);
+        color: white;
+        box-shadow: 0 6px 20px rgba(231,76,60,0.35);
+    }
+    .history-item .big-icon.pending {
+        background: linear-gradient(135deg, var(--warning), #ffb74d);
+        color: white;
+        box-shadow: 0 6px 20px rgba(255,152,0,0.35);
+        animation: pulseGlow 2s ease-in-out infinite;
+    }
+    @keyframes pulseGlow {
+        0%,100% { box-shadow: 0 6px 20px rgba(255,152,0,0.35); }
+        50% { box-shadow: 0 6px 30px rgba(255,152,0,0.6); }
+    }
+    .history-item .info { flex: 1; min-width: 0; }
+    .history-item .info .title {
+        font-size: 14px; font-weight: 800; color: var(--green-dark);
+    }
+    .history-item .info .sub {
+        font-size: 11px; color: var(--muted); margin-top: 3px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .history-item .amount { text-align: right; flex-shrink: 0; }
+    .history-item .amount .value { font-size: 15px; font-weight: 900; }
+    .history-item .amount .value.positive { color: var(--success); }
+    .history-item .amount .value.negative { color: var(--danger); }
+    .history-item .amount .value.pending { color: var(--warning); }
+    .history-item .amount .status-text {
+        font-size: 9.5px; font-weight: 800; letter-spacing: 0.5px;
+        text-transform: uppercase; margin-top: 2px;
+    }
+    .history-item .amount .status-text.success { color: var(--success); }
+    .history-item .amount .status-text.failed { color: var(--danger); }
+    .history-item .amount .status-text.pending { color: var(--warning); }
+
+    .empty-history {
+        text-align: center; padding: 35px 20px;
+        background: var(--card); border-radius: 16px;
+        border: 1px dashed var(--border); margin: 0 20px;
+    }
+    .empty-history i { font-size: 36px; color: #cfe3d6; margin-bottom: 12px; display: block; }
+    .empty-history p { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+
+    .bottom-nav {
+        position: fixed; bottom: 0; left: 50%;
+        transform: translateX(-50%);
+        width: 100%; max-width: 480px; background: var(--card);
+        border-top: 1px solid var(--border);
+        display: flex; justify-content: space-around; align-items: center;
+        padding: 8px 0 12px; z-index: 100;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+    }
+    .bottom-nav a {
+        text-decoration: none; display: flex; flex-direction: column;
+        align-items: center; gap: 4px; font-size: 10px;
+        color: var(--muted); font-weight: 600; flex: 1; transition: 0.3s;
+        padding-top: 4px;
+    }
+    .bottom-nav a i { font-size: 22px; }
+    .bottom-nav a.active { color: var(--green); }
+    .bottom-nav a.active::after {
+        content: ''; display: block; width: 20px; height: 3px;
+        background: var(--gold); border-radius: 3px; margin-top: 2px;
+    }
+    .bottom-nav .center-btn {
+        width: 60px; height: 60px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 24px; margin-top: -25px;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.4);
+        cursor: pointer; border: 3px solid var(--bg); transition: 0.3s;
+    }
+
+    .toast {
+        position: fixed; top: 20px; left: 50%;
+        transform: translateX(-50%) translateY(-20px);
+        background: var(--green); color: white;
+        padding: 14px 24px; border-radius: 30px;
+        z-index: 99999; opacity: 0; visibility: hidden;
+        font-size: 13px; font-weight: 700;
+        max-width: 90%; text-align: center;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 30px rgba(11,122,46,0.3);
+        line-height: 1.4;
+    }
+    .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+    .toast.info { background: var(--green); }
+
+    #loading-overlay {
+        position: fixed; inset: 0;
+        background: rgba(244,249,246,0.96);
+        backdrop-filter: blur(6px);
+        display: flex; flex-direction: column;
+        justify-content: center; align-items: center;
+        z-index: 9998; color: var(--green);
+        transition: opacity 0.35s;
+    }
+    #loading-overlay.hide { opacity: 0; pointer-events: none; }
+    .spinner {
+        width: 46px; height: 46px;
+        border: 5px solid var(--border);
+        border-top-color: var(--green);
+        border-right-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 360px) {
+        .balance-card h1 { font-size: 26px; }
+        .history-item .big-icon { width: 48px; height: 48px; font-size: 22px; }
+        .network-option .name { font-size: 10.5px; }
+    }
+</style>
+</head>
+<body>
+
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <p style="margin-top:14px; font-weight:700; font-size:13px; letter-spacing:0.3px;">Loading deposit...</p>
+</div>
+
+<div class="app-container">
+
+    <!-- HEADER -->
+    <header class="top-header">
+        <div class="header-left">
+            <button class="back-btn" onclick="window.location.href='userdashboard.html'">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="profile-section">
+                <div class="avatar-wrapper">
+                    <img id="profilePic"
+                         src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230B7A2E'/><circle cx='50' cy='38' r='18' fill='%23FFC72C'/><path d='M18 92c0-20 14-34 32-34s32 14 32 34' fill='%23FFC72C'/></svg>"
+                         alt="Profile">
+                    <div class="verified-badge"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="greeting">
+                    <h4 id="greetingTime">Welcome,</h4>
+                    <h2 id="userName"><span class="shimmer" style="width: 90px; height: 14px;"></span></h2>
+                    <div class="acc-num" id="userAccNum">•••• ••••</div>
+                </div>
+            </div>
+        </div>
+        <a href="usernotification.html" class="notification-btn">
+            <i class="fa-regular fa-bell"></i>
+        </a>
+    </header>
+
+    <!-- BALANCE -->
+    <div class="balance-card">
+        <div class="label">Current Balance</div>
+        <h1 id="balanceDisplay">GHS 0.00</h1>
+        <div class="mini-stats">
+            <div class="mini-stat">
+                <div class="s-label">Today Deposited</div>
+                <div class="s-value" id="todayDeposited">GHS 0.00</div>
+            </div>
+            <div class="mini-stat">
+                <div class="s-label">Transaction Fee</div>
+                <div class="s-value">2.5%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- POLL BANNER -->
+    <div class="poll-banner" id="pollBanner">
+        <i class="fa-solid fa-circle-notch fa-spin"></i>
+        <div class="text">
+            <h4 id="pollTitle">Waiting for payment...</h4>
+            <p id="pollMessage">Approve the prompt on your phone</p>
+        </div>
+    </div>
+
+    <!-- DEPOSIT FORM -->
+    <div class="form-card">
+        <div class="card-title">Deposit Details</div>
+
+        <div class="info-box">
+            <i class="fa-solid fa-circle-info"></i>
+            <div>
+                <strong>Instant Deposit.</strong> Select your network, enter your phone number and amount. You'll receive a prompt on your phone to approve.
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label>Select Network</label>
+            <div class="network-grid" id="networkGrid">
+                <div class="network-option" data-network="mtn" onclick="selectNetwork('mtn')">
+                    <div class="logo mtn">MTN</div>
+                    <div class="name">MTN MoMo</div>
+                    <div class="check"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="network-option" data-network="telecel" onclick="selectNetwork('telecel')">
+                    <div class="logo telecel">TC</div>
+                    <div class="name">Telecel Cash</div>
+                    <div class="check"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="network-option" data-network="airteltigo" onclick="selectNetwork('airteltigo')">
+                    <div class="logo airteltigo">AT</div>
+                    <div class="name">AirtelTigo</div>
+                    <div class="check"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="network-option" data-network="airtel" onclick="selectNetwork('airtel')">
+                    <div class="logo airteltigo">AM</div>
+                    <div class="name">Airtel Money</div>
+                    <div class="check"><i class="fa-solid fa-check"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label>MoMo Number</label>
+            <div class="input-wrap">
+                <i class="fa-solid fa-phone"></i>
+                <input type="tel" id="phoneNumber" placeholder="0201234567" inputmode="numeric" maxlength="13">
+            </div>
+            <div class="hint" style="font-size:11px;color:var(--muted);margin-top:6px;font-weight:500;">Number that will be charged</div>
+        </div>
+
+        <div class="field-group">
+            <label>Amount (GHS)</label>
+            <div class="amount-input-wrap">
+                <span class="prefix">GHS</span>
+                <input type="number" id="amountInput" placeholder="0.00" inputmode="decimal" min="1">
+            </div>
+            <div class="quick-amounts">
+                <button type="button" onclick="setAmount(10)">10</button>
+                <button type="button" onclick="setAmount(50)">50</button>
+                <button type="button" onclick="setAmount(100)">100</button>
+                <button type="button" onclick="setAmount(200)">200</button>
+            </div>
+        </div>
+
+        <button class="btn-primary" id="depositBtn" onclick="processDeposit()">
+            <i class="fa-solid fa-bolt"></i> Deposit Now
+        </button>
+    </div>
+
+    <!-- RECENT DEPOSITS -->
+    <div class="section-header">
+        <h3>Recent Deposits</h3>
+        <span><i class="fa-solid fa-clock-rotate-left"></i> Last 8</span>
+    </div>
+    <div class="tx-list" id="depositHistory">
+        <div class="empty-history">
+            <i class="fa-solid fa-inbox"></i>
+            <p>No deposits yet</p>
+        </div>
+    </div>
+    <div style="height: 20px;"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <a href="userdashboard.html"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="accountnumberupdate.html"><i class="fa-solid fa-book"></i> Accounts</a>
+    <button class="center-btn" onclick="location.href='userdashboard.html'"><i class="fa-solid fa-plus"></i></button>
+    <a href="usernotification.html"><i class="fa-solid fa-bell"></i> Alerts</a>
+    <a href="myprofile.html"><i class="fa-solid fa-user"></i> Profile</a>
+</nav>
+
+<div id="toast" class="toast"></div>
+
+<script>
+// ============================================================
+// SESSION
+// ============================================================
+const session = JSON.parse(localStorage.getItem('cit_session') || 'null');
+if (!session || !session.uid) window.location.href = 'userlogin.html';
+
+// ============================================================
+// STATE
+// ============================================================
+let selectedNetwork = null;
+let currentUser = null;
+let currentBalance = 0;
+let lastKnownBalance = 0;
+let pollInterval = null;
+let toastTimer = null;
+let activeTxRef = null;
+let isProcessing = false;
+const MAX_POLL_ATTEMPTS = 40;   // 40 * 4s = ~2.7 min
+const POLL_INTERVAL_MS = 4000;
+
+const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230B7A2E'/><circle cx='50' cy='38' r='18' fill='%23FFC72C'/><path d='M18 92c0-20 14-34 32-34s32 14 32 34' fill='%23FFC72C'/></svg>";
+
+// ============================================================
+// HELPERS
+// ============================================================
+function fmt(n) {
+    return 'GHS ' + Number(n || 0).toLocaleString(undefined, {
+        minimumFractionDigits: 2, maximumFractionDigits: 2
+    });
+}
+function esc(s) {
+    return String(s == null ? '' : s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+function hideLoading() {
+    const el = document.getElementById('loading-overlay');
+    if (el) { el.classList.add('hide'); setTimeout(() => el.style.display = 'none', 400); }
+}
+function setGreeting() {
+    const el = document.getElementById('greetingTime');
+    const hour = new Date().getHours();
+    if (hour < 12) el.textContent = 'Good Morning,';
+    else if (hour < 17) el.textContent = 'Good Afternoon,';
+    else el.textContent = 'Good Evening,';
+}
+function setDepositBtn(mode, text) {
+    const btn = document.getElementById('depositBtn');
+    if (mode === 'busy') {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ' + (text || 'Processing...');
+    } else {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Deposit Now';
+    }
+}
+
+// ============================================================
+// ROBUST API CALL — with retry + timeout
+// ============================================================
+async function api(path, body, timeoutMs = 20000) {
+    const controller = new AbortController();
+    const t = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+        const res = await fetch(path + '?t=' + Date.now(), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body || {}),
+            cache: 'no-store',
+            signal: controller.signal
+        });
+        clearTimeout(t);
+        const text = await res.text();
+        if (!text) return { success: false, error: 'Empty response from server' };
+        try {
+            return JSON.parse(text);
+        } catch {
+            return { success: false, error: 'Invalid server response (not JSON)' };
+        }
+    } catch (e) {
+        clearTimeout(t);
+        if (e.name === 'AbortError') return { success: false, error: 'Request timed out' };
+        return { success: false, error: 'Network error: ' + e.message };
+    }
+}
+
+// ============================================================
+// UI ACTIONS
+// ============================================================
+function selectNetwork(network) {
+    selectedNetwork = network;
+    document.querySelectorAll('.network-option').forEach(el => {
+        el.classList.toggle('selected', el.dataset.network === network);
+    });
+}
+window.selectNetwork = selectNetwork;
+
+function setAmount(amt) {
+    document.getElementById('amountInput').value = Number(amt).toFixed(2);
+    document.querySelectorAll('.quick-amounts button').forEach(b => {
+        b.classList.toggle('active', Number(b.textContent) === Number(amt));
+    });
+}
+window.setAmount = setAmount;
+
+// ============================================================
+// LOAD USER
+// ============================================================
+async function loadUser() {
+    try {
+        const data = await api('/api/user-data', { uid: session.uid });
+        if (data.success && data.user) {
+            currentUser = data.user;
+            currentBalance = parseFloat(currentUser.balance) || 0;
+            lastKnownBalance = currentBalance;
+
+            document.getElementById('balanceDisplay').textContent = fmt(currentBalance);
+            document.getElementById('userName').textContent = currentUser.fullName || 'Customer';
+            document.getElementById('userAccNum').textContent =
+                currentUser.accountNumber ? ('Acc ' + currentUser.accountNumber) : 'CITFUND Member';
+
+            const pic = document.getElementById('profilePic');
+            if (currentUser.photo && String(currentUser.photo).trim().length > 0) {
+                pic.src = currentUser.photo;
+            } else {
+                pic.src = DEFAULT_AVATAR;
+            }
+            pic.onerror = () => { pic.onerror = null; pic.src = DEFAULT_AVATAR; };
+
+            renderHistory(currentUser.transactions || {});
+            return true;
+        } else if (data.error && /not found/i.test(data.error)) {
+            localStorage.removeItem('cit_session');
+            window.location.href = 'userlogin.html';
+            return false;
+        } else {
+            console.warn('loadUser warning:', data.error);
+            return false;
+        }
+    } catch (e) {
+        console.error('Load user error:', e);
+        return false;
+    }
+}
+
+// ============================================================
+// RENDER HISTORY
+// ============================================================
+function renderHistory(transactions) {
+    const deposits = Object.values(transactions || {})
+        .filter(tx => tx && (tx.type === 'deposit' || tx.type === 'klasha_deposit'))
+        .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
+        .slice(0, 8);
+
+    const container = document.getElementById('depositHistory');
+    if (deposits.length === 0) {
+        container.innerHTML = `
+            <div class="empty-history">
+                <i class="fa-solid fa-inbox"></i>
+                <p>No deposits yet</p>
+            </div>`;
+        document.getElementById('todayDeposited').textContent = fmt(0);
+        return;
+    }
+
+    // Today total
+    let todayTotal = 0;
+    const today = new Date().toDateString();
+    Object.values(transactions).forEach(t => {
+        if ((t.type === 'deposit' || t.type === 'klasha_deposit') &&
+            t.status === 'success' &&
+            t.date &&
+            new Date(t.date).toDateString() === today) {
+            todayTotal += Number(t.grossAmount || t.amount || 0);
+        }
+    });
+    document.getElementById('todayDeposited').textContent = fmt(todayTotal);
+
+    container.innerHTML = deposits.map(tx => {
+        const rawStatus = String(tx.status || 'pending').toLowerCase();
+        let statusClass, statusIcon, statusText;
+        if (rawStatus === 'success' || rawStatus === 'successful' || rawStatus === 'completed') {
+            statusClass = 'success';
+            statusIcon = 'fa-check';
+            statusText = 'Success';
+        } else if (rawStatus === 'failed' || rawStatus === 'failure' || rawStatus === 'cancelled' || rawStatus === 'abandoned' || rawStatus === 'reversed') {
+            statusClass = 'failed';
+            statusIcon = 'fa-xmark';
+            statusText = 'Failed';
+        } else {
+            statusClass = 'pending';
+            statusIcon = 'fa-clock';
+            statusText = 'Pending';
+        }
+
+        const amountClass = statusClass === 'success' ? 'positive' : (statusClass === 'failed' ? 'negative' : 'pending');
+        const prefix = statusClass === 'success' ? '+' : '';
+        const gross = Number(tx.grossAmount || tx.amount || 0);
+        const amountDisplay = `${prefix} ${fmt(gross)}`;
+
+        const date = tx.date
+            ? new Date(tx.date).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+            : 'Just now';
+        const subtitle = statusClass === 'failed'
+            ? (tx.failureReason || 'Payment not completed')
+            : (tx.network ? tx.network.toUpperCase() : 'MoMo') + ' · ' + (tx.phone || '');
+
+        const titleMap = {
+            success: 'Deposit Successful',
+            failed: 'Deposit Failed',
+            pending: 'Deposit Pending'
+        };
+
+        return `
+            <div class="history-item">
+                <div class="big-icon ${statusClass}">
+                    <i class="fa-solid ${statusIcon}"></i>
+                </div>
+                <div class="info">
+                    <div class="title">${titleMap[statusClass]}</div>
+                    <div class="sub">${esc(date)} • ${esc(subtitle)}</div>
+                </div>
+                <div class="amount">
+                    <div class="value ${amountClass}">${esc(amountDisplay)}</div>
+                    <div class="status-text ${statusClass}">${statusText}</div>
+                </div>
+            </div>`;
+    }).join('');
+}
+
+// ============================================================
+// PROCESS DEPOSIT — now Paystack-only
+// ============================================================
+async function processDeposit() {
+    if (isProcessing) return;
+
+    const phone = document.getElementById('phoneNumber').value.trim();
+    const amount = parseFloat(document.getElementById('amountInput').value);
+
+    if (!selectedNetwork) return showToast('Please select a network', 'error');
+    if (!phone || phone.replace(/\D/g, '').length < 9) return showToast('Enter a valid phone number', 'error');
+    if (!amount || amount < 1) return showToast('Enter amount (min GHS 1.00)', 'error');
+    if (amount > 100000) return showToast('Maximum single deposit is GHS 100,000', 'error');
+
+    isProcessing = true;
+    setDepositBtn('busy', 'Initiating...');
+
+    try {
+        const callbackUrl = window.location.origin + window.location.pathname;
+
+        // ALL networks now go through Paystack
+        const data = await api('/api/paystack/momo-initialize', {
+            uid: session.uid,
+            amount: amount,
+            phoneNumber: phone,
+            network: selectedNetwork,
+            callbackUrl: callbackUrl
+        });
+
+        if (!data.success) {
+            throw new Error(data.error || 'Failed to initialize payment');
+        }
+
+        activeTxRef = data.txRef;
+
+        if (data.authorizationUrl) {
+            // Redirect to Paystack secure page
+            showToast('🔄 Redirecting to secure payment...', 'info');
+            setTimeout(() => {
+                window.location.href = data.authorizationUrl;
+            }, 400);
+        } else {
+            // No redirect URL — poll instead (rare)
+            await loadUser();
+            showToast('📱 Approve the prompt on your phone', 'info');
+            showPollBanner('Waiting for approval...', 'Approve the MoMo prompt on your phone');
+            startPolling();
+            setDepositBtn('ready');
+            isProcessing = false;
+        }
+    } catch (e) {
+        console.error('Deposit init error:', e);
+        showToast('❌ ' + e.message, 'error');
+        setDepositBtn('ready');
+        isProcessing = false;
+    }
+}
+window.processDeposit = processDeposit;
+
+// ============================================================
+// POLL BANNER HELPERS
+// ============================================================
+function showPollBanner(title, message) {
+    const b = document.getElementById('pollBanner');
+    document.getElementById('pollTitle').textContent = title || 'Waiting...';
+    document.getElementById('pollMessage').textContent = message || 'Please wait';
+    b.classList.add('show');
+}
+function hidePollBanner() {
+    document.getElementById('pollBanner').classList.remove('show');
+}
+
+// ============================================================
+// POLLING — uses lighter /api/paystack/verify-pending
+// ============================================================
+function startPolling() {
+    stopPolling();
+    lastKnownBalance = currentBalance;
+    let attempts = 0;
+
+    pollInterval = setInterval(async () => {
+        attempts++;
+        try {
+            const data = await api('/api/paystack/verify-pending', { uid: session.uid });
+
+            // Either credited OR user's balance increased
+            const credited = data && (data.credited > 0);
+            const newBal = data && typeof data.newBalance === 'number' ? data.newBalance : null;
+
+            if (credited || (newBal !== null && newBal > lastKnownBalance)) {
+                stopPolling();
+                await loadUser();
+                hidePollBanner();
+                setDepositBtn('ready');
+                resetForm();
+                const delta = newBal !== null ? (newBal - lastKnownBalance) : 0;
+                showToast('🎉 Payment received!' + (delta > 0 ? ' GHS ' + delta.toFixed(2) + ' credited.' : ''), 'success');
+                isProcessing = false;
+                activeTxRef = null;
+                return;
+            }
+
+            // check for failure via transaction
+            if (activeTxRef) {
+                const userRes = await api('/api/user-data', { uid: session.uid });
+                if (userRes.success && userRes.user && userRes.user.transactions) {
+                    const tx = userRes.user.transactions[activeTxRef];
+                    if (tx && (tx.status === 'failed' || tx.status === 'cancelled')) {
+                        stopPolling();
+                        await loadUser();
+                        hidePollBanner();
+                        setDepositBtn('ready');
+                        showToast('❌ Payment not completed. Please try again.', 'error');
+                        isProcessing = false;
+                        activeTxRef = null;
+                        return;
+                    }
+                }
+            }
+        } catch (e) { console.warn('Poll error:', e); }
+
+        if (attempts >= MAX_POLL_ATTEMPTS) {
+            stopPolling();
+            hidePollBanner();
+            setDepositBtn('ready');
+            if (activeTxRef) await markPaymentFailed(activeTxRef, 'Payment timed out');
+            showToast('❌ Payment not received. Marked as failed.', 'error');
+            isProcessing = false;
+            activeTxRef = null;
+        }
+    }, POLL_INTERVAL_MS);
+}
+
+function stopPolling() {
+    if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+}
+function resetForm() {
+    document.getElementById('amountInput').value = '';
+    document.getElementById('phoneNumber').value = '';
+    document.querySelectorAll('.quick-amounts button').forEach(b => b.classList.remove('active'));
+}
+
+// ============================================================
+// MARK FAILED
+// ============================================================
+async function markPaymentFailed(txRef, reason) {
+    if (!txRef) return;
+    try {
+        await api('/api/payment/failed', {
+            uid: session.uid,
+            txRef: txRef,
+            reason: reason || 'Payment cancelled or failed'
+        });
+        await loadUser();
+    } catch (e) { console.warn('markPaymentFailed:', e); }
+}
+
+// ============================================================
+// VERIFY PAYSTACK RETURN — runs on page load if reference in URL
+// ============================================================
+async function verifyPaystackReturn() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const txRef = urlParams.get('reference') || urlParams.get('trxref');
+    if (!txRef) return false;
+
+    // Clean URL so refresh doesn't re-trigger
+    window.history.replaceState({}, document.title, window.location.pathname);
+
+    showToast('Verifying payment...', 'info');
+    showPollBanner('Verifying payment...', 'Please wait while we confirm with Paystack');
+
+    try {
+        const data = await api('/api/paystack/verify', { txRef: txRef });
+
+        if (data.success && data.status === 'success') {
+            await loadUser();
+            hidePollBanner();
+            showToast('🎉 Payment verified! Balance updated.', 'success');
+            return true;
+        } else {
+            // Give it another shot — sometimes webhook fires first
+            await new Promise(r => setTimeout(r, 2500));
+            const check = await api('/api/paystack/verify-pending', { uid: session.uid });
+            if (check.success && check.credited > 0) {
+                await loadUser();
+                hidePollBanner();
+                showToast('🎉 Payment verified! Balance updated.', 'success');
+                return true;
+            }
+            await markPaymentFailed(txRef, 'Payment not completed');
+            await loadUser();
+            hidePollBanner();
+            showToast('❌ Payment was not completed.', 'error');
+            return false;
+        }
+    } catch (e) {
+        console.error('Verification error:', e);
+        hidePollBanner();
+        await loadUser();
+        showToast('Verification failed. Check your balance.', 'error');
+        return false;
+    }
+}
+
+// ============================================================
+// CLEANUP
+// ============================================================
+window.addEventListener('beforeunload', () => {
+    stopPolling();
+});
+
+// ============================================================
+// INIT
+// ============================================================
+(async function init() {
+    setGreeting();
+
+    // If returning from Paystack, verify first
+    const fromPaystack = await verifyPaystackReturn();
+
+    // Load user data
+    await loadUser();
+
+    // If we came from Paystack but verification failed and there's a pending tx, keep polling
+    if (fromPaystack === false) {
+        // check for pending tx
+        const pending = Object.values((currentUser && currentUser.transactions) || {})
+            .filter(tx => tx.type === 'deposit' && tx.status === 'pending');
+        if (pending.length > 0) {
+            activeTxRef = pending[0].id || pending[0].reference;
+            showPollBanner('Checking payment status...', 'Still waiting for confirmation');
+            startPolling();
+        }
+    }
+
+    hideLoading();
+})();
+
+// Failsafe: hide loading after 6s no matter what
+setTimeout(hideLoading, 6000);
+</script>
+</body>
+</html>
