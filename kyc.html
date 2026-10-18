@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CITFUND ENTERPRISE | KYC Verification</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    :root {
+        --green: #0B7A2E;
+        --green-dark: #075C22;
+        --green-light: #14A344;
+        --gold: #FFC72C;
+        --gold-soft: #FFD75E;
+        --red: #E30613;
+
+        --bg: #f4f9f6;
+        --card: #ffffff;
+        --text: #1a2b4c;
+        --muted: #6b7a8f;
+        --border: #e6f0e9;
+        --success: #00a86b;
+        --danger: #e74c3c;
+        --warning: #ff9800;
+
+        --primary: var(--green);
+        --primary-dark: var(--green-dark);
+        --accent: var(--green);
+        --accent-light: var(--green-light);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+    .app-container { max-width: 480px; margin: 0 auto; background: var(--bg); min-height: 100vh; padding-bottom: 100px; }
+
+    /* ===== TOP HEADER ===== */
+    .top-header {
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        padding: 22px 20px 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 0 0 30px 30px;
+        position: relative;
+        z-index: 1;
+        gap: 10px;
+        overflow: hidden;
+    }
+    .top-header::before {
+        content: '';
+        position: absolute;
+        top: -80px; right: -60px;
+        width: 220px; height: 220px;
+        background: radial-gradient(circle, rgba(255,199,44,0.28), transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .top-header::after {
+        content: '';
+        position: absolute;
+        bottom: -100px; left: -80px;
+        width: 200px; height: 200px;
+        background: radial-gradient(circle, rgba(227,6,19,0.12), transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .top-header .header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+        min-width: 0;
+        position: relative;
+        z-index: 2;
+    }
+    .top-header .back-btn {
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.15);
+        color: white;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 15px;
+        flex-shrink: 0;
+        cursor: pointer;
+        border: none;
+        transition: 0.2s;
+        text-decoration: none;
+    }
+    .top-header .back-btn:hover { background: rgba(255,255,255,0.28); }
+    .top-header .header-title { position: relative; z-index: 2; }
+    .top-header .header-title h1 {
+        font-size: 18px;
+        font-weight: 800;
+        color: white;
+    }
+    .top-header .header-title p {
+        font-size: 11.5px;
+        color: rgba(255,255,255,0.75);
+        font-weight: 500;
+        margin-top: 2px;
+    }
+    .top-header .notification-btn {
+        position: relative;
+        background: rgba(255,255,255,0.15);
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        width: 42px; height: 42px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        text-decoration: none;
+        flex-shrink: 0;
+        z-index: 2;
+        transition: 0.2s;
+    }
+    .top-header .notification-btn:hover { background: rgba(255,255,255,0.28); }
+
+    .page-container {
+        padding: 0 20px;
+        margin-top: -45px;
+        position: relative;
+        z-index: 3;
+    }
+
+    /* ===== HERO / INTRO CARD ===== */
+    .hero-card {
+        background: var(--card);
+        border-radius: 24px;
+        padding: 22px;
+        box-shadow: 0 20px 45px rgba(11,122,46,0.1);
+        border: 1px solid rgba(11,122,46,0.06);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 18px;
+    }
+    .hero-card .hero-icon {
+        width: 60px; height: 60px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        display: flex; align-items: center; justify-content: center;
+        color: white;
+        font-size: 26px;
+        flex-shrink: 0;
+        box-shadow: 0 12px 25px rgba(11,122,46,0.3);
+    }
+    .hero-card .hero-icon.gold {
+        background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+        color: var(--green-dark);
+        box-shadow: 0 12px 25px rgba(255,199,44,0.4);
+    }
+    .hero-card .hero-text {
+        flex: 1;
+        min-width: 0;
+    }
+    .hero-card .hero-text h2 {
+        font-size: 15.5px;
+        font-weight: 800;
+        color: var(--green-dark);
+        margin-bottom: 3px;
+    }
+    .hero-card .hero-text p {
+        font-size: 11.5px;
+        color: var(--muted);
+        line-height: 1.5;
+        font-weight: 500;
+    }
+
+    /* ===== STATUS CARD ===== */
+    .status-card {
+        border-radius: 22px;
+        padding: 28px 22px;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-bottom: 18px;
+        border: 1.5px solid var(--border);
+        background: var(--card);
+    }
+    .status-card.show { display: flex; animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .status-card .icon-wrap {
+        width: 80px; height: 80px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 38px;
+        margin-bottom: 16px;
+        animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    .status-card h2 {
+        font-size: 20px;
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+    .status-card p {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.6;
+        max-width: 96%;
+    }
+    .status-card .status-meta {
+        margin-top: 18px;
+        background: rgba(255,255,255,0.6);
+        padding: 14px 16px;
+        border-radius: 14px;
+        font-size: 12.5px;
+        text-align: left;
+        width: 100%;
+        border: 1px solid var(--border);
+    }
+    .status-card .status-meta strong {
+        color: var(--green-dark);
+        font-weight: 800;
+        margin-right: 4px;
+    }
+    .status-card .status-meta div {
+        padding: 5px 0;
+        border-bottom: 1px dashed var(--border);
+        color: var(--text);
+    }
+    .status-card .status-meta div:last-child { border-bottom: none; }
+    .status-card .btn-retry {
+        margin-top: 18px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white;
+        border: none;
+        padding: 13px 26px;
+        border-radius: 12px;
+        font-family: inherit;
+        font-weight: 800;
+        font-size: 14px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 8px 20px rgba(11,122,46,0.3);
+        transition: 0.2s;
+    }
+    .status-card .btn-retry:hover { transform: translateY(-2px); }
+
+    /* Status variants */
+    .status-card.pending {
+        background: linear-gradient(135deg, #fff8e1 0%, #ffeeba 100%);
+        border-color: #ffe082;
+    }
+    .status-card.pending .icon-wrap {
+        background: var(--gold);
+        color: var(--green-dark);
+        box-shadow: 0 12px 25px rgba(255,199,44,0.4);
+    }
+    .status-card.pending h2 { color: var(--green-dark); }
+
+    .status-card.approved {
+        background: linear-gradient(135deg, #e6fff0 0%, #d3f5df 100%);
+        border-color: rgba(0,168,107,0.25);
+    }
+    .status-card.approved .icon-wrap {
+        background: linear-gradient(135deg, var(--success), #00c853);
+        color: white;
+        box-shadow: 0 12px 25px rgba(0,168,107,0.4);
+    }
+    .status-card.approved h2 { color: var(--green-dark); }
+
+    .status-card.denied, .status-card.failed {
+        background: linear-gradient(135deg, #ffe6e6 0%, #ffd3d3 100%);
+        border-color: rgba(231,76,60,0.25);
+    }
+    .status-card.denied .icon-wrap, .status-card.failed .icon-wrap {
+        background: linear-gradient(135deg, var(--danger), #ff6b6b);
+        color: white;
+        box-shadow: 0 12px 25px rgba(231,76,60,0.4);
+    }
+    .status-card.denied h2, .status-card.failed h2 { color: #a30000; }
+
+    /* ===== FORM CARD ===== */
+    .form-card {
+        display: none;
+    }
+    .form-card.show { display: block; }
+
+    .form-block {
+        background: var(--card);
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 16px;
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 15px rgba(11,122,46,0.03);
+    }
+    .form-block .block-title {
+        font-size: 14px;
+        font-weight: 800;
+        color: var(--green);
+        margin-bottom: 16px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .form-block .block-title::before {
+        content: '';
+        width: 4px; height: 16px;
+        background: var(--gold);
+        border-radius: 2px;
+    }
+    .form-block .block-title .step-badge {
+        margin-left: auto;
+        background: #eef6f0;
+        color: var(--green);
+        font-size: 10px;
+        font-weight: 800;
+        padding: 3px 10px;
+        border-radius: 20px;
+        letter-spacing: 0.5px;
+    }
+
+    .field-group { margin-bottom: 16px; }
+    .field-group:last-child { margin-bottom: 0; }
+    .field-group label {
+        display: block;
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--green-dark);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .field-group label .req { color: var(--red); margin-left: 2px; }
+    .field-group input, .field-group select {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 14px;
+        border: 1.5px solid var(--border);
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--green-dark);
+        background: var(--bg);
+        outline: none;
+        transition: 0.2s;
+    }
+    .field-group input:focus, .field-group select:focus {
+        border-color: var(--green);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(11,122,46,0.1);
+    }
+    .field-group input::placeholder { color: #b8c4d1; font-weight: 500; }
+
+    /* ===== UPLOAD BOXES ===== */
+    .upload-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+    .upload-box {
+        border: 2px dashed var(--border);
+        border-radius: 14px;
+        padding: 20px 12px;
+        text-align: center;
+        cursor: pointer;
+        background: var(--bg);
+        transition: 0.25s;
+        position: relative;
+        overflow: hidden;
+    }
+    .upload-box:hover { border-color: var(--green); background: #eef6f0; }
+    .upload-box.has-file {
+        border-color: var(--success);
+        border-style: solid;
+        background: linear-gradient(135deg, #e6fff0, #d3f5df);
+    }
+    .upload-box > i {
+        font-size: 28px;
+        color: var(--green);
+        margin-bottom: 8px;
+        display: block;
+    }
+    .upload-box.has-file > i { color: var(--success); }
+    .upload-box p {
+        font-size: 11.5px;
+        color: var(--muted);
+        margin: 0;
+        font-weight: 700;
+    }
+    .upload-box .file-name {
+        display: block;
+        font-size: 10.5px;
+        font-weight: 700;
+        color: var(--green-dark);
+        margin-top: 6px;
+        word-break: break-all;
+        line-height: 1.3;
+    }
+    .upload-box input[type="file"] { display: none; }
+    .upload-box .badge-upload {
+        position: absolute;
+        top: 8px; right: 8px;
+        background: var(--success);
+        color: white;
+        font-size: 9px;
+        padding: 3px 8px;
+        border-radius: 20px;
+        display: none;
+        font-weight: 800;
+    }
+    .upload-box.has-file .badge-upload { display: block; }
+
+    .upload-full {
+        border: 2px dashed var(--border);
+        border-radius: 14px;
+        padding: 22px 16px;
+        text-align: center;
+        cursor: pointer;
+        background: var(--bg);
+        transition: 0.25s;
+        margin-bottom: 14px;
+        position: relative;
+    }
+    .upload-full:hover { border-color: var(--green); background: #eef6f0; }
+    .upload-full.has-file {
+        border-color: var(--success);
+        border-style: solid;
+        background: linear-gradient(135deg, #e6fff0, #d3f5df);
+    }
+    .upload-full > i {
+        font-size: 32px;
+        color: var(--green);
+        margin-bottom: 8px;
+        display: block;
+    }
+    .upload-full.has-file > i { color: var(--success); }
+    .upload-full p {
+        font-size: 12px;
+        color: var(--muted);
+        margin: 0;
+        font-weight: 600;
+    }
+    .upload-full .file-name {
+        display: block;
+        font-size: 11.5px;
+        font-weight: 700;
+        color: var(--green-dark);
+        margin-top: 6px;
+        word-break: break-all;
+    }
+    .upload-full input[type="file"] { display: none; }
+    .upload-full .badge-upload {
+        position: absolute;
+        top: 10px; right: 10px;
+        background: var(--success);
+        color: white;
+        font-size: 9.5px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        display: none;
+        font-weight: 800;
+    }
+    .upload-full.has-file .badge-upload { display: block; }
+
+    /* ===== PROGRESS ===== */
+    .progress-wrap {
+        margin-bottom: 16px;
+    }
+    .upload-progress {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 11.5px;
+        color: var(--muted);
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+    .upload-progress strong { color: var(--green); font-weight: 900; }
+    .progress-track {
+        height: 6px;
+        background: var(--border);
+        border-radius: 3px;
+        overflow: hidden;
+    }
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--green), var(--green-light));
+        width: 0%;
+        transition: width 0.4s ease;
+        border-radius: 3px;
+    }
+
+    /* ===== SUBMIT BUTTON ===== */
+    .btn-submit {
+        width: 100%;
+        padding: 17px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 800;
+        letter-spacing: 0.4px;
+        cursor: pointer;
+        box-shadow: 0 12px 28px rgba(11,122,46,0.3);
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    .btn-submit:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 32px rgba(11,122,46,0.4);
+    }
+    .btn-submit:disabled {
+        background: #cbd5e0;
+        box-shadow: none;
+        transform: none;
+        cursor: not-allowed;
+    }
+
+    /* ===== SECURE NOTICE ===== */
+    .secure-notice {
+        background: linear-gradient(135deg, #fff8e1 0%, #ffeeba 100%);
+        border: 1px solid #ffe082;
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 11.5px;
+        color: #8a6d1a;
+        font-weight: 600;
+        line-height: 1.5;
+    }
+    .secure-notice i {
+        width: 32px; height: 32px;
+        background: var(--gold);
+        color: var(--green-dark);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    /* ===== BOTTOM NAV ===== */
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 480px;
+        background: var(--card);
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 8px 0 12px;
+        z-index: 100;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+    }
+    .bottom-nav a {
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        font-size: 10px;
+        color: var(--muted);
+        font-weight: 600;
+        flex: 1;
+        padding-top: 4px;
+    }
+    .bottom-nav a i { font-size: 22px; }
+    .bottom-nav a.active { color: var(--green); }
+    .bottom-nav a.active::after {
+        content: '';
+        display: block;
+        width: 20px;
+        height: 3px;
+        background: var(--gold);
+        border-radius: 3px;
+        margin-top: 2px;
+    }
+    .bottom-nav .center-btn {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+        margin-top: -25px;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.4);
+        cursor: pointer;
+        border: 3px solid var(--bg);
+    }
+
+    /* ===== TOAST ===== */
+    .toast {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-20px);
+        background: var(--green);
+        color: white;
+        padding: 13px 22px;
+        border-radius: 30px;
+        z-index: 99999;
+        opacity: 0;
+        visibility: hidden;
+        font-size: 13px;
+        font-weight: 700;
+        max-width: 90%;
+        text-align: center;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 30px rgba(11,122,46,0.3);
+        line-height: 1.4;
+    }
+    .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .toast.error { background: var(--danger); }
+    .toast.success { background: var(--success); }
+
+    /* ===== LOADING ===== */
+    #loading-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(244,249,246,0.96);
+        backdrop-filter: blur(6px);
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9998;
+        color: var(--green);
+        transition: opacity 0.35s;
+    }
+    #loading-overlay.show { display: flex; }
+    .spinner {
+        width: 46px;
+        height: 46px;
+        border: 5px solid var(--border);
+        border-top-color: var(--green);
+        border-right-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loading-overlay p {
+        margin-top: 14px;
+        font-weight: 700;
+        font-size: 13px;
+        letter-spacing: 0.3px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 360px) {
+        .upload-grid { grid-template-columns: 1fr; }
+    }
+
+    .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <p id="loadingText">Loading…</p>
+</div>
+
+<div class="app-container">
+
+    <!-- ===== HEADER ===== -->
+    <header class="top-header">
+        <div class="header-left">
+            <a href="userdashboard.html" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <div class="header-title">
+                <h1>KYC Verification</h1>
+                <p>Identity & account security</p>
+            </div>
+        </div>
+        <a href="usernotification.html" class="notification-btn">
+            <i class="fa-regular fa-bell"></i>
+        </a>
+    </header>
+
+    <div class="page-container">
+
+        <!-- ===== HERO CARD ===== -->
+        <div class="hero-card">
+            <div class="hero-icon" id="heroIcon">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div class="hero-text">
+                <h2 id="heroTitle">Verify Your Identity</h2>
+                <p id="heroSubtitle">Unlock full access to deposits, withdrawals, transfers and investments.</p>
+            </div>
+        </div>
+
+        <!-- ===== STATUS CARD ===== -->
+        <div id="statusCard" class="status-card">
+            <div class="icon-wrap"><i id="statusIcon" class="fa-solid fa-clock"></i></div>
+            <h2 id="statusTitle">Pending Review</h2>
+            <p id="statusMessage">Your KYC is being reviewed by our team.</p>
+            <div class="status-meta" id="statusMeta" style="display:none;"></div>
+            <button class="btn-retry" id="retryBtn" style="display:none;" onclick="showForm()">
+                <i class="fa-solid fa-rotate"></i> Submit Again
+            </button>
+        </div>
+
+        <!-- ===== FORM CARD ===== -->
+        <div id="formCard" class="form-card">
+
+            <!-- Section 1: Personal Details -->
+            <div class="form-block">
+                <div class="block-title">
+                    Personal Details
+                    <span class="step-badge">Step 1</span>
+                </div>
+
+                <div class="field-group">
+                    <label>Full Legal Name <span class="req">*</span></label>
+                    <input type="text" id="fullName" placeholder="As it appears on your ID" autocomplete="name">
+                </div>
+
+                <div class="field-group">
+                    <label>Date of Birth <span class="req">*</span></label>
+                    <input type="date" id="dob">
+                </div>
+
+                <div class="field-group">
+                    <label>ID Type <span class="req">*</span></label>
+                    <select id="idType">
+                        <option value="Ghana Card">Ghana Card</option>
+                        <option value="Passport">Passport</option>
+                        <option value="Driver's License">Driver's License</option>
+                        <option value="Voter ID">Voter ID</option>
+                    </select>
+                </div>
+
+                <div class="field-group">
+                    <label>ID Number <span class="req">*</span></label>
+                    <input type="text" id="idNumber" placeholder="e.g. GHA-123456789-0" autocomplete="off" spellcheck="false">
+                </div>
+            </div>
+
+            <!-- Section 2: ID Documents -->
+            <div class="form-block">
+                <div class="block-title">
+                    ID Documents
+                    <span class="step-badge">Step 2</span>
+                </div>
+
+                <div class="upload-grid">
+                    <div class="upload-box" id="frontBox" onclick="document.getElementById('idFront').click()">
+                        <i class="fa-solid fa-id-card"></i>
+                        <p>ID Front</p>
+                        <span class="file-name" id="frontName">No file</span>
+                        <span class="badge-upload">✓</span>
+                        <input type="file" id="idFront" accept="image/*" onchange="handleFileUpload(this, 'frontName', 'frontBox')">
+                    </div>
+                    <div class="upload-box" id="backBox" onclick="document.getElementById('idBack').click()">
+                        <i class="fa-solid fa-id-card"></i>
+                        <p>ID Back</p>
+                        <span class="file-name" id="backName">No file</span>
+                        <span class="badge-upload">✓</span>
+                        <input type="file" id="idBack" accept="image/*" onchange="handleFileUpload(this, 'backName', 'backBox')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Additional Documents -->
+            <div class="form-block">
+                <div class="block-title">
+                    Additional Documents
+                    <span class="step-badge">Step 3</span>
+                </div>
+
+                <label style="font-size:11px;font-weight:800;color:var(--green-dark);display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">
+                    Proof of Address <span class="req">*</span>
+                </label>
+                <div class="upload-full" id="addressBox" onclick="document.getElementById('addressProof').click()">
+                    <i class="fa-solid fa-file-invoice"></i>
+                    <p>Utility bill · bank statement · tenancy agreement</p>
+                    <span class="file-name" id="addressName">No file chosen</span>
+                    <span class="badge-upload">✓</span>
+                    <input type="file" id="addressProof" accept="image/*" onchange="handleFileUpload(this, 'addressName', 'addressBox')">
+                </div>
+
+                <label style="font-size:11px;font-weight:800;color:var(--green-dark);display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">
+                    Selfie Holding Your ID <span class="req">*</span>
+                </label>
+                <div class="upload-full" id="selfieBox" onclick="document.getElementById('selfie').click()">
+                    <i class="fa-solid fa-camera"></i>
+                    <p>Take a clear selfie holding your ID next to your face</p>
+                    <span class="file-name" id="selfieName">No file chosen</span>
+                    <span class="badge-upload">✓</span>
+                    <input type="file" id="selfie" accept="image/*" onchange="handleFileUpload(this, 'selfieName', 'selfieBox')">
+                </div>
+            </div>
+
+            <!-- Section 4: Progress + Submit -->
+            <div class="form-block">
+                <div class="block-title">
+                    Review & Submit
+                    <span class="step-badge">Step 4</span>
+                </div>
+
+                <div class="progress-wrap">
+                    <div class="upload-progress">
+                        <span>Documents uploaded</span>
+                        <span><strong id="uploadCount">0</strong> / 4</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+                </div>
+
+                <div class="secure-notice">
+                    <i class="fa-solid fa-lock"></i>
+                    <span>Your documents are encrypted and used only for verification. We never share your data.</span>
+                </div>
+
+                <button class="btn-submit" id="submitBtn" onclick="submitKYC()">
+                    <i class="fa-solid fa-paper-plane"></i> Submit KYC
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <a href="userdashboard.html"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="account.html"><i class="fa-solid fa-book"></i> Accounts</a>
+    <button class="center-btn" onclick="location.href='userdeposit.html'"><i class="fa-solid fa-plus"></i></button>
+    <a href="usernotification.html"><i class="fa-solid fa-bell"></i> Alerts</a>
+    <a href="myprofile.html"><i class="fa-solid fa-user"></i> Profile</a>
+</nav>
+
+<div id="toast" class="toast"></div>
+
+<script>
+// ============================================================
+// SESSION
+// ============================================================
+const session = JSON.parse(localStorage.getItem('cit_session') || 'null');
+if (!session || !session.uid) {
+    window.location.href = 'userlogin.html';
+}
+
+// ============================================================
+// DOM
+// ============================================================
+const $ = id => document.getElementById(id);
+const statusCard = $('statusCard');
+const formCard = $('formCard');
+const submitBtn = $('submitBtn');
+let currentKYC = null;
+let toastTimer = null;
+
+// ============================================================
+// HELPERS
+// ============================================================
+function showToast(msg, type = '') {
+    const t = $('toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + (type || '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+function showLoading(text) {
+    $('loadingText').textContent = text || 'Loading…';
+    $('loading-overlay').classList.add('show');
+}
+function hideLoading() {
+    $('loading-overlay').classList.remove('show');
+}
+
+// ============================================================
+// FILE UPLOAD
+// ============================================================
+function handleFileUpload(input, nameId, boxId) {
+    const file = input.files[0];
+    if (!file) return;
+    if (!['image/png', 'image/jpeg', 'image/jpg', 'image/webp'].includes(file.type)) {
+        showToast('Please upload a PNG or JPG image', 'error');
+        input.value = '';
+        return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+        showToast('File too large (max 5 MB)', 'error');
+        input.value = '';
+        return;
+    }
+    const nameEl = $(nameId);
+    const box = $(boxId);
+    nameEl.textContent = file.name.length > 22 ? file.name.substring(0, 20) + '…' : file.name;
+    box.classList.add('has-file');
+    updateProgress();
+}
+window.handleFileUpload = handleFileUpload;
+
+function updateProgress() {
+    const count = ['idFront', 'idBack', 'addressProof', 'selfie']
+        .map(id => $(id).files[0]).filter(Boolean).length;
+    $('uploadCount').textContent = count;
+    $('progressFill').style.width = (count * 25) + '%';
+}
+
+// ============================================================
+// LOAD DATA
+// ============================================================
+async function loadData() {
+    showLoading('Loading your profile…');
+    try {
+        // User data
+        const userRes = await fetch('/api/user-data?t=' + Date.now(), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ uid: session.uid }),
+            cache: 'no-store'
+        });
+        const userData = await userRes.json();
+        if (userData.success && userData.user) {
+            const u = userData.user;
+            $('fullName').value = u.fullName || '';
+            $('dob').value = u.dob || '';
+            $('idType').value = u.idType || 'Ghana Card';
+            $('idNumber').value = u.idNumber || '';
+        }
+
+        // KYC status
+        showLoading('Checking KYC status…');
+        const statusRes = await fetch('/api/kyc/status?t=' + Date.now(), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ uid: session.uid }),
+            cache: 'no-store'
+        });
+        const statusData = await statusRes.json();
+
+        if (statusData.success && statusData.status) {
+            const status = statusData.status.status || 'none';
+            currentKYC = statusData.status;
+
+            if (status === 'pending') {
+                renderStatus('pending', currentKYC);
+                formCard.classList.remove('show');
+                hideLoading();
+                return;
+            }
+            if (status === 'approved' || status === 'verified' || status === 'success') {
+                renderStatus('approved', currentKYC);
+                formCard.classList.remove('show');
+                hideLoading();
+                return;
+            }
+            if (status === 'denied' || status === 'failed') {
+                renderStatus(status, currentKYC);
+                formCard.classList.add('show');
+                hideLoading();
+                return;
+            }
+        }
+
+        // No KYC yet → show form
+        statusCard.classList.remove('show');
+        formCard.classList.add('show');
+        hideLoading();
+    } catch (err) {
+        console.error('Load error:', err);
+        showToast('Error loading data: ' + err.message, 'error');
+        statusCard.classList.remove('show');
+        formCard.classList.add('show');
+        hideLoading();
+    }
+}
+
+// ============================================================
+// STATUS RENDERING
+// ============================================================
+function renderStatus(status, kyc) {
+    statusCard.className = 'status-card';
+    const icon = $('statusIcon');
+    const title = $('statusTitle');
+    const msg = $('statusMessage');
+    const meta = $('statusMeta');
+    const retryBtn = $('retryBtn');
+    const heroIcon = $('heroIcon');
+    const heroTitle = $('heroTitle');
+    const heroSubtitle = $('heroSubtitle');
+
+    let metaHtml = '';
+    if (kyc) {
+        const submitted = kyc.submittedAt ? new Date(kyc.submittedAt).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : null;
+        const updated = kyc.updatedAt ? new Date(kyc.updatedAt).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : null;
+        if (kyc.fullName) metaHtml += `<div><strong>Name:</strong> ${kyc.fullName}</div>`;
+        if (kyc.idType) metaHtml += `<div><strong>ID Type:</strong> ${kyc.idType}</div>`;
+        if (kyc.idNumber) metaHtml += `<div><strong>ID Number:</strong> ${kyc.idNumber}</div>`;
+        if (submitted) metaHtml += `<div><strong>Submitted:</strong> ${submitted}</div>`;
+        if (updated && status !== 'pending') metaHtml += `<div><strong>Reviewed:</strong> ${updated}</div>`;
+    }
+
+    if (status === 'pending') {
+        statusCard.classList.add('pending');
+        icon.className = 'fa-solid fa-clock';
+        title.textContent = 'Pending Review';
+        msg.textContent = 'Your KYC is being reviewed by our team. You will be notified once it is approved.';
+        retryBtn.style.display = 'none';
+        heroIcon.classList.add('gold');
+        heroTitle.textContent = 'Verification in Progress';
+        heroSubtitle.textContent = 'We are reviewing your documents. This usually takes a few minutes.';
+    } else if (status === 'approved') {
+        statusCard.classList.add('approved');
+        icon.className = 'fa-solid fa-circle-check';
+        title.textContent = 'Verified';
+        msg.textContent = 'Your identity has been verified. You now have full access to all CITFUND features.';
+        retryBtn.style.display = 'none';
+        heroIcon.classList.remove('gold');
+        heroTitle.textContent = 'Account Verified';
+        heroSubtitle.textContent = 'You have full access to deposits, withdrawals, investments and loans.';
+    } else if (status === 'denied') {
+        statusCard.classList.add('denied');
+        icon.className = 'fa-solid fa-circle-xmark';
+        title.textContent = 'Verification Failed';
+        msg.textContent = 'Your KYC was not approved. Please check your details and submit again.';
+        retryBtn.style.display = 'inline-flex';
+        heroIcon.classList.remove('gold');
+        heroTitle.textContent = 'Action Required';
+        heroSubtitle.textContent = 'Please review your details and resubmit to complete verification.';
+    } else if (status === 'failed') {
+        statusCard.classList.add('failed');
+        icon.className = 'fa-solid fa-hourglass-end';
+        title.textContent = 'Submission Expired';
+        msg.textContent = 'Your previous submission expired before review. Please submit again.';
+        retryBtn.style.display = 'inline-flex';
+        heroIcon.classList.remove('gold');
+        heroTitle.textContent = 'Action Required';
+        heroSubtitle.textContent = 'Please submit your KYC again to continue.';
+    }
+
+    if (metaHtml) {
+        meta.innerHTML = metaHtml;
+        meta.style.display = 'block';
+    } else {
+        meta.style.display = 'none';
+    }
+    statusCard.classList.add('show');
+}
+
+function showForm() {
+    statusCard.classList.remove('show');
+    formCard.classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+window.showForm = showForm;
+
+// ============================================================
+// SUBMIT KYC
+// ============================================================
+async function submitKYC() {
+    if (submitBtn.disabled) return;
+
+    try {
+        const fullName = $('fullName').value.trim();
+        const dob = $('dob').value;
+        const idType = $('idType').value;
+        const idNumber = $('idNumber').value.trim();
+
+        if (!fullName || !dob || !idType || !idNumber) {
+            throw new Error('Please fill in all personal details');
+        }
+        if (!/^[a-zA-Z\s'\-]+$/.test(fullName)) {
+            throw new Error('Full name should only contain letters and spaces');
+        }
+
+        const idFrontFile = $('idFront').files[0];
+        const idBackFile = $('idBack').files[0];
+        const addressFile = $('addressProof').files[0];
+        const selfieFile = $('selfie').files[0];
+
+        if (!idFrontFile || !idBackFile || !addressFile || !selfieFile) {
+            throw new Error('Please upload all 4 required images');
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading…';
+        showLoading('Uploading your documents…');
+
+        const toBase64 = (file) => new Promise((resolve, reject) => {
+            const r = new FileReader();
+            r.onload = e => resolve(e.target.result);
+            r.onerror = reject;
+            r.readAsDataURL(file);
+        });
+
+        const [idFront, idBack, addressProof, selfie] = await Promise.all([
+            toBase64(idFrontFile),
+            toBase64(idBackFile),
+            toBase64(addressFile),
+            toBase64(selfieFile)
+        ]);
+
+        showLoading('Submitting KYC…');
+
+        const res = await fetch('/api/kyc/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                uid: session.uid,
+                fullName, dob, idType, idNumber,
+                idFront, idBack, addressProof, selfie
+            })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || 'Submission failed');
+
+        hideLoading();
+        showToast('KYC submitted successfully', 'success');
+        submitBtn.innerHTML = '<i class="fa-solid fa-check-circle"></i> Submitted';
+
+        setTimeout(() => window.location.reload(), 2000);
+    } catch (err) {
+        hideLoading();
+        console.error('KYC error:', err);
+        showToast(err.message, 'error');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit KYC';
+    }
+}
+window.submitKYC = submitKYC;
+
+// ============================================================
+// INIT
+// ============================================================
+if (session && session.uid) {
+    loadData();
+}
+setTimeout(() => {
+    if ($('loading-overlay').classList.contains('show')) hideLoading();
+}, 8000);
+</script>
+</body>
+</html>

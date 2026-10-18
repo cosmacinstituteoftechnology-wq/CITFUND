@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CIT FUND | Scan Store QR</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- QR Scanner Library -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0b1f4a;
+            --primary-dark: #06183d;
+            --accent: #ff5a00;
+            --accent-light: #ff8c42;
+            --gold: #e0a800;
+            --bg: #f4f6fb;
+            --card: #ffffff;
+            --text: #1a2b4c;
+            --muted: #6b7a8f;
+            --border: #e8edf5;
+            --success: #00c853;
+            --danger: #e74c3c;
+            --warning: #ff9800;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        .app-container { max-width: 480px; margin: 0 auto; background: var(--bg); min-height: 100vh; position: relative; padding-bottom: 80px; }
+
+        /* Top Header */
+        .top-header {
+            background: var(--card);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+        .top-header .left { display: flex; align-items: center; gap: 15px; }
+        .top-header .logo { width: 40px; height: 40px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold; }
+        .top-header .greeting h4 { font-size: 14px; color: var(--muted); font-weight: 500; }
+        .top-header .greeting h2 { font-size: 18px; font-weight: 700; color: var(--primary); }
+        .top-header .right { display: flex; align-items: center; gap: 15px; }
+        .top-header .right .icon-btn {
+            width: 40px; height: 40px;
+            background: var(--bg);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+            cursor: pointer;
+        }
+        .top-header .right .icon-btn .dot {
+            width: 8px; height: 8px;
+            background: var(--danger);
+            border-radius: 50%;
+            position: absolute;
+            top: 3px; right: 3px;
+        }
+        .top-header .right img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
+
+        /* Scanner Section */
+        .scanner-container {
+            margin: 20px;
+            background: var(--card);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            border: 1px solid var(--border);
+        }
+        #qr-reader { width: 100%; margin-bottom: 15px; }
+        #qr-reader img { max-width: 100%; }
+        .scanner-btn {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .scanner-btn:hover { opacity: 0.9; }
+
+        /* Payment Details Card (after scan) */
+        .payment-card {
+            display: none;
+            margin: 0 20px 20px;
+            background: var(--card);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            border: 1px solid var(--border);
+        }
+        .payment-card.show { display: block; }
+        .payment-card .store-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .payment-card .store-header img {
+            width: 50px; height: 50px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+        .payment-card .store-header .info { flex: 1; }
+        .payment-card .store-header .info h4 { font-size: 16px; color: var(--primary); font-weight: 700; }
+        .payment-card .store-header .info p { font-size: 13px; color: var(--muted); }
+
+        .payment-card .item-row {
+            background: #f8f9fc;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .payment-card .item-row .item-name { font-size: 15px; font-weight: 700; color: var(--primary); }
+        .payment-card .item-row .item-price { font-size: 20px; font-weight: 800; color: var(--accent); margin-top: 5px; }
+        .payment-card .item-row .item-desc { font-size: 13px; color: var(--muted); margin-top: 5px; }
+
+        .payment-card .account-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .payment-card .account-row .label { color: var(--muted); }
+        .payment-card .account-row .value { font-weight: 600; }
+
+        .payment-card .amount-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: #f8f9fc;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+        }
+        .payment-card .amount-input-wrapper i { color: var(--muted); margin-right: 10px; }
+        .payment-card .amount-input-wrapper input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            font-family: 'Poppins';
+        }
+
+        .pay-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(255,90,0,0.3);
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .pay-btn:hover { transform: translateY(-3px); }
+        .pay-btn:disabled { background: #ccc; box-shadow: none; transform: none; cursor: not-allowed; }
+
+        /* Manual Entry */
+        .manual-entry {
+            margin: 20px;
+            background: var(--card);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+        .manual-entry h4 { font-size: 16px; color: var(--primary); margin-bottom: 15px; }
+        .manual-entry .form-group { margin-bottom: 15px; }
+        .manual-entry .form-group label { font-size: 12px; font-weight: 600; color: var(--muted); display: block; margin-bottom: 8px; }
+        .manual-entry .form-group .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: #f8f9fc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 15px;
+        }
+        .manual-entry .form-group .input-wrapper i { color: var(--muted); margin-right: 10px; }
+        .manual-entry .form-group input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 15px;
+            color: var(--text);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 15px;
+            z-index: 100;
+        }
+        .bottom-nav a {
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+        .bottom-nav a.active { color: var(--accent); }
+        .bottom-nav a i { font-size: 20px; }
+        .bottom-nav .center-btn {
+            width: 60px; height: 60px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-top: -20px;
+            box-shadow: 0 10px 20px rgba(255,90,0,0.4);
+        }
+
+        /* Success Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            max-width: 300px;
+            width: 90%;
+        }
+        .modal-content .icon { font-size: 60px; color: var(--success); margin-bottom: 15px; }
+        .modal-content h2 { font-size: 24px; color: var(--primary); margin-bottom: 10px; }
+        .modal-content p { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+        .modal-content button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="left">
+            <div class="logo">C</div>
+            <div class="greeting">
+                <h4>Scan Store QR</h4>
+                <h2>Pay Instantly</h2>
+            </div>
+        </div>
+        <div class="right">
+            <a href="usernotification.html" class="icon-btn">
+                <i class="fa-regular fa-bell"></i>
+                <span class="dot"></span>
+            </a>
+            <img id="profilePic" src="https://via.placeholder.com/40" alt="Profile" onclick="location.href='myprofile.html'">
+        </div>
+    </header>
+
+    <!-- Scanner -->
+    <div class="scanner-container">
+        <h3 style="margin-bottom:15px; color:var(--primary);"><i class="fa-solid fa-camera"></i> Scan QR Code</h3>
+        <div id="qr-reader"></div>
+        <button class="scanner-btn" id="startScanBtn" onclick="startScanner()"><i class="fa-solid fa-camera"></i> Start Scanner</button>
+        <button class="scanner-btn" style="display:none;" id="stopScanBtn" onclick="stopScanner()"><i class="fa-solid fa-stop"></i> Stop Scanner</button>
+    </div>
+
+    <!-- Payment Details (after scan) -->
+    <div class="payment-card" id="paymentCard">
+        <div class="store-header">
+            <img id="storeLogo" src="https://via.placeholder.com/50" alt="Store">
+            <div class="info">
+                <h4 id="storeName">Store Name</h4>
+                <p id="storeAccount">Account: —</p>
+            </div>
+        </div>
+
+        <div class="item-row">
+            <div class="item-name" id="itemName">Item Name</div>
+            <div class="item-price" id="itemPrice">GHS 0.00</div>
+            <div class="item-desc" id="itemDesc"></div>
+        </div>
+
+        <div class="account-row">
+            <span class="label">Paying To</span>
+            <span class="value" id="payingTo">—</span>
+        </div>
+
+        <div class="amount-input-wrapper">
+            <i class="fa-solid fa-cedi-sign"></i>
+            <input type="number" id="amountInput" placeholder="0.00" min="0.01" step="0.01" value="0.00">
+        </div>
+
+        <button class="pay-btn" id="payBtn" onclick="makePayment()"><i class="fa-solid fa-paper-plane"></i> Pay Now</button>
+    </div>
+
+    <!-- Manual Entry (Fallback) -->
+    <div class="manual-entry">
+        <h4><i class="fa-solid fa-keyboard"></i> Manual Entry</h4>
+        <div class="form-group">
+            <label>Receiver Account</label>
+            <div class="input-wrapper">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" id="manualAccount" placeholder="e.g. 2151234567890">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Amount (GHS)</label>
+            <div class="input-wrapper">
+                <i class="fa-solid fa-money-bill-wave"></i>
+                <input type="number" id="manualAmount" placeholder="0.00" min="0.01" step="0.01">
+            </div>
+        </div>
+        <button class="btn" style="background:var(--primary); color:white; width:100%; padding:15px; border:none; border-radius:10px; font-weight:600; cursor:pointer;" onclick="manualPay()">Pay Manually</button>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal-overlay" id="successModal">
+    <div class="modal-content">
+        <div class="icon"><i class="fa-solid fa-circle-check"></i></div>
+        <h2>Payment Successful!</h2>
+        <p id="successMessage"></p>
+        <button onclick="closeModal()">OK</button>
+    </div>
+</div>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+    <a href="userdashboard.html"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="accountnumberupdate.html"><i class="fa-solid fa-book"></i> Accounts</a>
+    <div class="center-btn" onclick="location.href='scan_and_pay.html'"><i class="fa-solid fa-qrcode"></i></div>
+    <a href="usertransfer.html"><i class="fa-solid fa-money-bill-transfer"></i> Transfer</a>
+    <a href="myprofile.html"><i class="fa-solid fa-user"></i> Profile</a>
+</nav>
+
+<script>
+    let currentUid = null;
+    let currentUserData = null;
+    let scannedAccount = null;
+    let scannedPrice = 0;
+    let scannerRunning = false;
+    let html5QrcodeScanner = null;
+
+    // Load session and dashboard data
+    window.addEventListener('DOMContentLoaded', async () => {
+        const session = JSON.parse(localStorage.getItem('cit_session') || 'null');
+        if (!session || !session.uid) {
+            window.location = 'userlogin.html';
+            return;
+        }
+        currentUid = session.uid;
+
+        try {
+            const res = await fetch('/api/dashboard', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ uid: currentUid })
+            });
+            const data = await res.json();
+            if (data.success) {
+                currentUserData = data.user;
+                // Profile pic
+                if (currentUserData.photo) {
+                    document.getElementById('profilePic').src = currentUserData.photo;
+                }
+            }
+        } catch (e) {
+            console.error('Error loading dashboard:', e);
+        }
+    });
+
+    // Start Scanner
+    function startScanner() {
+        if (scannerRunning) return;
+        document.getElementById('startScanBtn').style.display = 'none';
+        document.getElementById('stopScanBtn').style.display = 'inline-block';
+
+        html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render(onScanSuccess);
+        scannerRunning = true;
+    }
+
+    // Stop Scanner
+    function stopScanner() {
+        if (html5QrcodeScanner) {
+            html5QrcodeScanner.clear().then(() => {
+                document.getElementById('startScanBtn').style.display = 'inline-block';
+                document.getElementById('stopScanBtn').style.display = 'none';
+                scannerRunning = false;
+                document.getElementById('qr-reader').innerHTML = '';
+            }).catch(err => console.log(err));
+        }
+    }
+
+    // Handle QR scan
+    async function onScanSuccess(decodedText, decodedResult) {
+        let payload = {};
+        try {
+            payload = JSON.parse(decodedText);
+        } catch (e) {
+            // If not JSON, assume it's just account number
+            payload = { accountNumber: decodedText.trim() };
+        }
+
+        const accountNumber = payload.accountNumber || decodedText.trim();
+        const price = payload.price ? parseFloat(payload.price) : null;
+        const itemName = payload.itemName || 'Item';
+        const businessName = payload.businessName || 'Store';
+
+        // Verify the account exists
+        try {
+            const res = await fetch('/api/verify-receiver', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ accountNumber: accountNumber })
+            });
+            const data = await res.json();
+            if (data.success) {
+                scannedAccount = accountNumber;
+                scannedPrice = price || 0;
+                document.getElementById('storeName').innerText = businessName;
+                document.getElementById('storeAccount').innerText = 'Account: ' + accountNumber;
+                document.getElementById('itemName').innerText = itemName;
+                document.getElementById('itemPrice').innerText = 'GHS ' + (price ? price.toFixed(2) : '0.00');
+                document.getElementById('itemDesc').innerText = ''; // Could include desc from QR
+                document.getElementById('payingTo').innerText = data.name;
+                document.getElementById('amountInput').value = price ? price.toFixed(2) : '';
+                document.getElementById('paymentCard').classList.add('show');
+                stopScanner();
+            } else {
+                alert('Account not found!');
+                stopScanner();
+            }
+        } catch (e) {
+            alert('Error: ' + e.message);
+            stopScanner();
+        }
+    }
+
+    // Make Payment
+    async function makePayment() {
+        const amount = parseFloat(document.getElementById('amountInput').value);
+        if (!scannedAccount) { alert('Please scan a QR code first.'); return; }
+        if (!amount || amount <= 0) { alert('Enter valid amount.'); return; }
+
+        const payBtn = document.getElementById('payBtn');
+        payBtn.disabled = true;
+        payBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+
+        try {
+            const res = await fetch('/api/transfer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ senderUid: currentUid, receiverAccount: scannedAccount, amount: amount })
+            });
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('successMessage').innerText = `You paid GHS ${amount.toFixed(2)}. New balance: GHS ${data.newBalance.toFixed(2)}`;
+                document.getElementById('successModal').classList.add('show');
+                // Reset
+                document.getElementById('paymentCard').classList.remove('show');
+                document.getElementById('amountInput').value = '';
+                scannedAccount = null;
+                scannedPrice = 0;
+            } else {
+                alert(data.error || 'Payment failed.');
+            }
+        } catch (e) {
+            alert('Server error: ' + e.message);
+        } finally {
+            payBtn.disabled = false;
+            payBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Pay Now';
+        }
+    }
+
+    // Manual Payment
+    async function manualPay() {
+        const account = document.getElementById('manualAccount').value.trim();
+        const amount = parseFloat(document.getElementById('manualAmount').value);
+        if (!account) { alert('Enter receiver account.'); return; }
+        if (!amount || amount <= 0) { alert('Enter valid amount.'); return; }
+
+        try {
+            const res = await fetch('/api/transfer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ senderUid: currentUid, receiverAccount: account, amount: amount })
+            });
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('successMessage').innerText = `You paid GHS ${amount.toFixed(2)}. New balance: GHS ${data.newBalance.toFixed(2)}`;
+                document.getElementById('successModal').classList.add('show');
+                document.getElementById('manualAccount').value = '';
+                document.getElementById('manualAmount').value = '';
+            } else {
+                alert(data.error || 'Payment failed.');
+            }
+        } catch (e) {
+            alert('Server error: ' + e.message);
+        }
+    }
+
+    // Close Modal
+    function closeModal() {
+        document.getElementById('successModal').classList.remove('show');
+    }
+</script>
+</body>
+</html>

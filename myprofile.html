@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CITFUND ENTERPRISE | My Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    :root {
+        --green: #0B7A2E;
+        --green-dark: #075C22;
+        --green-light: #14A344;
+        --gold: #FFC72C;
+        --gold-soft: #FFD75E;
+        --red: #E30613;
+
+        --bg: #f4f9f6;
+        --card: #ffffff;
+        --text: #1a2b4c;
+        --muted: #6b7a8f;
+        --border: #e6f0e9;
+        --success: #00a86b;
+        --danger: #e74c3c;
+        --warning: #ff9800;
+
+        --primary: var(--green);
+        --primary-dark: var(--green-dark);
+        --accent: var(--green);
+        --accent-light: var(--green-light);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+    .app-container { max-width: 480px; margin: 0 auto; background: var(--bg); min-height: 100vh; position: relative; padding-bottom: 100px; }
+
+    /* ===== TOP HEADER ===== */
+    .top-header {
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        padding: 22px 20px 90px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 0 0 30px 30px;
+        position: relative;
+        z-index: 1;
+        gap: 10px;
+        overflow: hidden;
+    }
+    .top-header::before {
+        content: '';
+        position: absolute;
+        top: -80px; right: -60px;
+        width: 220px; height: 220px;
+        background: radial-gradient(circle, rgba(255,199,44,0.28), transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .top-header::after {
+        content: '';
+        position: absolute;
+        bottom: -100px; left: -80px;
+        width: 200px; height: 200px;
+        background: radial-gradient(circle, rgba(227,6,19,0.12), transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .top-header .header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+        flex: 1;
+        position: relative;
+        z-index: 2;
+    }
+    .top-header .back-btn {
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.15);
+        color: white;
+        display: flex; align-items: center; justify-content: center;
+        text-decoration: none;
+        font-size: 15px;
+        flex-shrink: 0;
+        transition: 0.2s;
+        cursor: pointer;
+        border: none;
+    }
+    .top-header .back-btn:hover { background: rgba(255,255,255,0.28); }
+    .top-header .header-title {
+        position: relative;
+        z-index: 2;
+    }
+    .top-header .header-title h1 {
+        font-size: 18px;
+        font-weight: 800;
+        color: white;
+        letter-spacing: 0.2px;
+    }
+    .top-header .header-title p {
+        font-size: 11.5px;
+        color: rgba(255,255,255,0.75);
+        font-weight: 500;
+        margin-top: 2px;
+    }
+    .top-header .notification-btn {
+        position: relative;
+        background: rgba(255,255,255,0.15);
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        width: 42px; height: 42px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        text-decoration: none;
+        flex-shrink: 0;
+        z-index: 2;
+        transition: 0.2s;
+    }
+    .top-header .notification-btn:hover { background: rgba(255,255,255,0.28); }
+
+    /* ===== PROFILE HERO CARD ===== */
+    .profile-card {
+        background: var(--card);
+        border-radius: 26px;
+        margin: -70px 20px 18px;
+        padding: 24px 22px 22px;
+        box-shadow: 0 20px 45px rgba(11,122,46,0.1);
+        position: relative;
+        z-index: 2;
+        border: 1px solid rgba(11,122,46,0.06);
+        text-align: center;
+        overflow: hidden;
+    }
+    .profile-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 70px;
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        z-index: 0;
+    }
+    .profile-card .avatar-wrap {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 14px;
+        z-index: 1;
+    }
+    .profile-card .avatar-wrap img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--card);
+        box-shadow: 0 10px 30px rgba(11,122,46,0.2);
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+    }
+    .profile-card .avatar-wrap .verified-badge {
+        position: absolute;
+        bottom: 2px; right: 2px;
+        background: var(--gold);
+        color: var(--green-dark);
+        width: 28px; height: 28px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 12px;
+        border: 3px solid var(--card);
+        box-shadow: 0 4px 12px rgba(255,199,44,0.4);
+    }
+    .profile-card h2 {
+        font-size: 20px;
+        font-weight: 900;
+        color: var(--green-dark);
+        letter-spacing: 0.2px;
+        margin-bottom: 4px;
+        position: relative;
+        z-index: 1;
+    }
+    .profile-card .subtitle {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 600;
+        margin-bottom: 12px;
+        position: relative;
+        z-index: 1;
+    }
+    .profile-card .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #e6fff0;
+        color: var(--success);
+        font-size: 10.5px;
+        font-weight: 800;
+        padding: 5px 12px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        position: relative;
+        z-index: 1;
+    }
+    .profile-card .status-pill .dot {
+        width: 6px; height: 6px;
+        background: var(--success);
+        border-radius: 50%;
+        box-shadow: 0 0 0 3px rgba(0,168,107,0.2);
+        animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+    /* ===== STATS ROW ===== */
+    .stats-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 8px;
+        margin-top: 18px;
+        padding-top: 16px;
+        border-top: 1px dashed var(--border);
+        position: relative;
+        z-index: 1;
+    }
+    .stat {
+        text-align: center;
+    }
+    .stat .stat-value {
+        font-size: 15px;
+        font-weight: 900;
+        color: var(--green);
+        letter-spacing: -0.3px;
+        word-break: break-all;
+    }
+    .stat .stat-label {
+        font-size: 9.5px;
+        color: var(--muted);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 2px;
+    }
+
+    /* ===== QUICK ACTIONS ===== */
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin: 0 20px 18px;
+    }
+    .qa-btn {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 14px 6px 12px;
+        text-align: center;
+        text-decoration: none;
+        color: var(--green-dark);
+        transition: 0.25s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-family: inherit;
+    }
+    .qa-btn:hover {
+        border-color: var(--green);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(11,122,46,0.08);
+    }
+    .qa-btn i {
+        width: 38px; height: 38px;
+        background: linear-gradient(135deg, #e6fff0, #d3f5df);
+        color: var(--green);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 16px;
+    }
+    .qa-btn.gold i {
+        background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+        color: var(--green-dark);
+    }
+    .qa-btn span {
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+    }
+
+    /* ===== EDIT BUTTON ===== */
+    .edit-profile-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: calc(100% - 40px);
+        margin: 0 20px 20px;
+        padding: 15px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-family: inherit;
+        font-size: 14.5px;
+        font-weight: 800;
+        letter-spacing: 0.3px;
+        cursor: pointer;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.3);
+        transition: 0.25s;
+        text-decoration: none;
+    }
+    .edit-profile-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(11,122,46,0.4); }
+
+    /* ===== KYC BANNER ===== */
+    .kyc-banner {
+        background: linear-gradient(135deg, #fff8e1 0%, #ffeeba 100%);
+        border: 1px solid #ffe082;
+        border-radius: 16px;
+        padding: 16px;
+        margin: 0 20px 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+    .kyc-banner.hide { display: none; }
+    .kyc-banner .kb-icon {
+        width: 44px; height: 44px;
+        background: var(--gold);
+        color: var(--green-dark);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+    .kyc-banner .kb-text {
+        flex: 1; min-width: 0;
+    }
+    .kyc-banner .kb-text h4 {
+        font-size: 13px;
+        color: var(--green-dark);
+        font-weight: 800;
+        margin-bottom: 2px;
+    }
+    .kyc-banner .kb-text p {
+        font-size: 11.5px;
+        color: #8a6d1a;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+    .kyc-banner a {
+        background: var(--green);
+        color: white;
+        padding: 9px 14px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-size: 11.5px;
+        font-weight: 800;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: 0.2s;
+    }
+    .kyc-banner a:hover { background: var(--green-dark); }
+
+    /* ===== SECTION ===== */
+    .section {
+        margin: 0 20px 18px;
+    }
+    .section-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-left: 4px;
+    }
+    .section-title h3 {
+        font-size: 14.5px;
+        font-weight: 800;
+        color: var(--green);
+        letter-spacing: 0.2px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .section-title h3 i {
+        width: 28px; height: 28px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white;
+        border-radius: 9px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 13px;
+        box-shadow: 0 6px 14px rgba(11,122,46,0.22);
+    }
+    .section-title .edit-link {
+        font-size: 11.5px;
+        font-weight: 800;
+        color: var(--green);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: 0.2s;
+    }
+    .section-title .edit-link:hover { color: var(--green-dark); }
+
+    .info-card {
+        background: var(--card);
+        border-radius: 20px;
+        padding: 4px 18px;
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 15px rgba(11,122,46,0.03);
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 13px 0;
+        border-bottom: 1px dashed var(--border);
+        gap: 12px;
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-row .label {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+    .detail-row .label i {
+        color: var(--green);
+        font-size: 12px;
+        width: 14px;
+        text-align: center;
+    }
+    .detail-row .value {
+        font-size: 13px;
+        color: var(--green-dark);
+        font-weight: 800;
+        text-align: right;
+        word-break: break-word;
+        min-width: 0;
+        flex: 1;
+    }
+    .detail-row .value.mono {
+        font-family: 'Courier New', monospace;
+        letter-spacing: 0.5px;
+    }
+    .detail-row .value.balance {
+        color: var(--green);
+        font-size: 15px;
+        font-weight: 900;
+    }
+
+    /* ===== KYC STATUS COLORS ===== */
+    .value.kyc-approved { color: var(--success) !important; }
+    .value.kyc-pending  { color: var(--warning) !important; }
+    .value.kyc-rejected { color: var(--danger) !important; }
+    .value.kyc-none     { color: var(--muted) !important; }
+
+    /* ===== BOTTOM NAV ===== */
+    .bottom-nav {
+        position: fixed; bottom: 0; left: 50%;
+        transform: translateX(-50%);
+        width: 100%; max-width: 480px; background: var(--card);
+        border-top: 1px solid var(--border);
+        display: flex; justify-content: space-around; align-items: center;
+        padding: 8px 0 12px; z-index: 100;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+    }
+    .bottom-nav a {
+        text-decoration: none; display: flex; flex-direction: column;
+        align-items: center; gap: 4px; font-size: 10px;
+        color: var(--muted); font-weight: 600; flex: 1; transition: 0.3s;
+        padding-top: 4px;
+    }
+    .bottom-nav a i { font-size: 22px; }
+    .bottom-nav a.active { color: var(--green); }
+    .bottom-nav a.active::after {
+        content: ''; display: block; width: 20px; height: 3px;
+        background: var(--gold); border-radius: 3px; margin-top: 2px;
+    }
+    .bottom-nav .center-btn {
+        width: 60px; height: 60px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 24px; margin-top: -25px;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.4);
+        cursor: pointer; border: 3px solid var(--bg); transition: 0.3s;
+    }
+    .bottom-nav .center-btn:active { transform: scale(0.92); }
+
+    /* ===== LOADING OVERLAY ===== */
+    #loading-overlay {
+        position: fixed; inset: 0;
+        background: rgba(244,249,246,0.96);
+        backdrop-filter: blur(6px);
+        display: flex; flex-direction: column;
+        justify-content: center; align-items: center;
+        z-index: 9998; color: var(--green);
+        transition: opacity 0.35s;
+    }
+    #loading-overlay.hide { opacity: 0; pointer-events: none; }
+    .spinner {
+        width: 46px; height: 46px;
+        border: 5px solid var(--border);
+        border-top-color: var(--green);
+        border-right-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loading-overlay p {
+        margin-top: 14px;
+        font-weight: 700;
+        font-size: 13px;
+        letter-spacing: 0.3px;
+    }
+
+    /* ===== TOAST ===== */
+    .toast {
+        position: fixed; top: 20px; left: 50%;
+        transform: translateX(-50%) translateY(-20px);
+        background: var(--green); color: white;
+        padding: 13px 22px; border-radius: 30px;
+        z-index: 99999; opacity: 0; visibility: hidden;
+        font-size: 13px; font-weight: 700;
+        max-width: 90%; text-align: center;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 30px rgba(11,122,46,0.3);
+    }
+    .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .toast.error { background: var(--danger); }
+
+    /* ===== COPY BUTTON ===== */
+    .copy-btn {
+        background: #eef6f0;
+        border: 1px solid var(--border);
+        color: var(--green);
+        width: 26px; height: 26px;
+        border-radius: 8px;
+        font-size: 10px;
+        cursor: pointer;
+        transition: 0.25s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 6px;
+    }
+    .copy-btn:hover, .copy-btn.copied {
+        background: var(--green);
+        color: white;
+        border-color: var(--green);
+    }
+
+    @media (max-width: 360px) {
+        .profile-card h2 { font-size: 18px; }
+        .qa-btn span { font-size: 9px; }
+        .stat .stat-value { font-size: 13px; }
+    }
+</style>
+</head>
+<body>
+
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <p>Loading profile…</p>
+</div>
+
+<div class="app-container">
+
+    <!-- ===== HEADER ===== -->
+    <header class="top-header">
+        <div class="header-left">
+            <button class="back-btn" onclick="window.location.href='userdashboard.html'">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="header-title">
+                <h1>My Profile</h1>
+                <p>Account & personal details</p>
+            </div>
+        </div>
+        <a href="usernotification.html" class="notification-btn">
+            <i class="fa-regular fa-bell"></i>
+        </a>
+    </header>
+
+    <!-- ===== PROFILE HERO CARD ===== -->
+    <div class="profile-card">
+        <div class="avatar-wrap">
+            <img id="profileImage" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230B7A2E'/><circle cx='50' cy='38' r='18' fill='%23FFC72C'/><path d='M18 92c0-20 14-34 32-34s32 14 32 34' fill='%23FFC72C'/></svg>" alt="Profile">
+            <div class="verified-badge" id="verifiedBadge"><i class="fa-solid fa-check"></i></div>
+        </div>
+        <h2 id="fullName">Loading…</h2>
+        <div class="subtitle" id="memberSubtitle">CITFUND Member</div>
+        <div class="status-pill">
+            <span class="dot"></span>
+            <span id="accountStatus">Active</span>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat">
+                <div class="stat-value" id="statBalance">GHS 0.00</div>
+                <div class="stat-label">Balance</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="statAccType">Savings</div>
+                <div class="stat-label">Account</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="statKyc">—</div>
+                <div class="stat-label">KYC</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== QUICK ACTIONS ===== -->
+    <div class="quick-actions">
+        <a href="profileedit.html" class="qa-btn">
+            <i class="fa-solid fa-user-pen"></i>
+            <span>Edit</span>
+        </a>
+        <a href="account.html" class="qa-btn">
+            <i class="fa-solid fa-building-columns"></i>
+            <span>Accounts</span>
+        </a>
+        <a href="kyc.html" class="qa-btn gold">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>KYC</span>
+        </a>
+        <button onclick="shareProfile()" class="qa-btn">
+            <i class="fa-solid fa-share-nodes"></i>
+            <span>Share</span>
+        </button>
+    </div>
+
+    <!-- ===== KYC BANNER ===== -->
+    <div class="kyc-banner hide" id="kycBanner">
+        <div class="kb-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="kb-text">
+            <h4 id="kycBannerTitle">Complete your KYC</h4>
+            <p id="kycBannerText">Verify your identity to unlock all account features.</p>
+        </div>
+        <a href="kyc.html">Verify</a>
+    </div>
+
+    <!-- ===== EDIT BUTTON ===== -->
+    <a href="profileedit.html" class="edit-profile-btn">
+        <i class="fa-solid fa-user-pen"></i> Edit Profile
+    </a>
+
+    <!-- ===== PERSONAL ===== -->
+    <div class="section">
+        <div class="section-title">
+            <h3><i class="fa-solid fa-user"></i> Personal Information</h3>
+            <a href="profileedit.html" class="edit-link">Edit <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i></a>
+        </div>
+        <div class="info-card">
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-user"></i> Full Name</span>
+                <span class="value" id="dFullName">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-cake-candles"></i> Date of Birth</span>
+                <span class="value" id="dDob">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-venus-mars"></i> Gender</span>
+                <span class="value" id="dGender">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-heart"></i> Marital Status</span>
+                <span class="value" id="dMarital">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-globe"></i> Nationality</span>
+                <span class="value" id="dNationality">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-location-dot"></i> Place of Birth</span>
+                <span class="value" id="dPlaceOfBirth">—</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== CONTACT ===== -->
+    <div class="section">
+        <div class="section-title">
+            <h3><i class="fa-solid fa-phone"></i> Contact Information</h3>
+            <a href="profileedit.html" class="edit-link">Edit <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i></a>
+        </div>
+        <div class="info-card">
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-phone"></i> Phone</span>
+                <span class="value mono" id="dPhone">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-envelope"></i> Email</span>
+                <span class="value" id="dEmail">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-house"></i> Address</span>
+                <span class="value" id="dAddress">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-city"></i> City</span>
+                <span class="value" id="dCity">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-map"></i> Region</span>
+                <span class="value" id="dRegion">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-envelope-open-text"></i> Postal Code</span>
+                <span class="value" id="dPostal">—</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ACCOUNT ===== -->
+    <div class="section">
+        <div class="section-title">
+            <h3><i class="fa-solid fa-building-columns"></i> Account Information</h3>
+            <a href="account.html" class="edit-link">Manage <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i></a>
+        </div>
+        <div class="info-card">
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-hashtag"></i> Account No.</span>
+                <span class="value mono">
+                    <span id="dAccountNumber">—</span>
+                    <button class="copy-btn" onclick="copyValue('dAccountNumber',this)"><i class="fa-regular fa-copy"></i></button>
+                </span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-id-card"></i> Member ID</span>
+                <span class="value mono">
+                    <span id="dMemberID">—</span>
+                    <button class="copy-btn" onclick="copyValue('dMemberID',this)"><i class="fa-regular fa-copy"></i></button>
+                </span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-wallet"></i> Account Type</span>
+                <span class="value" id="dAccType">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-code-branch"></i> Branch</span>
+                <span class="value" id="dBranch">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-money-bill"></i> Currency</span>
+                <span class="value" id="dCurrency">GHS</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-coins"></i> Balance</span>
+                <span class="value balance" id="dBalance">GHS 0.00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== EMPLOYMENT ===== -->
+    <div class="section">
+        <div class="section-title">
+            <h3><i class="fa-solid fa-briefcase"></i> Employment</h3>
+            <a href="profileedit.html" class="edit-link">Edit <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i></a>
+        </div>
+        <div class="info-card">
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-user-tie"></i> Occupation</span>
+                <span class="value" id="dOccupation">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-industry"></i> Employer</span>
+                <span class="value" id="dEmployer">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-money-bill-wave"></i> Income Range</span>
+                <span class="value" id="dIncome">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-sack-dollar"></i> Source of Funds</span>
+                <span class="value" id="dSourceFunds">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-bullseye"></i> Purpose</span>
+                <span class="value" id="dPurpose">—</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== NEXT OF KIN ===== -->
+    <div class="section">
+        <div class="section-title">
+            <h3><i class="fa-solid fa-user-group"></i> Next of Kin</h3>
+            <a href="profileedit.html" class="edit-link">Edit <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i></a>
+        </div>
+        <div class="info-card">
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-user"></i> Full Name</span>
+                <span class="value" id="dNokName">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-link"></i> Relationship</span>
+                <span class="value" id="dNokRel">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-phone"></i> Phone</span>
+                <span class="value mono" id="dNokPhone">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-envelope"></i> Email</span>
+                <span class="value" id="dNokEmail">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-house"></i> Address</span>
+                <span class="value" id="dNokAddress">—</span>
+            </div>
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-city"></i> City</span>
+                <span class="value" id="dNokCity">—</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== KYC STATUS ===== -->
+    <div class="section">
+        <div class="section-title">
+            <h3><i class="fa-solid fa-shield-halved"></i> KYC Verification</h3>
+            <a href="kyc.html" class="edit-link">Open <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i></a>
+        </div>
+        <div class="info-card">
+            <div class="detail-row">
+                <span class="label"><i class="fa-solid fa-circle-check"></i> Status</span>
+                <span class="value" id="dKycStatus">—</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <a href="userdashboard.html"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="account.html"><i class="fa-solid fa-book"></i> Accounts</a>
+    <button class="center-btn" onclick="location.href='userdeposit.html'"><i class="fa-solid fa-plus"></i></button>
+    <a href="usernotification.html"><i class="fa-solid fa-bell"></i> Alerts</a>
+    <a href="myprofile.html" class="active"><i class="fa-solid fa-user"></i> Profile</a>
+</nav>
+
+<div id="toast" class="toast"></div>
+
+<script>
+// ============================================================
+// SESSION
+// ============================================================
+const session = JSON.parse(localStorage.getItem('cit_session') || 'null');
+if (!session || !session.uid) window.location.href = 'userlogin.html';
+
+let userData = null;
+let toastTimer = null;
+
+const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230B7A2E'/><circle cx='50' cy='38' r='18' fill='%23FFC72C'/><path d='M18 92c0-20 14-34 32-34s32 14 32 34' fill='%23FFC72C'/></svg>";
+
+// ============================================================
+// HELPERS
+// ============================================================
+function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+function hideLoading() {
+    const el = document.getElementById('loading-overlay');
+    if (el) { el.classList.add('hide'); setTimeout(() => el.style.display = 'none', 400); }
+}
+function val(v, fallback = '—') {
+    if (v === undefined || v === null || v === '') return fallback;
+    return String(v);
+}
+function fmtMoney(n) {
+    return 'GHS ' + Number(n || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function esc(s) {
+    return String(s == null ? '' : s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function copyValue(elId, btn) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    const text = el.textContent.trim();
+    if (!text || text === '—') return;
+    const done = () => {
+        const original = btn.innerHTML;
+        btn.classList.add('copied');
+        btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+        setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = original; }, 1500);
+        showToast('Copied to clipboard', 'success');
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+    } else {
+        fallbackCopy(text, done);
+    }
+}
+window.copyValue = copyValue;
+
+function fallbackCopy(text, done) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); done(); }
+    catch (e) { showToast('Copy failed', 'error'); }
+    document.body.removeChild(ta);
+}
+
+function shareProfile() {
+    if (!userData) return;
+    const text =
+`CITFUND ENTERPRISE – My Account
+Name: ${userData.fullName || ''}
+Account Number: ${userData.accountNumber || ''}
+Member ID: ${userData.memberID || ''}
+
+Send me money instantly via CITFUND — free between members.`;
+    if (navigator.share) {
+        navigator.share({ title: 'My CITFUND Account', text }).catch(() => {});
+    } else {
+        fallbackCopy(text, () => showToast('Details copied', 'success'));
+    }
+}
+window.shareProfile = shareProfile;
+
+// ============================================================
+// LOAD PROFILE
+// ============================================================
+async function loadProfile() {
+    try {
+        const res = await fetch('/api/user-data?t=' + Date.now(), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ uid: session.uid }),
+            cache: 'no-store'
+        });
+        const raw = await res.text();
+        let data;
+        try { data = JSON.parse(raw); }
+        catch (e) {
+            console.error('Non-JSON from server:', raw.slice(0, 200));
+            throw new Error('Server returned invalid response');
+        }
+        if (!data.success || !data.user) {
+            if (data.error && /not found/i.test(data.error)) {
+                localStorage.removeItem('cit_session');
+                window.location.href = 'userlogin.html';
+                return;
+            }
+            throw new Error(data.error || 'Failed to load profile');
+        }
+        userData = data.user;
+        renderProfile(userData);
+    } catch (e) {
+        console.error('Profile load error:', e);
+        hideLoading();
+        showToast('Error loading profile: ' + e.message, 'error');
+    }
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderProfile(u) {
+    // Avatar
+    const img = document.getElementById('profileImage');
+    if (u.photo && String(u.photo).trim().length > 0) {
+        img.src = u.photo;
+    } else {
+        img.src = DEFAULT_AVATAR;
+    }
+    img.onerror = () => { img.onerror = null; img.src = DEFAULT_AVATAR; };
+
+    // Hero
+    document.getElementById('fullName').textContent = u.fullName || 'CITFUND User';
+    const subtitleParts = [];
+    if (u.accountNumber) subtitleParts.push('Acc ' + u.accountNumber);
+    if (u.memberID) subtitleParts.push(u.memberID);
+    document.getElementById('memberSubtitle').textContent = subtitleParts.length ? subtitleParts.join(' · ') : 'CITFUND Member';
+
+    // Status pill
+    document.getElementById('accountStatus').textContent = u.status || 'Active';
+
+    // Stats row
+    document.getElementById('statBalance').textContent = fmtMoney(u.balance || 0);
+    document.getElementById('statAccType').textContent = u.accType || 'Savings';
+    const kycStatus = (u.kyc && u.kyc.status) ? u.kyc.status : 'none';
+    const kycLabels = { approved: 'Verified', pending: 'Pending', rejected: 'Rejected', none: 'Not Set' };
+    document.getElementById('statKyc').textContent = kycLabels[kycStatus] || 'Not Set';
+
+    // Verified badge — show only if KYC approved
+    const badge = document.getElementById('verifiedBadge');
+    if (kycStatus === 'approved') {
+        badge.style.display = 'flex';
+    } else {
+        badge.style.display = 'none';
+    }
+
+    // Personal
+    document.getElementById('dFullName').textContent = val(u.fullName);
+    document.getElementById('dDob').textContent = val(u.dob);
+    document.getElementById('dGender').textContent = val(u.gender);
+    document.getElementById('dMarital').textContent = val(u.marital);
+    document.getElementById('dNationality').textContent = val(u.nationality);
+    document.getElementById('dPlaceOfBirth').textContent = val(u.placeOfBirth);
+
+    // Contact
+    document.getElementById('dPhone').textContent = val(u.phone);
+    document.getElementById('dEmail').textContent = val(u.email);
+    document.getElementById('dAddress').textContent = val(u.address);
+    document.getElementById('dCity').textContent = val(u.city);
+    document.getElementById('dRegion').textContent = val(u.region);
+    document.getElementById('dPostal').textContent = val(u.postal);
+
+    // Account
+    document.getElementById('dAccountNumber').textContent = val(u.accountNumber);
+    document.getElementById('dMemberID').textContent = val(u.memberID);
+    document.getElementById('dAccType').textContent = val(u.accType, 'Savings');
+    document.getElementById('dBranch').textContent = val(u.branch);
+    document.getElementById('dCurrency').textContent = val(u.currency, 'GHS');
+    document.getElementById('dBalance').textContent = fmtMoney(u.balance || 0);
+
+    // Employment
+    document.getElementById('dOccupation').textContent = val(u.occupation);
+    document.getElementById('dEmployer').textContent = val(u.employer);
+    document.getElementById('dIncome').textContent = val(u.income);
+    document.getElementById('dSourceFunds').textContent = val(u.sourceFunds);
+    document.getElementById('dPurpose').textContent = val(u.purpose);
+
+    // NOK
+    document.getElementById('dNokName').textContent = val(u.nokName);
+    document.getElementById('dNokRel').textContent = val(u.nokRel);
+    document.getElementById('dNokPhone').textContent = val(u.nokPhone);
+    document.getElementById('dNokEmail').textContent = val(u.nokEmail);
+    document.getElementById('dNokAddress').textContent = val(u.nokAddress);
+    document.getElementById('dNokCity').textContent = val(u.nokCity);
+
+    // KYC
+    const kycEl = document.getElementById('dKycStatus');
+    kycEl.textContent = kycLabels[kycStatus] || 'Not Set';
+    kycEl.className = 'value kyc-' + kycStatus;
+
+    // KYC Banner
+    const banner = document.getElementById('kycBanner');
+    const bannerTitle = document.getElementById('kycBannerTitle');
+    const bannerText = document.getElementById('kycBannerText');
+    const bannerLink = banner.querySelector('a');
+
+    if (kycStatus === 'approved') {
+        banner.classList.add('hide');
+    } else if (kycStatus === 'pending') {
+        banner.classList.remove('hide');
+        bannerTitle.textContent = 'KYC Under Review';
+        bannerText.textContent = 'Your documents have been submitted. Our team is reviewing them.';
+        bannerLink.textContent = 'View';
+    } else if (kycStatus === 'rejected') {
+        banner.classList.remove('hide');
+        bannerTitle.textContent = 'KYC Rejected';
+        bannerText.textContent = 'Please re-submit your documents to complete verification.';
+        bannerLink.textContent = 'Retry';
+    } else {
+        banner.classList.remove('hide');
+        bannerTitle.textContent = 'Complete your KYC';
+        bannerText.textContent = 'Verify your identity to unlock all account features.';
+        bannerLink.textContent = 'Verify';
+    }
+
+    // Done
+    hideLoading();
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadProfile();
+setTimeout(hideLoading, 6000);
+</script>
+</body>
+</html>

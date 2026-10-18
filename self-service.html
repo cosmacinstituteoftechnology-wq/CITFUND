@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CITFUND ENTERPRISE | Self Service</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    :root {
+        --green: #0B7A2E; --green-dark: #075C22; --green-light: #14A344;
+        --gold: #FFC72C; --gold-soft: #FFD75E; --red: #E30613;
+        --bg: #f4f9f6; --card: #ffffff; --text: #1a2b4c; --muted: #6b7a8f;
+        --border: #e6f0e9; --success: #00a86b; --danger: #e74c3c; --warning: #ff9800;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+    .app-container { max-width: 480px; margin: 0 auto; background: var(--bg); min-height: 100vh; position: relative; padding-bottom: 100px; }
+
+    /* HEADER */
+    .top-header {
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        padding: 22px 20px 70px;
+        display: flex; align-items: center; justify-content: space-between;
+        border-radius: 0 0 30px 30px;
+        position: relative; z-index: 1; gap: 10px; overflow: hidden;
+    }
+    .top-header::before {
+        content: ''; position: absolute; top: -80px; right: -60px;
+        width: 220px; height: 220px;
+        background: radial-gradient(circle, rgba(255,199,44,0.28), transparent 70%);
+        border-radius: 50%; pointer-events: none;
+    }
+    .top-header .header-left {
+        display: flex; align-items: center; gap: 12px;
+        min-width: 0; flex: 1; position: relative; z-index: 2;
+    }
+    .top-header .back-btn {
+        width: 40px; height: 40px; border-radius: 50%;
+        background: rgba(255,255,255,0.15); color: white;
+        display: flex; align-items: center; justify-content: center;
+        text-decoration: none; font-size: 15px; flex-shrink: 0;
+        border: none; cursor: pointer; transition: 0.2s;
+    }
+    .top-header .back-btn:hover { background: rgba(255,255,255,0.28); }
+    .top-header .header-text { min-width: 0; flex: 1; }
+    .top-header .header-text h4 {
+        font-size: 11.5px; color: rgba(255,255,255,0.75);
+        font-weight: 400; margin-bottom: 2px;
+    }
+    .top-header .header-text h2 {
+        font-size: 18px; font-weight: 800; color: white;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .top-header .header-icon {
+        width: 42px; height: 42px; border-radius: 50%;
+        background: rgba(255,199,44,0.2); color: var(--gold);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 18px; flex-shrink: 0; z-index: 2;
+    }
+
+    /* BALANCE PEEK */
+    .balance-peek {
+        background: var(--card); border-radius: 20px;
+        padding: 18px 20px; margin: -55px 20px 18px;
+        display: flex; align-items: center; justify-content: space-between;
+        box-shadow: 0 15px 40px rgba(11,122,46,0.1);
+        border: 1px solid rgba(11,122,46,0.06);
+        position: relative; z-index: 3;
+    }
+    .balance-peek .bp-left { min-width: 0; flex: 1; }
+    .balance-peek .bp-label {
+        font-size: 10.5px; color: var(--muted);
+        font-weight: 800; text-transform: uppercase;
+        letter-spacing: 0.6px; margin-bottom: 4px;
+    }
+    .balance-peek .bp-amt {
+        font-size: 22px; font-weight: 900; color: var(--green);
+        letter-spacing: -0.5px;
+    }
+    .balance-peek .bp-user {
+        font-size: 11px; color: var(--muted); font-weight: 600;
+        margin-top: 2px;
+    }
+    .balance-peek .bp-right {
+        width: 46px; height: 46px; border-radius: 50%;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white; display: flex; align-items: center; justify-content: center;
+        font-size: 20px; flex-shrink: 0;
+        box-shadow: 0 8px 20px rgba(11,122,46,0.3);
+    }
+
+    /* SECTION */
+    .section-title {
+        padding: 0 20px; margin-bottom: 12px; margin-top: 18px;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .section-title h3 {
+        font-size: 14px; font-weight: 800; color: var(--green);
+        text-transform: uppercase; letter-spacing: 0.6px;
+        display: flex; align-items: center; gap: 8px;
+    }
+    .section-title h3::before {
+        content: ''; width: 4px; height: 14px;
+        background: var(--gold); border-radius: 2px;
+    }
+
+    /* TOOL GRID */
+    .tool-grid {
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: 10px; padding: 0 20px;
+    }
+    .tool-card {
+        background: var(--card); border-radius: 16px;
+        padding: 16px 12px; text-decoration: none;
+        display: flex; flex-direction: column; gap: 10px;
+        border: 1px solid var(--border); cursor: pointer;
+        transition: 0.25s; position: relative;
+        overflow: hidden;
+    }
+    .tool-card:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(11,122,46,0.12); border-color: var(--green); }
+    .tool-card .tc-icon {
+        width: 44px; height: 44px; border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px; color: white;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    .tool-card .tc-icon.green { background: linear-gradient(135deg, #0B7A2E, #14A344); }
+    .tool-card .tc-icon.gold { background: linear-gradient(135deg, #F9A825, #FFC72C); color: var(--green-dark); }
+    .tool-card .tc-icon.blue { background: linear-gradient(135deg, #1565C0, #1E88E5); }
+    .tool-card .tc-icon.purple { background: linear-gradient(135deg, #6A1B9A, #9C27B0); }
+    .tool-card .tc-icon.orange { background: linear-gradient(135deg, #E65100, #FF9800); }
+    .tool-card .tc-icon.red { background: linear-gradient(135deg, #B71C1C, #E53935); }
+    .tool-card .tc-name {
+        font-size: 13px; font-weight: 800; color: var(--green-dark);
+        letter-spacing: 0.2px; line-height: 1.25;
+    }
+    .tool-card .tc-sub {
+        font-size: 10.5px; color: var(--muted); font-weight: 500;
+        line-height: 1.3;
+    }
+
+    /* FEE CALCULATOR */
+    .calc-card {
+        background: var(--card); border-radius: 20px;
+        padding: 20px; margin: 0 20px 16px;
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 15px rgba(11,122,46,0.03);
+    }
+    .calc-card .cc-head {
+        display: flex; align-items: center; gap: 12px;
+        margin-bottom: 16px;
+    }
+    .calc-card .cc-head .icon {
+        width: 40px; height: 40px; border-radius: 12px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white; display: flex; align-items: center; justify-content: center;
+        font-size: 18px; flex-shrink: 0;
+    }
+    .calc-card .cc-head h3 {
+        font-size: 14px; font-weight: 800; color: var(--green-dark);
+        margin-bottom: 2px;
+    }
+    .calc-card .cc-head p {
+        font-size: 11px; color: var(--muted); font-weight: 500;
+    }
+    .calc-input-wrap {
+        position: relative; display: flex; align-items: center;
+        background: var(--bg); border: 1.5px solid var(--border);
+        border-radius: 14px; margin-bottom: 12px;
+        transition: 0.2s;
+    }
+    .calc-input-wrap:focus-within {
+        border-color: var(--green); background: white;
+        box-shadow: 0 0 0 4px rgba(11,122,46,0.1);
+    }
+    .calc-input-wrap .prefix {
+        position: absolute; left: 16px;
+        font-size: 15px; font-weight: 900; color: var(--green);
+        pointer-events: none;
+    }
+    .calc-input-wrap input {
+        width: 100%; padding: 14px 16px 14px 58px;
+        border: none; background: transparent;
+        font-family: inherit; font-size: 17px; font-weight: 700;
+        color: var(--green-dark); outline: none;
+    }
+    .calc-input-wrap input::placeholder { color: #b8c4d1; font-weight: 500; }
+    .calc-result {
+        background: linear-gradient(135deg, #f4f9f6 0%, #eaf6ee 100%);
+        border-radius: 14px; padding: 14px;
+        border: 1px solid rgba(11,122,46,0.1);
+    }
+    .calc-result .cr-row {
+        display: flex; justify-content: space-between;
+        padding: 7px 0; font-size: 12.5px;
+        border-bottom: 1px dashed rgba(11,122,46,0.15);
+    }
+    .calc-result .cr-row:last-child { border-bottom: none; padding-top: 10px; border-top: 2px solid var(--gold); margin-top: 4px; }
+    .calc-result .cr-row span { color: var(--muted); font-weight: 600; }
+    .calc-result .cr-row strong { color: var(--green-dark); font-weight: 800; }
+    .calc-result .cr-row.fee strong { color: var(--danger); }
+    .calc-result .cr-row.total strong { color: var(--green); font-size: 15px; }
+    .calc-result .tier-label {
+        display: inline-block; font-size: 10px; font-weight: 900;
+        padding: 3px 9px; border-radius: 20px;
+        background: var(--gold); color: var(--green-dark);
+        letter-spacing: 0.3px; margin-top: 4px;
+    }
+
+    /* LIST ITEM (for tools like PIN, SMS opt, KYC, etc.) */
+    .list-wrap { padding: 0 20px; }
+    .list-item {
+        background: var(--card); border-radius: 14px;
+        padding: 14px 15px; display: flex; align-items: center;
+        gap: 12px; margin-bottom: 8px;
+        border: 1px solid var(--border); cursor: pointer;
+        transition: 0.2s;
+    }
+    .list-item:hover { border-color: var(--green); transform: translateX(3px); }
+    .list-item .li-icon {
+        width: 40px; height: 40px; border-radius: 12px;
+        background: linear-gradient(135deg, rgba(11,122,46,0.1), rgba(20,163,68,0.15));
+        color: var(--green);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 16px; flex-shrink: 0;
+    }
+    .list-item .li-text { flex: 1; min-width: 0; }
+    .list-item .li-text h4 {
+        font-size: 13px; font-weight: 800; color: var(--green-dark);
+        margin-bottom: 2px;
+    }
+    .list-item .li-text p {
+        font-size: 11px; color: var(--muted); font-weight: 500;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .list-item .li-toggle {
+        display: flex; align-items: center; gap: 6px;
+        font-size: 11px; font-weight: 800; color: var(--green);
+        background: rgba(11,122,46,0.1);
+        padding: 6px 12px; border-radius: 20px;
+        border: none; cursor: pointer; font-family: inherit;
+        transition: 0.2s;
+    }
+    .list-item .li-toggle:hover { background: rgba(11,122,46,0.18); }
+    .list-item .li-toggle.off { background: #f0f0f0; color: var(--muted); }
+    .list-item .li-arrow { color: var(--muted); font-size: 12px; }
+
+    /* MODAL */
+    .modal-backdrop {
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,0.55);
+        display: none; align-items: center; justify-content: center;
+        z-index: 99998; padding: 20px;
+    }
+    .modal-backdrop.show { display: flex; }
+    .modal {
+        background: white; border-radius: 20px;
+        padding: 24px 22px; max-width: 400px; width: 100%;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        animation: modalIn 0.3s ease;
+    }
+    @keyframes modalIn {
+        from { transform: scale(0.9); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    .modal h3 {
+        font-size: 17px; font-weight: 800; color: var(--green-dark);
+        margin-bottom: 8px; text-align: center;
+    }
+    .modal p {
+        font-size: 12.5px; color: var(--muted);
+        line-height: 1.6; margin-bottom: 16px; text-align: center;
+    }
+    .modal .m-input {
+        width: 100%; padding: 14px 16px; border-radius: 12px;
+        border: 1.5px solid var(--border);
+        font-family: inherit; font-size: 15px; font-weight: 600;
+        color: var(--green-dark); background: var(--bg);
+        outline: none; transition: 0.2s; margin-bottom: 10px;
+    }
+    .modal .m-input:focus {
+        border-color: var(--green); background: white;
+        box-shadow: 0 0 0 4px rgba(11,122,46,0.1);
+    }
+    .modal .m-input.center { text-align: center; letter-spacing: 4px; font-size: 18px; }
+    .modal .modal-actions { display: flex; gap: 10px; margin-top: 4px; }
+    .modal .modal-actions button {
+        flex: 1; padding: 14px; border-radius: 12px;
+        border: none; font-family: inherit; font-size: 14px;
+        font-weight: 800; cursor: pointer;
+    }
+    .modal .btn-cancel {
+        background: var(--bg); color: var(--green-dark);
+        border: 1.5px solid var(--border);
+    }
+    .modal .btn-confirm {
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white;
+        box-shadow: 0 8px 20px rgba(11,122,46,0.3);
+    }
+    .modal .btn-confirm:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* TOAST */
+    .toast {
+        position: fixed; top: 20px; left: 50%;
+        transform: translateX(-50%) translateY(-20px);
+        background: var(--green); color: white;
+        padding: 14px 24px; border-radius: 30px;
+        z-index: 99999; opacity: 0; visibility: hidden;
+        font-size: 13px; font-weight: 700;
+        max-width: 90%; text-align: center;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 30px rgba(11,122,46,0.3);
+        line-height: 1.4;
+    }
+    .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+        position: fixed; bottom: 0; left: 50%;
+        transform: translateX(-50%);
+        width: 100%; max-width: 480px; background: var(--card);
+        border-top: 1px solid var(--border);
+        display: flex; justify-content: space-around; align-items: center;
+        padding: 8px 0 12px; z-index: 100;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+    }
+    .bottom-nav a {
+        text-decoration: none; display: flex; flex-direction: column;
+        align-items: center; gap: 4px; font-size: 10px;
+        color: var(--muted); font-weight: 600; flex: 1;
+        transition: 0.3s; padding-top: 4px;
+    }
+    .bottom-nav a i { font-size: 22px; }
+    .bottom-nav a.active { color: var(--green); }
+    .bottom-nav a.active::after {
+        content: ''; display: block; width: 20px; height: 3px;
+        background: var(--gold); border-radius: 3px; margin-top: 2px;
+    }
+    .bottom-nav .center-btn {
+        width: 60px; height: 60px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 24px; margin-top: -25px;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.4);
+        cursor: pointer; border: 3px solid var(--bg); transition: 0.3s;
+    }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- HEADER -->
+    <header class="top-header">
+        <div class="header-left">
+            <a href="userdashboard.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="header-text">
+                <h4>Do it yourself</h4>
+                <h2>Self Service</h2>
+            </div>
+        </div>
+        <div class="header-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+    </header>
+
+    <!-- BALANCE PEEK -->
+    <div class="balance-peek">
+        <div class="bp-left">
+            <div class="bp-label">Your Balance</div>
+            <div class="bp-amt" id="balanceAmt">GHS 0.00</div>
+            <div class="bp-user" id="userLine">Loading...</div>
+        </div>
+        <div class="bp-right"><i class="fa-solid fa-wallet"></i></div>
+    </div>
+
+    <!-- QUICK TOOLS GRID -->
+    <div class="section-title">
+        <h3>Quick Tools</h3>
+    </div>
+    <div class="tool-grid">
+        <div class="tool-card" onclick="requestMiniStatement()">
+            <div class="tc-icon green"><i class="fa-solid fa-file-invoice"></i></div>
+            <div>
+                <div class="tc-name">Mini Statement</div>
+                <div class="tc-sub">Get last 5 transactions by SMS</div>
+            </div>
+        </div>
+        <div class="tool-card" onclick="scrollToCalc()">
+            <div class="tc-icon gold"><i class="fa-solid fa-calculator"></i></div>
+            <div>
+                <div class="tc-name">Fee Calculator</div>
+                <div class="tc-sub">Estimate fees instantly</div>
+            </div>
+        </div>
+        <div class="tool-card" onclick="location.href='userkyc.html'">
+            <div class="tc-icon blue"><i class="fa-solid fa-id-card"></i></div>
+            <div>
+                <div class="tc-name">KYC Status</div>
+                <div class="tc-sub" id="kycSub">Check verification</div>
+            </div>
+        </div>
+        <div class="tool-card" onclick="requestCard()">
+            <div class="tc-icon purple"><i class="fa-solid fa-credit-card"></i></div>
+            <div>
+                <div class="tc-name">Request Card</div>
+                <div class="tc-sub">Physical or virtual</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEE CALCULATOR -->
+    <div class="section-title" id="calcSection">
+        <h3>Fee Calculator</h3>
+    </div>
+    <div class="calc-card">
+        <div class="cc-head">
+            <div class="icon"><i class="fa-solid fa-coins"></i></div>
+            <div>
+                <h3>Know before you transact</h3>
+                <p>Enter amount to see fees</p>
+            </div>
+        </div>
+        <div class="calc-input-wrap">
+            <span class="prefix">GHS</span>
+            <input type="number" id="calcAmount" inputmode="decimal" placeholder="0.00" oninput="runCalc()">
+        </div>
+        <div class="calc-result" id="calcResult">
+            <div class="cr-row"><span>Deposit Fee</span><strong id="calcDepFee">—</strong></div>
+            <div class="cr-row"><span>You will receive</span><strong id="calcDepNet">—</strong></div>
+            <div class="cr-row fee"><span>Withdrawal Fee</span><strong id="calcWdFee">—</strong></div>
+            <div class="cr-row total"><span>Total Debit (Withdraw)</span><strong id="calcWdTotal">—</strong></div>
+            <div style="text-align:center; margin-top:8px;">
+                <span class="tier-label" id="calcTier" style="display:none;">—</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACCOUNT PREFERENCES -->
+    <div class="section-title">
+        <h3>Preferences</h3>
+    </div>
+    <div class="list-wrap">
+        <div class="list-item">
+            <div class="li-icon"><i class="fa-solid fa-comment-sms"></i></div>
+            <div class="li-text">
+                <h4>SMS Notifications</h4>
+                <p>Transaction alerts & re-engagement messages</p>
+            </div>
+            <button class="li-toggle" id="smsToggle" onclick="toggleSms()">
+                <i class="fa-solid fa-circle-check"></i> ON
+            </button>
+        </div>
+        <div class="list-item" onclick="location.href='myprofile.html'">
+            <div class="li-icon"><i class="fa-solid fa-user-pen"></i></div>
+            <div class="li-text">
+                <h4>Update Profile</h4>
+                <p>Name, email, phone, address</p>
+            </div>
+            <i class="fa-solid fa-chevron-right li-arrow"></i>
+        </div>
+        <div class="list-item" onclick="openPinModal()">
+            <div class="li-icon"><i class="fa-solid fa-key"></i></div>
+            <div class="li-text">
+                <h4>Change PIN</h4>
+                <p>Update your transaction PIN</p>
+            </div>
+            <i class="fa-solid fa-chevron-right li-arrow"></i>
+        </div>
+        <div class="list-item" onclick="location.href='accountnumberupdate.html'">
+            <div class="li-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+            <div class="li-text">
+                <h4>MoMo Settings</h4>
+                <p>Save default network & number</p>
+            </div>
+            <i class="fa-solid fa-chevron-right li-arrow"></i>
+        </div>
+    </div>
+
+    <!-- SUPPORT -->
+    <div class="section-title">
+        <h3>Need Help?</h3>
+    </div>
+    <div class="list-wrap" style="margin-bottom:20px;">
+        <div class="list-item" onclick="location.href='support.html'">
+            <div class="li-icon"><i class="fa-solid fa-headset"></i></div>
+            <div class="li-text">
+                <h4>Support & FAQ</h4>
+                <p>Answers to common questions</p>
+            </div>
+            <i class="fa-solid fa-chevron-right li-arrow"></i>
+        </div>
+        <div class="list-item" onclick="location.href='userchat.html'">
+            <div class="li-icon"><i class="fa-solid fa-comment-dots"></i></div>
+            <div class="li-text">
+                <h4>Chat with Support</h4>
+                <p>Instant replies 24/7</p>
+            </div>
+            <i class="fa-solid fa-chevron-right li-arrow"></i>
+        </div>
+    </div>
+
+</div>
+
+<!-- PIN MODAL -->
+<div class="modal-backdrop" id="pinModal">
+    <div class="modal">
+        <h3>Change PIN</h3>
+        <p>Enter your current PIN, then your new 4–6 digit PIN.</p>
+        <input type="password" id="oldPin" class="m-input center" inputmode="numeric" maxlength="6" placeholder="Current PIN">
+        <input type="password" id="newPin" class="m-input center" inputmode="numeric" maxlength="6" placeholder="New PIN">
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closePinModal()">Cancel</button>
+            <button class="btn-confirm" id="pinConfirmBtn" onclick="submitPinChange()">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<!-- CARD MODAL -->
+<div class="modal-backdrop" id="cardModal">
+    <div class="modal">
+        <h3>Request a Card</h3>
+        <p>Choose the type of card you'd like:</p>
+        <div class="modal-actions" style="flex-direction:column; gap:8px;">
+            <button class="btn-confirm" onclick="confirmCard('virtual')">
+                <i class="fa-solid fa-bolt"></i>&nbsp; Virtual Card (Instant)
+            </button>
+            <button class="btn-confirm" style="background: linear-gradient(135deg, #F9A825, #FFC72C); color: var(--green-dark);" onclick="confirmCard('physical')">
+                <i class="fa-solid fa-credit-card"></i>&nbsp; Physical Card (5–7 days)
+            </button>
+            <button class="btn-cancel" onclick="closeCardModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <a href="userdashboard.html"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="accountnumberupdate.html"><i class="fa-solid fa-book"></i> Accounts</a>
+    <button class="center-btn" onclick="location.href='userdashboard.html'"><i class="fa-solid fa-plus"></i></button>
+    <a href="usernotification.html"><i class="fa-solid fa-bell"></i> Alerts</a>
+    <a href="myprofile.html"><i class="fa-solid fa-user"></i> Profile</a>
+</nav>
+
+<div id="toast" class="toast"></div>
+
+<script>
+// ============================================================
+// SESSION
+// ============================================================
+const session = JSON.parse(localStorage.getItem('cit_session') || 'null');
+if (!session || !session.uid) window.location.href = 'userlogin.html';
+
+let currentUser = null;
+let toastTimer = null;
+
+// ============================================================
+// HELPERS
+// ============================================================
+function fmt(n) {
+    return 'GHS ' + Number(n || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+async function api(path, body, timeoutMs = 20000) {
+    const controller = new AbortController();
+    const t = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+        const res = await fetch(path + '?t=' + Date.now(), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body || {}),
+            cache: 'no-store',
+            signal: controller.signal
+        });
+        clearTimeout(t);
+        const text = await res.text();
+        if (!text) return { success: false, error: 'Empty response' };
+        try { return JSON.parse(text); } catch { return { success: false, error: 'Invalid response' }; }
+    } catch (e) {
+        clearTimeout(t);
+        if (e.name === 'AbortError') return { success: false, error: 'Request timed out' };
+        return { success: false, error: 'Network error: ' + e.message };
+    }
+}
+
+// ============================================================
+// LOAD USER
+// ============================================================
+async function loadUser() {
+    try {
+        const data = await api('/api/user-data', { uid: session.uid });
+        if (data.success && data.user) {
+            currentUser = data.user;
+            const balance = Number(currentUser.balance || 0);
+            document.getElementById('balanceAmt').textContent = fmt(balance);
+            document.getElementById('userLine').textContent = (currentUser.fullName || 'Customer') + ' • ' + (currentUser.accountNumber || '');
+
+            // SMS opt-in state
+            const opt = currentUser.smsOptOut === true;
+            updateSmsToggle(!opt);
+
+            // KYC sub text
+            const kycStatus = (currentUser.kyc && currentUser.kyc.status) || 'none';
+            const kycMap = {
+                none: 'Tap to verify',
+                pending: 'Under review',
+                approved: 'Verified ✓',
+                rejected: 'Resubmit needed'
+            };
+            document.getElementById('kycSub').textContent = kycMap[kycStatus] || 'Check status';
+        } else if (data.error && /not found/i.test(data.error)) {
+            localStorage.removeItem('cit_session');
+            window.location.href = 'userlogin.html';
+        }
+    } catch (e) {
+        showToast('Could not load account', 'error');
+    }
+}
+
+// ============================================================
+// MINI STATEMENT
+// ============================================================
+async function requestMiniStatement() {
+    showToast('Sending statement to your phone...', 'info');
+    try {
+        const r = await api('/api/request-mini-statement', { uid: session.uid });
+        if (r.success) showToast('📩 Statement sent!', 'success');
+        else showToast(r.error || 'Could not send statement', 'error');
+    } catch (e) {
+        showToast('Error: ' + e.message, 'error');
+    }
+}
+window.requestMiniStatement = requestMiniStatement;
+
+// ============================================================
+// FEE CALCULATOR
+// ============================================================
+let calcDebounce = null;
+function runCalc() {
+    clearTimeout(calcDebounce);
+    calcDebounce = setTimeout(async () => {
+        const amt = Number(document.getElementById('calcAmount').value);
+        if (!amt || amt <= 0) {
+            document.getElementById('calcDepFee').textContent = '—';
+            document.getElementById('calcDepNet').textContent = '—';
+            document.getElementById('calcWdFee').textContent = '—';
+            document.getElementById('calcWdTotal').textContent = '—';
+            document.getElementById('calcTier').style.display = 'none';
+            return;
+        }
+        try {
+            const r = await api('/api/fee-calculator', { amount: amt });
+            if (r.success) {
+                document.getElementById('calcDepFee').textContent = fmt(r.deposit.fee);
+                document.getElementById('calcDepNet').textContent = fmt(r.deposit.credited);
+                document.getElementById('calcWdFee').textContent = fmt(r.withdrawal.fee);
+                document.getElementById('calcWdTotal').textContent = fmt(r.withdrawal.totalDebit);
+                const tier = document.getElementById('calcTier');
+                tier.textContent = 'Fee tier: ' + r.deposit.label;
+                tier.style.display = 'inline-block';
+            }
+        } catch (e) {
+            console.warn(e);
+        }
+    }, 250);
+}
+window.runCalc = runCalc;
+
+function scrollToCalc() {
+    document.getElementById('calcSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(() => document.getElementById('calcAmount').focus(), 400);
+}
+window.scrollToCalc = scrollToCalc;
+
+// ============================================================
+// SMS OPT
+// ============================================================
+function updateSmsToggle(on) {
+    const btn = document.getElementById('smsToggle');
+    if (on) {
+        btn.classList.remove('off');
+        btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> ON';
+    } else {
+        btn.classList.add('off');
+        btn.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> OFF';
+    }
+}
+async function toggleSms() {
+    const isOn = !document.getElementById('smsToggle').classList.contains('off');
+    const newOpt = isOn; // if currently ON, we're turning OFF (optOut = true)
+    const btn = document.getElementById('smsToggle');
+    btn.disabled = true;
+    try {
+        const r = await api('/api/sms-opt-out', { uid: session.uid, optOut: newOpt });
+        if (r.success) {
+            updateSmsToggle(!newOpt);
+            showToast(newOpt ? 'SMS notifications disabled' : 'SMS notifications enabled', newOpt ? 'info' : 'success');
+        } else {
+            showToast(r.error || 'Could not update', 'error');
+        }
+    } catch (e) {
+        showToast('Error: ' + e.message, 'error');
+    } finally {
+        btn.disabled = false;
+    }
+}
+window.toggleSms = toggleSms;
+
+// ============================================================
+// CHANGE PIN
+// ============================================================
+function openPinModal() {
+    document.getElementById('pinModal').classList.add('show');
+    document.getElementById('oldPin').value = '';
+    document.getElementById('newPin').value = '';
+    setTimeout(() => document.getElementById('oldPin').focus(), 100);
+}
+function closePinModal() {
+    document.getElementById('pinModal').classList.remove('show');
+}
+async function submitPinChange() {
+    const oldPin = document.getElementById('oldPin').value.trim();
+    const newPin = document.getElementById('newPin').value.trim();
+
+    if (!oldPin || oldPin.length < 4) return showToast('Enter your current PIN', 'error');
+    if (!newPin || newPin.length < 4) return showToast('New PIN must be 4–6 digits', 'error');
+    if (newPin === oldPin) return showToast('New PIN must be different', 'error');
+    if (!/^\d{4,6}$/.test(newPin)) return showToast('PIN must be digits only', 'error');
+    if (/^(\d)\1+$/.test(newPin)) return showToast('PIN cannot be all same digits', 'error');
+
+    // verify old PIN first, then update
+    const btn = document.getElementById('pinConfirmBtn');
+    btn.disabled = true;
+    btn.innerHTML = 'Saving...';
+    try {
+        const verify = await api('/api/verify-pin', {
+            identifier: currentUser.accountNumber || currentUser.email || currentUser.phone,
+            pin: oldPin
+        });
+        if (!verify.success) {
+            showToast('Current PIN is incorrect', 'error');
+            btn.disabled = false; btn.innerHTML = 'Confirm';
+            return;
+        }
+        // Update profile with new pin (server validates strength)
+        const upd = await api('/api/update-profile', { uid: session.uid, pin: newPin });
+        if (upd.success) {
+            closePinModal();
+            showToast('✅ PIN updated successfully', 'success');
+        } else {
+            showToast(upd.error || 'Could not update PIN', 'error');
+        }
+    } catch (e) {
+        showToast('Error: ' + e.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Confirm';
+    }
+}
+window.openPinModal = openPinModal;
+window.closePinModal = closePinModal;
+window.submitPinChange = submitPinChange;
+
+// ============================================================
+// CARD REQUEST
+// ============================================================
+function requestCard() {
+    document.getElementById('cardModal').classList.add('show');
+}
+function closeCardModal() {
+    document.getElementById('cardModal').classList.remove('show');
+}
+async function confirmCard(type) {
+    closeCardModal();
+    showToast('Submitting your request...', 'info');
+    try {
+        const r = await api('/api/request-card', { uid: session.uid, cardType: type });
+        if (r.success) {
+            showToast('✅ Card request submitted! Ref: ' + r.cardId, 'success');
+        } else {
+            showToast(r.error || 'Could not request card', 'error');
+        }
+    } catch (e) {
+        showToast('Error: ' + e.message, 'error');
+    }
+}
+window.requestCard = requestCard;
+window.closeCardModal = closeCardModal;
+window.confirmCard = confirmCard;
+
+// ============================================================
+// CLOSE MODAL ON BACKDROP CLICK
+// ============================================================
+document.querySelectorAll('.modal-backdrop').forEach(m => {
+    m.addEventListener('click', (e) => {
+        if (e.target === m) m.classList.remove('show');
+    });
+});
+
+// ============================================================
+// INIT
+// ============================================================
+loadUser();
+</script>
+</body>
+</html>

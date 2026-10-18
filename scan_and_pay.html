@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CIT FUND | Scan & Pay</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- QR Scanner Library -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <!-- QR Code Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0b1f4a;
+            --primary-dark: #06183d;
+            --accent: #ff5a00;
+            --accent-light: #ff8c42;
+            --gold: #e0a800;
+            --bg: #f4f6fb;
+            --card: #ffffff;
+            --text: #1a2b4c;
+            --muted: #6b7a8f;
+            --border: #e8edf5;
+            --success: #00c853;
+            --danger: #e74c3c;
+            --warning: #ff9800;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        .app-container { max-width: 480px; margin: 0 auto; background: var(--bg); min-height: 100vh; position: relative; padding-bottom: 80px; }
+
+        /* Top Header */
+        .top-header {
+            background: var(--card);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+        .top-header .left { display: flex; align-items: center; gap: 15px; }
+        .top-header .logo { width: 40px; height: 40px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold; }
+        .top-header .greeting h4 { font-size: 14px; color: var(--muted); font-weight: 500; }
+        .top-header .greeting h2 { font-size: 18px; font-weight: 700; color: var(--primary); }
+        .top-header .right { display: flex; align-items: center; gap: 15px; }
+        .top-header .right .icon-btn {
+            width: 40px; height: 40px;
+            background: var(--bg);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+            cursor: pointer;
+        }
+        .top-header .right .icon-btn .dot {
+            width: 8px; height: 8px;
+            background: var(--danger);
+            border-radius: 50%;
+            position: absolute;
+            top: 3px; right: 3px;
+        }
+        .top-header .right img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
+
+        /* Balance Card */
+        .balance-card {
+            margin: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 20px;
+            padding: 25px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .balance-card::after {
+            content: '';
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(255,90,0,0.3), transparent 70%);
+            border-radius: 50%;
+        }
+        .balance-card .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .balance-card .label { font-size: 13px; color: rgba(255,255,255,0.8); }
+        .balance-card .total { font-size: 36px; font-weight: 800; margin: 5px 0; }
+        .balance-card .available { font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 10px; }
+        .balance-card .acc-info { font-size: 12px; color: rgba(255,255,255,0.6); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
+
+        /* Section Headers */
+        .section-title { display: flex; justify-content: space-between; align-items: center; margin: 20px 20px 10px; }
+        .section-title h3 { font-size: 18px; font-weight: 700; color: var(--primary); }
+        .section-title .icon { color: var(--accent); font-size: 20px; }
+
+        /* Action Tabs */
+        .action-tabs {
+            display: flex;
+            gap: 10px;
+            margin: 0 20px 20px;
+        }
+        .action-tab {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            background: var(--card);
+            transition: 0.3s;
+        }
+        .action-tab.active { border-color: var(--accent); background: #ffe5d9; }
+        .action-tab i { font-size: 24px; color: var(--accent); display: block; margin-bottom: 8px; }
+        .action-tab h4 { font-size: 14px; font-weight: 600; color: var(--primary); }
+        .action-tab p { font-size: 11px; color: var(--muted); }
+
+        /* Scan Section */
+        .scan-section { display: none; margin: 0 20px 20px; }
+        .scan-section.show { display: block; }
+
+        .scanner-container {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            border: 1px solid var(--border);
+        }
+        #qr-reader { width: 100%; margin-bottom: 15px; }
+        #qr-reader img { max-width: 100%; }
+        .scanner-btn {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .scanner-btn:hover { opacity: 0.9; }
+
+        /* Scanned Receiver Info */
+        .receiver-info {
+            background: #fff8e1;
+            border-left: 4px solid var(--gold);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .receiver-info.show { display: block; }
+        .receiver-info h4 { font-size: 16px; color: var(--primary); }
+        .receiver-info p { font-size: 14px; color: var(--muted); }
+
+        /* Amount Input */
+        .amount-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: #f8f9fc;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+        }
+        .amount-input-wrapper i { color: var(--muted); margin-right: 10px; }
+        .amount-input-wrapper input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            font-family: 'Poppins';
+        }
+
+        /* Pay Button */
+        .pay-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(255,90,0,0.3);
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .pay-btn:hover { transform: translateY(-3px); }
+        .pay-btn:disabled { background: #ccc; box-shadow: none; transform: none; cursor: not-allowed; }
+
+        /* My QR Section */
+        .my-qr-section { display: none; margin: 0 20px 20px; text-align: center; }
+        .my-qr-section.show { display: block; }
+        .my-qr-section .card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            border: 1px solid var(--border);
+        }
+        #myQRCode { margin: 20px auto; }
+        .my-qr-section .account-num { font-size: 18px; font-weight: 800; color: var(--primary); margin-top: 10px; }
+        .my-qr-section .share-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .my-qr-section .share-btn:hover { opacity: 0.9; }
+
+        /* Success Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            max-width: 300px;
+            width: 90%;
+        }
+        .modal-content .icon { font-size: 60px; color: var(--success); margin-bottom: 15px; }
+        .modal-content h2 { font-size: 24px; color: var(--primary); margin-bottom: 10px; }
+        .modal-content p { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+        .modal-content button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 15px;
+            z-index: 100;
+        }
+        .bottom-nav a {
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+        .bottom-nav a.active { color: var(--accent); }
+        .bottom-nav a i { font-size: 20px; }
+        .bottom-nav .center-btn {
+            width: 60px; height: 60px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-top: -20px;
+            box-shadow: 0 10px 20px rgba(255,90,0,0.4);
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="left">
+            <div class="logo">C</div>
+            <div class="greeting">
+                <h4>Scan & Pay</h4>
+                <h2>Instant Payment</h2>
+            </div>
+        </div>
+        <div class="right">
+            <a href="usernotification.html" class="icon-btn">
+                <i class="fa-regular fa-bell"></i>
+                <span class="dot"></span>
+            </a>
+            <img id="profilePic" src="https://via.placeholder.com/40" alt="Profile" onclick="location.href='myprofile.html'">
+        </div>
+    </header>
+
+    <!-- Balance Card -->
+    <div class="balance-card">
+        <div class="top">
+            <div class="label">Available Balance</div>
+            <span style="font-size:20px; font-weight:bold; color:var(--accent);">CIT</span>
+        </div>
+        <div class="total" id="balanceDisplay">GHC 0.00</div>
+        <div class="available">Available for Payment</div>
+        <div class="acc-info" id="accountInfo">Loading account details...</div>
+    </div>
+
+    <!-- Action Tabs -->
+    <div class="action-tabs">
+        <div class="action-tab active" onclick="switchTab('scan')">
+            <i class="fa-solid fa-qrcode"></i>
+            <h4>Scan to Pay</h4>
+            <p>Scan QR code</p>
+        </div>
+        <div class="action-tab" onclick="switchTab('myqr')">
+            <i class="fa-solid fa-qrcode"></i>
+            <h4>My QR</h4>
+            <p>Get paid</p>
+        </div>
+    </div>
+
+    <!-- Scan Section -->
+    <div class="scan-section show" id="scanSection">
+        <div class="section-title">
+            <h3>Scan QR Code</h3>
+            <span class="icon"><i class="fa-solid fa-camera"></i></span>
+        </div>
+        <div class="scanner-container">
+            <div id="qr-reader"></div>
+            <button class="scanner-btn" id="startScanBtn" onclick="startScanner()"><i class="fa-solid fa-camera"></i> Start Scanner</button>
+            <button class="scanner-btn" style="display:none;" id="stopScanBtn" onclick="stopScanner()"><i class="fa-solid fa-stop"></i> Stop Scanner</button>
+        </div>
+
+        <!-- Receiver Info (after scan) -->
+        <div class="receiver-info" id="receiverInfo">
+            <h4 id="receiverName">Recipient: —</h4>
+            <p id="receiverAccount">Account: —</p>
+        </div>
+
+        <!-- Amount Input -->
+        <div class="section-title">
+            <h3>Enter Amount</h3>
+            <span class="icon"><i class="fa-solid fa-money-bill-wave"></i></span>
+        </div>
+        <div class="amount-input-wrapper">
+            <i class="fa-solid fa-cedi-sign"></i>
+            <input type="number" id="amountInput" placeholder="0.00" min="1">
+        </div>
+
+        <!-- Pay Button -->
+        <button class="pay-btn" id="payBtn" onclick="makePayment()" disabled>
+            <i class="fa-solid fa-paper-plane"></i> Pay Now
+        </button>
+    </div>
+
+    <!-- My QR Section -->
+    <div class="my-qr-section" id="myQRSection">
+        <div class="section-title">
+            <h3>My QR Code</h3>
+            <span class="icon"><i class="fa-solid fa-qrcode"></i></span>
+        </div>
+        <div class="card">
+            <p>Scan this QR code to receive payment</p>
+            <div id="myQRCode"></div>
+            <div class="account-num" id="myAccountNumber">Account: —</div>
+            <button class="share-btn" onclick="shareQR()"><i class="fa-solid fa-share-nodes"></i> Share</button>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal-overlay" id="successModal">
+    <div class="modal-content">
+        <div class="icon"><i class="fa-solid fa-circle-check"></i></div>
+        <h2>Payment Successful!</h2>
+        <p id="successMessage"></p>
+        <button onclick="closeModal()">OK</button>
+    </div>
+</div>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+    <a href="userdashboard.html"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="accountnumberupdate.html"><i class="fa-solid fa-book"></i> Accounts</a>
+    <div class="center-btn" onclick="location.href='scan_and_pay.html'"><i class="fa-solid fa-qrcode"></i></div>
+    <a href="usertransfer.html"><i class="fa-solid fa-money-bill-transfer"></i> Transfer</a>
+    <a href="myprofile.html"><i class="fa-solid fa-user"></i> Profile</a>
+</nav>
+
+<script>
+    let currentUid = null;
+    let currentUserData = null;
+    let scannedAccount = null;
+    let scannerRunning = false;
+    let html5QrcodeScanner = null;
+
+    // Load session and dashboard data
+    window.addEventListener('DOMContentLoaded', async () => {
+        const session = JSON.parse(localStorage.getItem('cit_session') || 'null');
+        if (!session || !session.uid) {
+            window.location = 'userlogin.html';
+            return;
+        }
+        currentUid = session.uid;
+
+        try {
+            const res = await fetch('/api/dashboard', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ uid: currentUid })
+            });
+            const data = await res.json();
+            if (data.success) {
+                currentUserData = data.user;
+                // Balance
+                let bal = parseFloat(currentUserData.balance) || 0;
+                document.getElementById('balanceDisplay').innerText = "GHC " + bal.toFixed(2);
+                document.getElementById('accountInfo').innerText = "Account: " + (currentUserData.accountNumber || '') + " | " + (currentUserData.memberID || '');
+                // Profile pic
+                if (currentUserData.photo) {
+                    document.getElementById('profilePic').src = currentUserData.photo;
+                } else {
+                    document.getElementById('profilePic').src = 'https://via.placeholder.com/40';
+                }
+                // Generate my QR
+                generateMyQR();
+            }
+        } catch (e) {
+            console.error('Error loading dashboard:', e);
+            alert('Failed to load account data.');
+        }
+    });
+
+    // Switch between Scan and My QR
+    function switchTab(tab) {
+        document.querySelectorAll('.action-tab').forEach(t => t.classList.remove('active'));
+        if (tab === 'scan') {
+            document.querySelectorAll('.action-tab')[0].classList.add('active');
+            document.getElementById('scanSection').classList.add('show');
+            document.getElementById('myQRSection').classList.remove('show');
+            if (scannerRunning) startScanner();
+        } else {
+            document.querySelectorAll('.action-tab')[1].classList.add('active');
+            document.getElementById('scanSection').classList.remove('show');
+            document.getElementById('myQRSection').classList.add('show');
+            stopScanner();
+        }
+    }
+
+    // QR Scanner
+    function startScanner() {
+        if (scannerRunning) return;
+        document.getElementById('startScanBtn').style.display = 'none';
+        document.getElementById('stopScanBtn').style.display = 'inline-block';
+
+        html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render(onScanSuccess);
+        scannerRunning = true;
+    }
+
+    function stopScanner() {
+        if (html5QrcodeScanner) {
+            html5QrcodeScanner.clear().then(() => {
+                document.getElementById('startScanBtn').style.display = 'inline-block';
+                document.getElementById('stopScanBtn').style.display = 'none';
+                scannerRunning = false;
+                document.getElementById('qr-reader').innerHTML = '';
+            }).catch(err => console.log(err));
+        }
+    }
+
+    async function onScanSuccess(decodedText, decodedResult) {
+        // QR contains account number or a JSON with accountNumber
+        let accountNumber = decodedText.trim();
+        // If it's JSON, parse it
+        try {
+            const parsed = JSON.parse(decodedText);
+            if (parsed.accountNumber) accountNumber = parsed.accountNumber;
+        } catch (e) { /* not JSON, just use text */ }
+
+        // Verify receiver
+        const res = await fetch('/api/verify-receiver', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ accountNumber: accountNumber })
+        });
+        const data = await res.json();
+        if (data.success) {
+            scannedAccount = accountNumber;
+            document.getElementById('receiverName').innerText = "Recipient: " + data.name;
+            document.getElementById('receiverAccount').innerText = "Account: " + accountNumber;
+            document.getElementById('receiverInfo').classList.add('show');
+            document.getElementById('payBtn').disabled = false;
+            stopScanner(); // stop after successful scan
+        } else {
+            alert('Account not found!');
+            stopScanner();
+        }
+    }
+
+    // Make Payment
+    async function makePayment() {
+        const amount = parseFloat(document.getElementById('amountInput').value);
+        if (!scannedAccount) { alert('Please scan a valid QR code.'); return; }
+        if (!amount || amount <= 0) { alert('Enter valid amount.'); return; }
+
+        const payBtn = document.getElementById('payBtn');
+        payBtn.disabled = true;
+        payBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+
+        try {
+            const res = await fetch('/api/transfer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ senderUid: currentUid, receiverAccount: scannedAccount, amount: amount })
+            });
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('successMessage').innerText = `You paid GHS ${amount.toFixed(2)}. New balance: GHS ${data.newBalance.toFixed(2)}`;
+                document.getElementById('successModal').classList.add('show');
+                document.getElementById('balanceDisplay').innerText = "GHC " + data.newBalance.toFixed(2);
+                // Reset
+                document.getElementById('amountInput').value = "";
+                document.getElementById('receiverInfo').classList.remove('show');
+                document.getElementById('payBtn').disabled = true;
+                scannedAccount = null;
+            } else {
+                alert(data.error || 'Payment failed.');
+            }
+        } catch (e) {
+            alert('Server error: ' + e.message);
+        } finally {
+            payBtn.disabled = false;
+            payBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Pay Now';
+        }
+    }
+
+    // Generate My QR
+    function generateMyQR() {
+        if (!currentUserData?.accountNumber) return;
+        const qrContainer = document.getElementById("myQRCode");
+        qrContainer.innerHTML = '';
+        new QRCode(qrContainer, {
+            text: currentUserData.accountNumber,
+            width: 200,
+            height: 200,
+            colorDark: "#0b1f4a",
+            colorLight: "#ffffff",
+        });
+        document.getElementById("myAccountNumber").innerText = "Account: " + currentUserData.accountNumber;
+    }
+
+    // Share QR
+    function shareQR() {
+        if (!currentUserData?.accountNumber) return;
+        if (navigator.share) {
+            navigator.share({
+                title: 'CIT FUND Payment QR',
+                text: 'Scan this QR to pay me. Account: ' + currentUserData.accountNumber,
+                url: window.location.href
+            }).catch(err => console.log('Share failed', err));
+        } else {
+            alert('Share not supported on this device.');
+        }
+    }
+
+    // Close Modal
+    function closeModal() {
+        document.getElementById('successModal').classList.remove('show');
+    }
+</script>
+</body>
+</html>

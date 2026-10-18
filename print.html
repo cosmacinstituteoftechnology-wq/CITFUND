@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CITFUND ENTERPRISE | Print Statement</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    :root {
+        --green: #0B7A2E;
+        --green-dark: #075C22;
+        --green-light: #14A344;
+        --gold: #FFC72C;
+        --gold-soft: #FFD75E;
+        --red: #E30613;
+        --bg: #eef3f0;
+        --card: #ffffff;
+        --text: #1a2b4c;
+        --muted: #6b7a8f;
+        --border: #e6f0e9;
+        --success: #00a86b;
+        --danger: #e74c3c;
+        --warning: #ff9800;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); padding: 30px 15px 100px; }
+
+    /* ACTION BAR (hidden when printing) */
+    .action-bar {
+        position: fixed; top: 0; left: 0; right: 0;
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        padding: 14px 20px;
+        display: flex; align-items: center; justify-content: space-between;
+        z-index: 100;
+        box-shadow: 0 6px 20px rgba(11,122,46,0.25);
+        gap: 10px;
+    }
+    .action-bar .ab-brand {
+        display: flex; align-items: center; gap: 10px;
+        color: white; min-width: 0;
+    }
+    .action-bar .ab-logo {
+        width: 36px; height: 36px; border-radius: 10px;
+        background: var(--gold); color: var(--green-dark);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 17px; font-weight: 900;
+        flex-shrink: 0;
+    }
+    .action-bar .ab-text { min-width: 0; }
+    .action-bar .ab-text h4 {
+        font-size: 10px; color: rgba(255,255,255,0.75);
+        font-weight: 500; letter-spacing: 0.4px;
+        text-transform: uppercase;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .action-bar .ab-text h2 {
+        font-size: 14px; font-weight: 800; color: white;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .action-bar .ab-btns { display: flex; gap: 8px; flex-shrink: 0; }
+    .action-bar .ab-btns button {
+        background: rgba(255,255,255,0.18);
+        border: 1px solid rgba(255,255,255,0.28);
+        color: white;
+        padding: 9px 14px;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 800;
+        cursor: pointer;
+        display: flex; align-items: center; gap: 6px;
+        transition: 0.2s;
+    }
+    .action-bar .ab-btns button.primary {
+        background: var(--gold);
+        color: var(--green-dark);
+        border-color: var(--gold);
+    }
+    .action-bar .ab-btns button:hover { transform: translateY(-1px); }
+
+    /* STATEMENT PAGE */
+    .statement-page {
+        max-width: 800px;
+        margin: 70px auto 0;
+        background: var(--card);
+        border-radius: 16px;
+        box-shadow: 0 15px 40px rgba(11,122,46,0.1);
+        padding: 40px 36px;
+        border: 1px solid rgba(11,122,46,0.06);
+    }
+
+    /* Header */
+    .st-header {
+        text-align: center;
+        padding-bottom: 24px;
+        border-bottom: 3px solid var(--green);
+        margin-bottom: 26px;
+    }
+    .st-header .st-logo {
+        width: 68px; height: 68px;
+        background: var(--green);
+        color: white;
+        border-radius: 16px;
+        font-size: 34px; font-weight: 900;
+        line-height: 68px;
+        margin: 0 auto 14px;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.25);
+    }
+    .st-header h1 {
+        color: var(--green);
+        font-size: 24px; font-weight: 900;
+        margin: 0; letter-spacing: 0.5px;
+    }
+    .st-header .st-subtitle {
+        color: var(--muted);
+        font-size: 11px; font-weight: 700;
+        margin-top: 6px;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+    }
+    .st-header .st-badge {
+        display: inline-block;
+        background: var(--green);
+        color: white;
+        padding: 5px 16px;
+        border-radius: 20px;
+        font-size: 10px; font-weight: 900;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        margin-top: 14px;
+    }
+
+    /* Account info grid */
+    .st-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 26px;
+        padding: 18px 20px;
+        background: linear-gradient(135deg, #f4f9f6 0%, #eaf6ee 100%);
+        border-radius: 14px;
+        border: 1px solid var(--border);
+    }
+    .st-info .st-row { min-width: 0; }
+    .st-info .st-row .lbl {
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-bottom: 3px;
+    }
+    .st-info .st-row .val {
+        color: var(--green-dark);
+        font-weight: 800;
+        font-size: 13px;
+        word-break: break-all;
+        line-height: 1.35;
+    }
+    .st-info .st-row .val.mono {
+        font-family: 'Courier New', monospace;
+        letter-spacing: 0.5px;
+    }
+
+    /* Period strip */
+    .st-period {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 20px;
+        background: var(--green-dark);
+        color: white;
+        border-radius: 12px;
+        margin-bottom: 22px;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .st-period .sp-l {
+        font-size: 11px; font-weight: 700;
+        opacity: 0.85; letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+    .st-period .sp-r {
+        font-size: 12px; font-weight: 800;
+        letter-spacing: 0.5px;
+    }
+
+    /* Summary grid */
+    .st-summary {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-bottom: 26px;
+    }
+    .st-summary .ss-item {
+        padding: 14px;
+        border-radius: 12px;
+        background: #f9fbfa;
+        border: 1px solid var(--border);
+        text-align: center;
+    }
+    .st-summary .ss-item.in {
+        background: linear-gradient(135deg, #e6fff0 0%, #d4f5e2 100%);
+        border-color: rgba(0,168,107,0.2);
+    }
+    .st-summary .ss-item.out {
+        background: linear-gradient(135deg, #fff5f5 0%, #ffe6e6 100%);
+        border-color: rgba(231,76,60,0.2);
+    }
+    .st-summary .ss-item.bal {
+        background: linear-gradient(135deg, #f0f8f3 0%, #e0f0e6 100%);
+        border-color: rgba(11,122,46,0.2);
+    }
+    .st-summary .ss-item .ss-lbl {
+        font-size: 9.5px; font-weight: 800;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+    }
+    .st-summary .ss-item .ss-val { font-size: 14px; font-weight: 900; }
+    .st-summary .ss-item.in .ss-val { color: var(--success); }
+    .st-summary .ss-item.out .ss-val { color: var(--danger); }
+    .st-summary .ss-item.bal .ss-val { color: var(--green); }
+    .st-summary .ss-item .ss-val.default { color: var(--green-dark); }
+
+    /* Table */
+    .st-table-wrap {
+        overflow-x: auto;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 26px;
+    }
+    table.st-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+    }
+    table.st-table thead {
+        background: var(--green);
+        color: white;
+    }
+    table.st-table th {
+        padding: 12px 10px;
+        text-align: left;
+        font-weight: 800;
+        font-size: 10.5px;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+    }
+    table.st-table th.right { text-align: right; }
+    table.st-table th.center { text-align: center; }
+    table.st-table td {
+        padding: 12px 10px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+        color: var(--text);
+    }
+    table.st-table tr:last-child td { border-bottom: none; }
+    table.st-table tbody tr:nth-child(even) { background: #fafdfb; }
+    table.st-table td.right { text-align: right; }
+    table.st-table td.center { text-align: center; }
+    table.st-table .cell-date {
+        font-size: 11px; font-weight: 700;
+        color: var(--green-dark);
+        white-space: nowrap;
+    }
+    table.st-table .cell-date .time {
+        display: block;
+        font-size: 9.5px;
+        color: var(--muted);
+        font-weight: 600;
+        margin-top: 2px;
+    }
+    table.st-table .cell-desc .title {
+        font-weight: 800;
+        color: var(--green-dark);
+        font-size: 12px;
+        margin-bottom: 2px;
+    }
+    table.st-table .cell-desc .sub {
+        font-size: 10.5px;
+        color: var(--muted);
+        font-weight: 500;
+    }
+    table.st-table .cell-ref {
+        font-family: 'Courier New', monospace;
+        font-size: 10px;
+        color: var(--muted);
+        word-break: break-all;
+    }
+    table.st-table .cell-amount {
+        font-weight: 900;
+        font-size: 12.5px;
+        white-space: nowrap;
+    }
+    table.st-table .cell-amount.credit { color: var(--success); }
+    table.st-table .cell-amount.debit { color: var(--danger); }
+    table.st-table .cell-amount.pending { color: var(--warning); }
+    table.st-table .cell-amount.neutral { color: var(--muted); }
+    table.st-table .status-tag {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 9px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+    table.st-table .status-tag.success { background: #e6fff0; color: var(--success); }
+    table.st-table .status-tag.pending { background: #fff8e1; color: #a06d00; }
+    table.st-table .status-tag.failed { background: #ffe6e6; color: var(--danger); }
+
+    /* Empty */
+    .st-empty {
+        text-align: center;
+        padding: 50px 20px;
+        color: var(--muted);
+    }
+    .st-empty i {
+        font-size: 44px; color: #cfe3d6;
+        margin-bottom: 14px; display: block;
+    }
+    .st-empty h3 {
+        font-size: 15px; font-weight: 800;
+        color: var(--green); margin-bottom: 6px;
+    }
+    .st-empty p {
+        font-size: 12.5px; font-weight: 600;
+        line-height: 1.6;
+    }
+
+    /* Footer */
+    .st-footer {
+        text-align: center;
+        padding-top: 22px;
+        border-top: 2px dashed var(--border);
+        color: var(--muted);
+        font-size: 10.5px;
+        font-weight: 600;
+        line-height: 1.8;
+    }
+    .st-footer strong { color: var(--green); }
+    .st-footer .st-sign {
+        margin-top: 26px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    .st-footer .st-sign .sign-box { padding-top: 8px; }
+    .st-footer .st-sign .sign-line {
+        border-top: 1.5px dashed var(--muted);
+        padding-top: 6px;
+        font-size: 10px;
+        color: var(--muted);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Loading */
+    #loadingState {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--muted);
+    }
+    #loadingState .spinner {
+        width: 46px; height: 46px;
+        border: 5px solid var(--border);
+        border-top-color: var(--green);
+        border-right-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loadingState p { font-size: 13px; font-weight: 700; }
+
+    .btn-close-empty {
+        margin-top: 20px;
+        padding: 12px 22px;
+        background: #0B7A2E;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 800;
+        cursor: pointer;
+    }
+
+    /* PRINT */
+    @media print {
+        body { background: white !important; padding: 0 !important; }
+        .action-bar { display: none !important; }
+        .statement-page {
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+            border: none !important;
+            background: white !important;
+        }
+        .st-header .st-logo,
+        table.st-table thead,
+        .st-period,
+        .st-summary .ss-item,
+        table.st-table tbody tr:nth-child(even),
+        .status-tag {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .st-table-wrap { overflow: visible !important; }
+        @page { margin: 12mm 10mm; }
+    }
+</style>
+</head>
+<body>
+
+<div class="action-bar">
+    <div class="ab-brand">
+        <div class="ab-logo">C</div>
+        <div class="ab-text">
+            <h4>CITFUND ENTERPRISE</h4>
+            <h2 id="abTitle">Account Statement</h2>
+        </div>
+    </div>
+    <div class="ab-btns">
+        <button onclick="window.print()" class="primary">
+            <i class="fa-solid fa-print"></i>
+            <span>Print</span>
+        </button>
+        <button onclick="window.close()">
+            <i class="fa-solid fa-times"></i>
+        </button>
+    </div>
+</div>
+
+<div class="statement-page" id="statementPage">
+
+    <div id="loadingState">
+        <div class="spinner"></div>
+        <p>Preparing statement...</p>
+    </div>
+
+    <div id="statementContent" style="display:none;">
+
+        <div class="st-header">
+            <div class="st-logo">C</div>
+            <h1>CITFUND ENTERPRISE</h1>
+            <div class="st-subtitle">Your Trusted Financial Partner</div>
+            <div class="st-badge" id="stBadge">Account Statement</div>
+        </div>
+
+        <div class="st-info">
+            <div class="st-row">
+                <div class="lbl">Account Holder</div>
+                <div class="val" id="infoName">&mdash;</div>
+            </div>
+            <div class="st-row">
+                <div class="lbl">Account Number</div>
+                <div class="val mono" id="infoAccount">&mdash;</div>
+            </div>
+            <div class="st-row">
+                <div class="lbl">Member ID</div>
+                <div class="val mono" id="infoMember">&mdash;</div>
+            </div>
+            <div class="st-row">
+                <div class="lbl">Currency</div>
+                <div class="val">GHS &mdash; Ghana Cedi</div>
+            </div>
+            <div class="st-row">
+                <div class="lbl">Phone</div>
+                <div class="val mono" id="infoPhone">&mdash;</div>
+            </div>
+            <div class="st-row">
+                <div class="lbl">Email</div>
+                <div class="val" id="infoEmail">&mdash;</div>
+            </div>
+        </div>
+
+        <div class="st-period">
+            <div class="sp-l">Statement Period</div>
+            <div class="sp-r" id="infoPeriod">&mdash;</div>
+        </div>
+
+        <div class="st-summary">
+            <div class="ss-item in">
+                <div class="ss-lbl">Money In</div>
+                <div class="ss-val" id="sumIn">GHS 0.00</div>
+            </div>
+            <div class="ss-item out">
+                <div class="ss-lbl">Money Out</div>
+                <div class="ss-val" id="sumOut">GHS 0.00</div>
+            </div>
+            <div class="ss-item bal">
+                <div class="ss-lbl">Current Balance</div>
+                <div class="ss-val" id="sumBal">GHS 0.00</div>
+            </div>
+            <div class="ss-item">
+                <div class="ss-lbl">Total Records</div>
+                <div class="ss-val default" id="sumCount">0</div>
+            </div>
+        </div>
+
+        <div class="st-table-wrap">
+            <table class="st-table" id="txnTable">
+                <thead>
+                    <tr>
+                        <th style="width: 18%;">Date / Time</th>
+                        <th style="width: 32%;">Description</th>
+                        <th style="width: 20%;">Reference</th>
+                        <th style="width: 15%;" class="right">Amount</th>
+                        <th style="width: 15%;" class="center">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="txnBody"></tbody>
+            </table>
+        </div>
+
+        <div id="emptyWrap" class="st-empty" style="display:none;">
+            <i class="fa-regular fa-receipt"></i>
+            <h3>No transactions</h3>
+            <p>There are no transactions in this statement period.</p>
+        </div>
+
+        <div class="st-footer">
+            <div>
+                <strong>CITFUND ENTERPRISE</strong> &mdash; Your Trusted Financial Partner<br>
+                Support: 0205720154 | support@citfund.com<br>
+                Generated on <span id="generatedOn">&mdash;</span>
+            </div>
+            <div class="st-sign">
+                <div class="sign-box">
+                    <div class="sign-line">Customer Signature</div>
+                </div>
+                <div class="sign-box">
+                    <div class="sign-line">Authorized Signatory</div>
+                </div>
+            </div>
+            <div style="margin-top: 22px;">
+                This is a computer-generated statement. No signature is required.<br>
+                &copy; <span id="footerYear">2026</span> CITFUND ENTERPRISE. All rights reserved.
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="print.js"></script>
+
+</body>
+</html>

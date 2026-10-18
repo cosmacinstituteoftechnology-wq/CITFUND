@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CIT FUND | Investments</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    :root {
+        --primary: #0b1f4a;
+        --primary-dark: #06183d;
+        --accent: #ff5a00;
+        --accent-light: #ff8c42;
+        --bg: #f8f9fc;
+        --card: #ffffff;
+        --text: #1a2b4c;
+        --muted: #6b7a8f;
+        --border: #e8edf5;
+        --success: #00c853;
+        --danger: #e74c3c;
+        --warning: #ff9800;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+    .app-container { max-width: 480px; margin: 0 auto; background: var(--bg); min-height: 100vh; position: relative; padding-bottom: 100px; }
+
+    /* ===== TOP HEADER ===== */
+    .top-header {
+        background: var(--primary);
+        padding: 25px 20px 55px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 0 0 30px 30px;
+        position: relative;
+        z-index: 1;
+    }
+    .top-header .head-left { display: flex; align-items: center; gap: 14px; }
+    .back-btn {
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.1);
+        color: white;
+        display: flex; align-items: center; justify-content: center;
+        text-decoration: none;
+        font-size: 16px;
+        transition: 0.2s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.2); }
+    .top-header .head-title h4 {
+        font-size: 12px;
+        color: rgba(255,255,255,0.7);
+        font-weight: 400;
+        margin-bottom: 2px;
+        letter-spacing: 0.3px;
+    }
+    .top-header .head-title h2 {
+        font-size: 18px;
+        font-weight: 700;
+        color: white;
+    }
+    .top-header .notification-btn {
+        position: relative;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 22px;
+        cursor: pointer;
+        padding: 6px;
+        text-decoration: none;
+    }
+
+    /* ===== BALANCE CARD ===== */
+    .balance-card {
+        background: var(--card);
+        border-radius: 24px;
+        padding: 22px 22px 20px;
+        margin: -40px 20px 18px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.06);
+        position: relative;
+        z-index: 2;
+    }
+    .balance-card .label {
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+    .balance-card h1 {
+        font-size: 30px;
+        font-weight: 800;
+        color: var(--primary);
+        letter-spacing: -0.5px;
+        margin-bottom: 16px;
+    }
+    .balance-card .mini-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+    }
+    .mini-stat .s-label {
+        font-size: 11px;
+        color: var(--muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 3px;
+    }
+    .mini-stat .s-value {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--primary);
+    }
+
+    /* ===== TABS ===== */
+    .tab-bar {
+        display: flex;
+        gap: 6px;
+        background: var(--card);
+        padding: 6px;
+        border-radius: 16px;
+        margin: 0 20px 20px;
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+    .tab-bar button {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        background: transparent;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--muted);
+        cursor: pointer;
+        transition: 0.25s;
+    }
+    .tab-bar button.active {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 6px 15px rgba(11,31,74,0.25);
+    }
+
+    /* ===== SECTION HEADER ===== */
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+        margin-bottom: 12px;
+    }
+    .section-header h3 { font-size: 15px; font-weight: 700; color: var(--primary); }
+    .section-header .count-badge {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--accent);
+        background: rgba(255,90,0,0.08);
+        padding: 4px 10px;
+        border-radius: 20px;
+    }
+
+    /* ===== PLAN CARD ===== */
+    .plans-list { padding: 0 20px; margin-bottom: 25px; }
+    .plan-card {
+        background: var(--card);
+        border-radius: 20px;
+        padding: 18px;
+        margin-bottom: 12px;
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        transition: 0.25s;
+    }
+    .plan-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 12px 25px rgba(255,90,0,0.08); }
+    .plan-card .plan-top { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .plan-card .plan-icon {
+        width: 46px; height: 46px;
+        border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+    .plan-card.fixed .plan-icon { background: rgba(11,31,74,0.08); color: var(--primary); }
+    .plan-card.flex .plan-icon { background: rgba(255,90,0,0.1); color: var(--accent); }
+    .plan-card .plan-info { flex: 1; min-width: 0; }
+    .plan-card .plan-info h4 {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 3px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .plan-card .plan-info p {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 500;
+    }
+    .plan-card .plan-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 14px;
+        border-top: 1px dashed var(--border);
+        gap: 10px;
+    }
+    .rate-block { display: flex; flex-direction: column; }
+    .rate-block .rate-label { font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .rate-block .rate-value { font-size: 16px; font-weight: 800; color: var(--success); }
+    .invest-btn {
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 10px 22px;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.25s;
+        box-shadow: 0 6px 15px rgba(255,90,0,0.25);
+    }
+    .invest-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(255,90,0,0.35); }
+    .invest-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ===== INVESTMENT CARD (active) ===== */
+    .inv-card {
+        background: var(--card);
+        border-radius: 20px;
+        padding: 18px;
+        margin-bottom: 12px;
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+    .inv-card .inv-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 14px;
+        gap: 10px;
+    }
+    .inv-card .inv-title { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 3px; }
+    .inv-card .inv-meta { font-size: 11px; color: var(--muted); font-weight: 500; }
+    .inv-status {
+        font-size: 10px; font-weight: 700;
+        padding: 4px 10px; border-radius: 20px;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        flex-shrink: 0;
+    }
+    .inv-status.active { background: #e6fff0; color: var(--success); }
+    .inv-status.matured, .inv-status.withdrawn { background: #eef1f6; color: var(--muted); }
+
+    .inv-amounts {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+    .inv-amounts .amt-block {
+        background: var(--bg);
+        border-radius: 12px;
+        padding: 10px 12px;
+    }
+    .inv-amounts .amt-block .a-label { font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 3px; }
+    .inv-amounts .amt-block .a-value { font-size: 15px; font-weight: 800; color: var(--primary); }
+    .inv-amounts .amt-block .a-value.green { color: var(--success); }
+
+    .progress-wrap { margin-bottom: 12px; }
+    .progress-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--muted);
+        margin-bottom: 6px;
+    }
+    .progress-bar {
+        width: 100%; height: 8px;
+        background: var(--border);
+        border-radius: 20px;
+        overflow: hidden;
+    }
+    .progress-bar .fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), var(--accent-light));
+        border-radius: 20px;
+        transition: width 0.6s ease;
+    }
+
+    .inv-live {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg, rgba(0,200,83,0.08), rgba(0,200,83,0.04));
+        padding: 10px 14px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        border: 1px solid rgba(0,200,83,0.15);
+    }
+    .inv-live .l-label {
+        font-size: 11px; color: var(--muted); font-weight: 600;
+        display: flex; align-items: center; gap: 6px;
+        text-transform: uppercase; letter-spacing: 0.4px;
+    }
+    .inv-live .l-label .pulse {
+        width: 7px; height: 7px;
+        background: var(--success);
+        border-radius: 50%;
+        animation: pulse 1.5s infinite;
+    }
+    .inv-live .l-value { font-size: 15px; font-weight: 800; color: var(--success); }
+    @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.5; transform: scale(1.4); }
+    }
+
+    .inv-actions { display: flex; gap: 8px; }
+    .btn-outline, .btn-solid {
+        flex: 1;
+        padding: 11px;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.25s;
+        border: none;
+    }
+    .btn-outline {
+        background: white;
+        border: 1.5px solid var(--border);
+        color: var(--primary);
+    }
+    .btn-outline:hover { border-color: var(--primary); }
+    .btn-solid {
+        background: var(--primary);
+        color: white;
+    }
+    .btn-solid:hover { background: var(--primary-dark); }
+    .btn-solid.danger { background: var(--danger); }
+    .btn-solid.danger:hover { background: #c0392b; }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        background: var(--card);
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        margin: 0 20px 25px;
+    }
+    .empty-state i { font-size: 40px; color: #d0d8e0; margin-bottom: 12px; }
+    .empty-state p { font-size: 13px; color: var(--muted); font-weight: 600; }
+
+    /* ===== BOTTOM NAV ===== */
+    .bottom-nav {
+        position: fixed;
+        bottom: 0; left: 50%;
+        transform: translateX(-50%);
+        width: 100%; max-width: 480px;
+        background: var(--card);
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 8px 0 12px;
+        z-index: 100;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+    }
+    .bottom-nav a {
+        text-decoration: none;
+        display: flex; flex-direction: column;
+        align-items: center; gap: 4px;
+        font-size: 10px;
+        color: var(--muted);
+        font-weight: 600;
+        flex: 1;
+        transition: 0.3s;
+    }
+    .bottom-nav a i { font-size: 22px; }
+    .bottom-nav a.active { color: var(--accent); }
+    .bottom-nav a.active::after {
+        content: '';
+        display: block;
+        width: 20px; height: 3px;
+        background: var(--accent);
+        border-radius: 3px;
+        margin-top: 2px;
+    }
+    .bottom-nav .center-btn {
+        width: 60px; height: 60px;
+        background: var(--accent);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 24px;
+        margin-top: -25px;
+        box-shadow: 0 10px 25px rgba(255,90,0,0.4);
+        cursor: pointer; border: none;
+        transition: 0.3s;
+    }
+    .bottom-nav .center-btn:active { transform: scale(0.92); }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,0.65);
+        backdrop-filter: blur(6px);
+        z-index: 10000;
+        display: none;
+        justify-content: center;
+        align-items: flex-end;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+        background: white;
+        border-radius: 30px 30px 0 0;
+        padding: 30px 22px 35px;
+        width: 100%;
+        max-width: 480px;
+        max-height: 92vh;
+        overflow-y: auto;
+        animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 -15px 50px rgba(0,0,0,0.25);
+    }
+    .modal .handle {
+        width: 50px; height: 5px;
+        background: var(--border);
+        border-radius: 3px;
+        margin: 0 auto 22px;
+    }
+    .modal h3 {
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 5px;
+        text-align: center;
+    }
+    .modal .sub {
+        font-size: 13px;
+        color: var(--muted);
+        text-align: center;
+        margin-bottom: 22px;
+    }
+    .plan-summary {
+        background: var(--bg);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 18px;
+        border: 1px solid var(--border);
+    }
+    .plan-summary .row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        font-size: 13px;
+        border-bottom: 1px solid var(--border);
+    }
+    .plan-summary .row:last-child { border-bottom: none; }
+    .plan-summary .row span { color: var(--muted); font-weight: 600; }
+    .plan-summary .row strong { color: var(--primary); font-weight: 800; }
+    .plan-summary .row strong.green { color: var(--success); }
+
+    .field-group { margin-bottom: 16px; }
+    .field-group label {
+        display: block;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+    .field-group input {
+        width: 100%;
+        padding: 15px 16px;
+        border-radius: 14px;
+        border: 1.5px solid var(--border);
+        font-family: inherit;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--primary);
+        background: var(--bg);
+        transition: 0.2s;
+        outline: none;
+    }
+    .field-group input:focus {
+        border-color: var(--accent);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(255,90,0,0.08);
+    }
+    .field-group .hint {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 6px;
+        font-weight: 500;
+    }
+    .quick-amounts {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+    }
+    .quick-amounts button {
+        flex: 1;
+        min-width: 60px;
+        padding: 9px;
+        background: var(--bg);
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--primary);
+        cursor: pointer;
+        transition: 0.2s;
+    }
+    .quick-amounts button:hover, .quick-amounts button.active {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 16px;
+        border-radius: 14px;
+        border: none;
+        background: linear-gradient(135deg, var(--accent), var(--accent-light));
+        color: white;
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.25s;
+        box-shadow: 0 10px 25px rgba(255,90,0,0.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(255,90,0,0.4); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .btn-secondary {
+        width: 100%;
+        padding: 14px;
+        border-radius: 14px;
+        border: 1.5px solid var(--border);
+        background: white;
+        color: var(--primary);
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--primary); }
+
+    /* ===== TOAST ===== */
+    .toast {
+        position: fixed; top: 20px; left: 50%;
+        transform: translateX(-50%) translateY(-20px);
+        background: var(--primary); color: white;
+        padding: 14px 24px; border-radius: 30px;
+        z-index: 99999; opacity: 0; visibility: hidden;
+        font-size: 13px; font-weight: 600;
+        max-width: 90%; text-align: center;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        line-height: 1.4;
+    }
+    .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+    .toast.info { background: var(--primary); }
+
+    /* ===== LOADING ===== */
+    #loading-overlay {
+        position: fixed; inset: 0;
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(6px);
+        display: flex; flex-direction: column;
+        justify-content: center; align-items: center;
+        z-index: 9998; color: var(--primary);
+        transition: opacity 0.35s;
+    }
+    #loading-overlay.hide { opacity: 0; pointer-events: none; }
+    .spinner {
+        width: 46px; height: 46px;
+        border: 5px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <p style="margin-top:14px; font-weight:600; font-size:13px;">Loading investments...</p>
+</div>
+
+<div class="app-container">
+
+    <!-- ===== HEADER ===== -->
+    <header class="top-header">
+        <div class="head-left">
+            <a href="userdashboard.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="head-title">
+                <h4>Investments</h4>
+                <h2>Grow Your Money</h2>
+            </div>
+        </div>
+        <a href="usernotification.html" class="notification-btn">
+            <i class="fa-regular fa-bell"></i>
+        </a>
+    </header>
+
+    <!-- ===== BALANCE CARD ===== -->
+    <div class="balance-card">
+        <div class="label">Available Balance</div>
+        <h1 id="availBalance">GHS 0.00</h1>
+        <div class="mini-stats">
+            <div class="mini-stat">
+                <div class="s-label">Total Invested</div>
+                <div class="s-value" id="totalInvested">GHS 0.00</div>
+            </div>
+            <div class="mini-stat">
+                <div class="s-label">Active Plans</div>
+                <div class="s-value" id="activeCount">0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TABS ===== -->
+    <div class="tab-bar">
+        <button data-tab="fixed" class="active">Fixed Plans</button>
+        <button data-tab="flex">Flexible Plans</button>
+    </div>
+
+    <!-- ===== PLANS ===== -->
+    <div class="section-header">
+        <h3>Choose a Plan</h3>
+        <span class="count-badge" id="planCount">0 plans</span>
+    </div>
+    <div id="plansList" class="plans-list"></div>
+
+    <!-- ===== MY INVESTMENTS ===== -->
+    <div class="section-header">
+        <h3>My Investments</h3>
+        <span class="count-badge" id="invCount">0</span>
+    </div>
+    <div id="investmentsList"></div>
+
+</div>
+
+<!-- ===== BOTTOM NAV ===== -->
+<nav class="bottom-nav">
+    <a href="userdashboard.html">
+        <i class="fa-solid fa-house"></i> Home
+    </a>
+    <a href="accountnumberupdate.html">
+        <i class="fa-solid fa-book"></i> Accounts
+    </a>
+    <button class="center-btn" onclick="location.href='userdashboard.html'">
+        <i class="fa-solid fa-plus"></i>
+    </button>
+    <a href="usernotification.html">
+        <i class="fa-solid fa-bell"></i> Alerts
+    </a>
+    <a href="myprofile.html">
+        <i class="fa-solid fa-user"></i> Profile
+    </a>
+</nav>
+
+<div id="toast" class="toast"></div>
+
+<!-- ===== INVEST MODAL ===== -->
+<div class="modal-overlay" id="investModal" onclick="closeInvest(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="handle"></div>
+        <h3 id="modalPlanName">Investment Plan</h3>
+        <p class="sub" id="modalPlanSub">Enter your investment details</p>
+
+        <div class="plan-summary">
+            <div class="row"><span>Duration</span><strong id="sumDuration">-</strong></div>
+            <div class="row"><span>Interest Rate</span><strong class="green" id="sumRate">-</strong></div>
+            <div class="row"><span>Minimum</span><strong id="sumMin">-</strong></div>
+            <div class="row"><span>Expected Interest</span><strong class="green" id="sumInterest">GHS 0.00</strong></div>
+            <div class="row"><span>Expected Return</span><strong id="sumReturn">GHS 0.00</strong></div>
+        </div>
+
+        <div class="field-group">
+            <label>Amount to Invest</label>
+            <input type="number" id="invAmount" inputmode="decimal" placeholder="0.00" min="0">
+            <div class="hint" id="amountHint">Available: GHS 0.00</div>
+            <div class="quick-amounts" id="quickAmounts"></div>
+        </div>
+
+        <div class="field-group">
+            <label>Transaction PIN</label>
+            <input type="password" id="invPin" inputmode="numeric" maxlength="6" placeholder="Enter your PIN">
+            <div class="hint">Your 4–6 digit security PIN</div>
+        </div>
+
+        <button class="btn-primary" id="confirmInvestBtn" onclick="confirmInvest()">
+            <i class="fa-solid fa-lock"></i>&nbsp; Confirm Investment
+        </button>
+        <button class="btn-secondary" onclick="closeInvest()">Cancel</button>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// SESSION
+// ============================================================
+const session = JSON.parse(localStorage.getItem('cit_session') || 'null');
+if (!session || !session.uid) window.location.href = 'userlogin.html';
+
+// ============================================================
+// STATE
+// ============================================================
+let PLANS = { fixed: [], flex: [] };
+let userBalance = 0;
+let currentTab = 'fixed';
+let selectedPlan = null;
+let myInvestments = [];
+let liveTimer = null;
+let toastTimer;
+
+const DAILY_RATE_PERCENT = 5 / 15; // 0.3333% per day (5% every 15 days)
+
+// ============================================================
+// HELPERS
+// ============================================================
+function fmt(n) {
+    return 'GHS ' + Number(n || 0).toLocaleString(undefined, {
+        minimumFractionDigits: 2, maximumFractionDigits: 2
+    });
+}
+function fmtRate(r) {
+    return Number(r || 0).toFixed(2) + '%';
+}
+function escapeHtml(s) {
+    return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+async function api(path, body) {
+    const res = await fetch(path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body || {}),
+        cache: 'no-store'
+    });
+    try { return await res.json(); }
+    catch (e) { return { success: false, error: 'Invalid server response' }; }
+}
+function hideLoading() {
+    const el = document.getElementById('loading-overlay');
+    if (el) { el.classList.add('hide'); setTimeout(() => el.style.display = 'none', 400); }
+}
+
+// ============================================================
+// LOAD EVERYTHING
+// ============================================================
+async function loadAll() {
+    try {
+        // 1. User data (for balance)
+        const dash = await api('/api/dashboard', { uid: session.uid });
+        if (dash.success && dash.user) {
+            userBalance = Number(dash.user.balance || 0);
+            document.getElementById('availBalance').textContent = fmt(userBalance);
+            document.getElementById('amountHint').textContent = 'Available: ' + fmt(userBalance);
+        } else if (dash.error && /not found/i.test(dash.error)) {
+            localStorage.removeItem('cit_session');
+            return window.location.href = 'userlogin.html';
+        }
+
+        // 2. Plans
+        const p = await api('/api/investment/plans', {});
+        if (p.success) {
+            PLANS.fixed = Array.isArray(p.fixed) ? p.fixed : [];
+            PLANS.flex  = Array.isArray(p.flex)  ? p.flex  : [];
+        } else {
+            showToast(p.error || 'Could not load plans', 'error');
+        }
+
+        // 3. My investments
+        const list = await api('/api/investment/list', { uid: session.uid });
+        if (list.success) {
+            myInvestments = Array.isArray(list.investments) ? list.investments : [];
+            if (list.balance !== undefined) {
+                userBalance = Number(list.balance) || 0;
+                document.getElementById('availBalance').textContent = fmt(userBalance);
+                document.getElementById('amountHint').textContent = 'Available: ' + fmt(userBalance);
+            }
+        }
+
+        renderPlans();
+        renderInvestments();
+        updateStats();
+    } catch (e) {
+        showToast('Network error: ' + e.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// ============================================================
+// STATS
+// ============================================================
+function updateStats() {
+    const active = myInvestments.filter(i => i.status === 'active');
+    const total = active.reduce((sum, i) => sum + Number(i.amount || 0), 0);
+    document.getElementById('totalInvested').textContent = fmt(total);
+    document.getElementById('activeCount').textContent = active.length;
+    document.getElementById('invCount').textContent = myInvestments.length;
+}
+
+// ============================================================
+// RENDER PLANS
+// ============================================================
+function renderPlans() {
+    const list = currentTab === 'fixed' ? PLANS.fixed : PLANS.flex;
+    document.getElementById('planCount').textContent = list.length + ' plans';
+    const wrap = document.getElementById('plansList');
+
+    if (!list.length) {
+        wrap.innerHTML = '<div class="empty-state"><i class="fa-solid fa-inbox"></i><p>No plans available right now</p></div>';
+        return;
+    }
+
+    wrap.innerHTML = list.map(plan => {
+        const type = plan.type === 'flex' ? 'flex' : 'fixed';
+        const icon = type === 'flex' ? 'fa-bolt' : 'fa-chart-line';
+        const minLabel = 'Min ' + fmt(plan.minAmount);
+        return `
+            <div class="plan-card ${type}">
+                <div class="plan-top">
+                    <div class="plan-icon"><i class="fa-solid ${icon}"></i></div>
+                    <div class="plan-info">
+                        <h4>${escapeHtml(plan.name)}</h4>
+                        <p>${escapeHtml(plan.durationLabel || (plan.duration + ' Days'))} &middot; ${minLabel}</p>
+                    </div>
+                </div>
+                <div class="plan-bottom">
+                    <div class="rate-block">
+                        <span class="rate-label">Total Return</span>
+                        <span class="rate-value">${fmtRate(plan.interestRate)}</span>
+                    </div>
+                    <button class="invest-btn" data-plan-id="${escapeHtml(plan.id)}">Invest</button>
+                </div>
+            </div>`;
+    }).join('');
+
+    wrap.querySelectorAll('.invest-btn').forEach(btn => {
+        btn.addEventListener('click', () => openInvest(btn.dataset.planId));
+    });
+}
+
+// ============================================================
+// RENDER INVESTMENTS
+// ============================================================
+function renderInvestments() {
+    const wrap = document.getElementById('investmentsList');
+    if (!myInvestments.length) {
+        wrap.innerHTML = '<div class="empty-state" style="margin: 0 20px 25px;"><i class="fa-solid fa-seedling"></i><p>You have no investments yet</p></div>';
+        return;
+    }
+    const sorted = [...myInvestments].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    wrap.innerHTML = sorted.map(inv => invCardHtml(inv)).join('');
+}
+
+function invCardHtml(inv) {
+    const isActive = inv.status === 'active';
+    const isFlex = inv.planType === 'flex';
+    const elapsedDays = isActive
+        ? Math.max(0, (Date.now() - (inv.startTime || inv.createdAt)) / (24 * 60 * 60 * 1000))
+        : (inv.duration || 0);
+    const totalDays = inv.duration > 0 ? inv.duration : Math.max(elapsedDays, 1);
+    const progress = isActive
+        ? Math.min(100, (elapsedDays / totalDays) * 100)
+        : 100;
+    const yieldSoFar = isActive
+        ? Number((inv.amount * (DAILY_RATE_PERCENT / 100) * elapsedDays).toFixed(2))
+        : Number(inv.finalYield || inv.expectedInterest || 0);
+
+    let statusClass = 'active', statusText = 'Active';
+    if (inv.status === 'matured') { statusClass = 'matured'; statusText = 'Matured'; }
+    if (inv.status === 'withdrawn') { statusClass = 'withdrawn'; statusText = 'Withdrawn'; }
+
+    const actions = isActive ? `
+        ${isFlex ? `<button class="btn-solid danger" data-withdraw-id="${escapeHtml(inv.id)}">Withdraw</button>` : ''}
+        <button class="btn-outline" data-view-id="${escapeHtml(inv.id)}">View Details</button>
+    ` : `<button class="btn-outline" data-view-id="${escapeHtml(inv.id)}">View Details</button>`;
+
+    return `
+        <div class="inv-card" style="margin: 0 20px 12px;">
+            <div class="inv-head">
+                <div>
+                    <div class="inv-title">${escapeHtml(inv.planName || 'Investment')}</div>
+                    <div class="inv-meta">${escapeHtml(inv.duration > 0 ? inv.duration + ' days' : 'Flexible')} &middot; ${fmtRate(inv.interestRate)}</div>
+                </div>
+                <span class="inv-status ${statusClass}">${statusText}</span>
+            </div>
+
+            <div class="inv-amounts">
+                <div class="amt-block">
+                    <div class="a-label">Invested</div>
+                    <div class="a-value">${fmt(inv.amount)}</div>
+                </div>
+                <div class="amt-block">
+                    <div class="a-label">${isActive ? 'Yield So Far' : 'Yield Earned'}</div>
+                    <div class="a-value green" data-live-yield="${escapeHtml(inv.id)}">${fmt(yieldSoFar)}</div>
+                </div>
+            </div>
+
+            ${isActive ? `
+            <div class="progress-wrap">
+                <div class="progress-info">
+                    <span>Progress</span>
+                    <span data-progress-text="${escapeHtml(inv.id)}">${progress.toFixed(1)}%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="fill" data-progress-fill="${escapeHtml(inv.id)}" style="width: ${progress}%"></div>
+                </div>
+            </div>
+            <div class="inv-live">
+                <div class="l-label"><span class="pulse"></span> Earning Live</div>
+                <div class="l-value" data-live-total="${escapeHtml(inv.id)}">${fmt(Number(inv.amount) + yieldSoFar)}</div>
+            </div>
+            ` : ''}
+
+            <div class="inv-actions">${actions}</div>
+        </div>`;
+}
+
+// ============================================================
+// LIVE YIELD TICKER
+// ============================================================
+function startLiveTicker() {
+    if (liveTimer) clearInterval(liveTimer);
+    liveTimer = setInterval(() => {
+        myInvestments.forEach(inv => {
+            if (inv.status !== 'active') return;
+            const elapsedDays = Math.max(0, (Date.now() - (inv.startTime || inv.createdAt)) / (24 * 60 * 60 * 1000));
+            const totalDays = inv.duration > 0 ? inv.duration : Math.max(elapsedDays, 1);
+            const progress = Math.min(100, (elapsedDays / totalDays) * 100);
+            const yieldSoFar = Number((inv.amount * (DAILY_RATE_PERCENT / 100) * elapsedDays).toFixed(2));
+
+            const yieldEl = document.querySelector(`[data-live-yield="${inv.id}"]`);
+            const totalEl = document.querySelector(`[data-live-total="${inv.id}"]`);
+            const fillEl  = document.querySelector(`[data-progress-fill="${inv.id}"]`);
+            const textEl  = document.querySelector(`[data-progress-text="${inv.id}"]`);
+
+            if (yieldEl) yieldEl.textContent = fmt(yieldSoFar);
+            if (totalEl) totalEl.textContent = fmt(Number(inv.amount) + yieldSoFar);
+            if (fillEl)  fillEl.style.width = progress.toFixed(2) + '%';
+            if (textEl)  textEl.textContent = progress.toFixed(1) + '%';
+        });
+    }, 1000);
+}
+
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+document.querySelectorAll('.tab-bar button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentTab = btn.dataset.tab;
+        renderPlans();
+    });
+});
+
+// ============================================================
+// OPEN INVEST MODAL
+// ============================================================
+function openInvest(planId) {
+    const all = [...PLANS.fixed, ...PLANS.flex];
+    const plan = all.find(p => p.id === planId);
+    if (!plan) {
+        showToast('Plan not found', 'error');
+        return;
+    }
+    selectedPlan = plan;
+
+    document.getElementById('modalPlanName').textContent = plan.name;
+    document.getElementById('modalPlanSub').textContent =
+        plan.type === 'flex' ? 'Flexible — withdraw anytime' : 'Fixed term investment';
+    document.getElementById('sumDuration').textContent = plan.durationLabel || (plan.duration + ' Days');
+    document.getElementById('sumRate').textContent = fmtRate(plan.interestRate);
+    document.getElementById('sumMin').textContent = fmt(plan.minAmount);
+    document.getElementById('sumInterest').textContent = 'GHS 0.00';
+    document.getElementById('sumReturn').textContent = 'GHS 0.00';
+
+    const amtInput = document.getElementById('invAmount');
+    amtInput.value = '';
+    amtInput.min = plan.minAmount;
+    amtInput.placeholder = 'Min ' + plan.minAmount;
+
+    document.getElementById('invPin').value = '';
+    document.getElementById('amountHint').textContent = 'Available: ' + fmt(userBalance);
+
+    buildQuickAmounts(plan);
+    amtInput.oninput = updatePreview;
+    amtInput.onchange = updatePreview;
+
+    document.getElementById('investModal').classList.add('show');
+    setTimeout(() => amtInput.focus(), 300);
+}
+
+function buildQuickAmounts(plan) {
+    const wrap = document.getElementById('quickAmounts');
+    const min = Number(plan.minAmount) || 10;
+    const options = [min, min * 2, min * 5, min * 10]
+        .map(v => Math.round(v))
+        .filter((v, i, arr) => arr.indexOf(v) === i);
+    wrap.innerHTML = options.map(v =>
+        `<button type="button" data-amount="${v}">${fmt(v).replace('GHS ', '')}</button>`
+    ).join('');
+    wrap.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            wrap.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('invAmount').value = btn.dataset.amount;
+            updatePreview();
+        });
+    });
+}
+
+function updatePreview() {
+    if (!selectedPlan) return;
+    const amt = Number(document.getElementById('invAmount').value) || 0;
+    const rate = Number(selectedPlan.interestRate) || 0;
+    const interest = amt * (rate / 100);
+    const total = amt + interest;
+    document.getElementById('sumInterest').textContent = fmt(interest);
+    document.getElementById('sumReturn').textContent = fmt(total);
+}
+
+function closeInvest(e) {
+    if (e) e.stopPropagation();
+    document.getElementById('investModal').classList.remove('show');
+    selectedPlan = null;
+}
+
+// ============================================================
+// CONFIRM INVESTMENT
+// ============================================================
+async function confirmInvest() {
+    if (!selectedPlan) return showToast('Select a plan first', 'error');
+    const amt = Number(document.getElementById('invAmount').value);
+    const pin = document.getElementById('invPin').value.trim();
+
+    if (!amt || amt <= 0) return showToast('Enter a valid amount', 'error');
+    if (amt < Number(selectedPlan.minAmount)) {
+        return showToast('Minimum for this plan is ' + fmt(selectedPlan.minAmount), 'error');
+    }
+    if (amt > userBalance) {
+        return showToast('Insufficient balance', 'error');
+    }
+    if (!pin) return showToast('Enter your transaction PIN', 'error');
+
+    const btn = document.getElementById('confirmInvestBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>&nbsp; Processing...';
+
+    try {
+        const r = await api('/api/investment/create', {
+            uid: session.uid,
+            planId: selectedPlan.id,
+            amount: amt,
+            pin: pin
+        });
+
+        if (r.success) {
+            showToast('Investment created successfully!', 'success');
+            closeInvest();
+            // Refresh
+            await loadAll();
+        } else {
+            showToast(r.error || 'Investment failed', 'error');
+        }
+    } catch (e) {
+        showToast('Network error: ' + e.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-lock"></i>&nbsp; Confirm Investment';
+    }
+}
+
+// ============================================================
+// DELEGATED: Withdraw / View
+// ============================================================
+document.getElementById('investmentsList').addEventListener('click', async (e) => {
+    const wBtn = e.target.closest('[data-withdraw-id]');
+    const vBtn = e.target.closest('[data-view-id]');
+    if (wBtn) handleWithdraw(wBtn.dataset.withdrawId);
+    else if (vBtn) handleView(vBtn.dataset.viewId);
+});
+
+async function handleWithdraw(invId) {
+    const inv = myInvestments.find(i => i.id === invId);
+    if (!inv) return showToast('Investment not found', 'error');
+    if (inv.planType !== 'flex') return showToast('Only flexible plans can be withdrawn early', 'error');
+
+    const pin = prompt('Enter your transaction PIN to withdraw from ' + inv.planName + ':');
+    if (!pin) return;
+
+    try {
+        const r = await api('/api/investment/withdraw', {
+            uid: session.uid, investmentId: invId, pin: pin.trim()
+        });
+        if (r.success) {
+            showToast('Withdrawn ' + fmt(r.totalReturn) + ' to your wallet', 'success');
+            await loadAll();
+        } else {
+            showToast(r.error || 'Withdrawal failed', 'error');
+        }
+    } catch (e) {
+        showToast('Network error: ' + e.message, 'error');
+    }
+}
+
+function handleView(invId) {
+    const inv = myInvestments.find(i => i.id === invId);
+    if (!inv) return;
+    const elapsed = inv.status === 'active'
+        ? ((Date.now() - (inv.startTime || inv.createdAt)) / (24 * 60 * 60 * 1000)).toFixed(2)
+        : inv.duration;
+    const msg =
+        'Plan: ' + inv.planName + '\n' +
+        'ID: ' + inv.id + '\n' +
+        'Invested: ' + fmt(inv.amount) + '\n' +
+        'Rate: ' + fmtRate(inv.interestRate) + '\n' +
+        'Duration: ' + (inv.duration > 0 ? inv.duration + ' days' : 'Flexible') + '\n' +
+        'Elapsed: ' + elapsed + ' days\n' +
+        'Status: ' + (inv.status || 'active').toUpperCase();
+    alert(msg);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadAll().then(startLiveTicker);
+
+// Safety: hide loading overlay if stuck
+setTimeout(hideLoading, 5000);
+</script>
+</body>
+</html>

@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Admin Terminal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js">
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0a0f1a;
+            color: #b0d0ff;
+            font-family: 'Courier New', Courier, monospace;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+        }
+        #output {
+            flex: 1;
+            overflow-y: auto;
+            background: #0d1422;
+            border: 1px solid #1a2a44;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 13px;
+            line-height: 1.5;
+            box-shadow: inset 0 0 20px rgba(0, 20, 60, 0.6);
+        }
+        #output .prompt {
+            color: #6ae0a0;
+        }
+        #output .error {
+            color: #ff7a7a;
+        }
+        #output .success {
+            color: #7affa0;
+        }
+        #output .info {
+            color: #88ccff;
+        }
+        #output .warning {
+            color: #ffcc66;
+        }
+        #output .http {
+            color: #a89f91;
+            font-size: 12px;
+        }
+        #input-row {
+            display: flex;
+            gap: 8px;
+            background: #0d1422;
+            border: 1px solid #1a2a44;
+            border-radius: 8px;
+            padding: 6px 10px;
+        }
+        #input-row span {
+            color: #6ae0a0;
+            font-weight: bold;
+        }
+        #cmd-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #b0d0ff;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            padding: 6px 0;
+        }
+        #cmd-input::placeholder {
+            color: #3a4a6a;
+        }
+        #btn-send {
+            background: #1a2a44;
+            border: none;
+            color: #b0d0ff;
+            font-family: inherit;
+            font-size: 14px;
+            padding: 6px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        #btn-send:hover {
+            background: #2a3a5a;
+        }
+        #btn-send:active {
+            background: #0a1a2a;
+        }
+        #status-bar {
+            background: #0d1422;
+            border: 1px solid #1a2a44;
+            border-radius: 8px;
+            padding: 4px 12px;
+            margin-top: 6px;
+            font-size: 12px;
+            color: #6a8aaa;
+            display: flex;
+            justify-content: space-between;
+        }
+        #status-bar .live {
+            color: #7affa0;
+        }
+        #output::-webkit-scrollbar {
+            width: 6px;
+        }
+        #output::-webkit-scrollbar-track {
+            background: #0d1422;
+        }
+        #output::-webkit-scrollbar-thumb {
+            background: #2a4a6a;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="output"></div>
+
+    <div id="input-row">
+        <span>$</span>
+        <input id="cmd-input" type="text" placeholder="enter command (type 'help')" autofocus />
+        <button id="btn-send">↵</button>
+    </div>
+
+    <div id="status-bar">
+        <span id="status-text">⚡ Ready</span>
+        <span id="live-indicator" class="live">● LIVE</span>
+    </div>
+
+    <script>
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // 🔐  Firebase credentials
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        const FIREBASE_SECRET = "90tPeiM0evu2QTt9dODNXPo04ktQ5wCAu8wQbL4O";
+        const FIREBASE_DB_URL = "https://sir-cosmos-default-rtdb.firebaseio.com";
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // 📁  KYC database (public – no auth)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        const KYC_FIREBASE_DB_URL = "https://kyc-cit-user-default-rtdb.firebaseio.com";
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // 🔐  Encryption / Decryption (exact server match)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function deriveKeyAndIV(passphrase, salt) {
+            const keyLen = 32,
+                ivLen = 16;
+            let key = CryptoJS.lib.WordArray.create(new ArrayBuffer(keyLen));
+            let iv = CryptoJS.lib.WordArray.create(new ArrayBuffer(ivLen));
+            let prev = CryptoJS.lib.WordArray.create(new ArrayBuffer(0));
+            let keyFilled = 0,
+                ivFilled = 0;
+
+            while (keyFilled < keyLen || ivFilled < ivLen) {
+                const input = prev.clone();
+                input.concat(CryptoJS.enc.Utf8.parse(passphrase));
+                input.concat(salt);
+                const hash = CryptoJS.MD5(input);
+                prev = hash;
+                const needKey = keyLen - keyFilled;
+                const needIv = ivLen - ivFilled;
+                if (needKey > 0) {
+                    const take = Math.min(needKey, prev.words.length * 4);
+                    const src = prev.words;
+                    const dst = key.words;
+                    for (let i = 0; i < take; i++) {
+                        const byte = (src[Math.floor(i / 4)] >>> (24 - (i % 4) * 8)) & 0xff;
+                        dst[Math.floor((keyFilled + i) / 4)] |= byte << (24 - ((keyFilled + i) % 4) * 8);
+                    }
+                    keyFilled += take;
+                }
+                if (needIv > 0 && keyFilled >= keyLen) {
+                    const take = Math.min(needIv, prev.words.length * 4);
+                    const src = prev.words;
+                    const dst = iv.words;
+                    for (let i = 0; i < take; i++) {
+                        const byte = (src[Math.floor(i / 4)] >>> (24 - (i % 4) * 8)) & 0xff;
+                        dst[Math.floor((ivFilled + i) / 4)] |= byte << (24 - ((ivFilled + i) % 4) * 8);
+                    }
+                    ivFilled += take;
+                }
+            }
+            key.sigBytes = keyLen;
+            iv.sigBytes = ivLen;
+            return { key, iv };
+        }
+
+        function encryptData(plaintext, uid) {
+            const passphrase = 'CIT_SECRET_' + uid;
+            const salt = CryptoJS.lib.WordArray.random(8);
+            const { key, iv } = deriveKeyAndIV(passphrase, salt);
+            const encrypted = CryptoJS.AES.encrypt(JSON.stringify(plaintext), key, {
+                iv: iv,
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            const salted = CryptoJS.lib.WordArray.create();
+            salted.concat(CryptoJS.enc.Utf8.parse('Salted__'));
+            salted.concat(salt);
+            salted.concat(encrypted.ciphertext);
+            return salted.toString(CryptoJS.enc.Base64);
+        }
+
+        function decryptData(ciphertext, uid) {
+            try {
+                const raw = CryptoJS.enc.Base64.parse(ciphertext);
+                const prefix = CryptoJS.enc.Utf8.parse('Salted__');
+                // Check if salted
+                let salt, encrypted;
+                if (raw.words.length >= prefix.words.length + 2) {
+                    salt = CryptoJS.lib.WordArray.create(raw.words.slice(2, 4));
+                    encrypted = CryptoJS.lib.WordArray.create(raw.words.slice(4));
+                    encrypted.sigBytes = raw.sigBytes - 8 - 8; // prefix(8)+salt(8)
+                } else {
+                    // fallback: old format
+                    const key = CryptoJS.enc.Hex.parse(CryptoJS.SHA256('CIT_SECRET_' + uid).toString());
+                    const iv = CryptoJS.lib.WordArray.create(new ArrayBuffer(16));
+                    const dec = CryptoJS.AES.decrypt(ciphertext, key, { iv: iv, mode: CryptoJS.mode.CBC,
+                        padding: CryptoJS.pad.Pkcs7 });
+                    return JSON.parse(dec.toString(CryptoJS.enc.Utf8));
+                }
+                const passphrase = 'CIT_SECRET_' + uid;
+                const { key, iv } = deriveKeyAndIV(passphrase, salt);
+                const decrypted = CryptoJS.AES.decrypt({ ciphertext: encrypted }, key, {
+                    iv: iv,
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+                const plain = decrypted.toString(CryptoJS.enc.Utf8);
+                return JSON.parse(plain);
+            } catch (e) {
+                return { error: 'Decryption failed: ' + e.message };
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // 🌐  Firebase REST with logging
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function fbRequest(path, method = 'GET', body = null) {
+            const url = `${FIREBASE_DB_URL}${path}.json?auth=${FIREBASE_SECRET}`;
+            logHttp(method, url, body);
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open(method, url);
+                xhr.onload = () => {
+                    const status = xhr.status;
+                    const resp = xhr.responseText;
+                    logHttpResponse(status, resp);
+                    if (status >= 200 && status < 300) {
+                        try { resolve(resp ? JSON.parse(resp) : {}); } catch (e) { resolve({}); }
+                    } else {
+                        reject(new Error(`HTTP ${status}: ${resp}`));
+                    }
+                };
+                xhr.onerror = () => reject(new Error('Network error'));
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                if (body) xhr.send(JSON.stringify(body));
+                else xhr.send();
+            });
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // 🌐  KYC Firebase REST (public – no auth)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function kycRequest(path, method = 'GET', body = null) {
+            const url = `${KYC_FIREBASE_DB_URL}${path}.json`;
+            logHttp(method, url, body);
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open(method, url);
+                xhr.onload = () => {
+                    const status = xhr.status;
+                    const resp = xhr.responseText;
+                    logHttpResponse(status, resp);
+                    if (status >= 200 && status < 300) {
+                        try { resolve(resp ? JSON.parse(resp) : {}); } catch (e) { resolve({}); }
+                    } else {
+                        reject(new Error(`KYC HTTP ${status}: ${resp}`));
+                    }
+                };
+                xhr.onerror = () => reject(new Error('Network error'));
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                if (body) xhr.send(JSON.stringify(body));
+                else xhr.send();
+            });
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // 📋  UI Output helpers
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        const output = document.getElementById('output');
+        const statusText = document.getElementById('status-text');
+
+        function writeLine(text, className = '') {
+            const div = document.createElement('div');
+            div.textContent = text;
+            if (className) div.className = className;
+            output.appendChild(div);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function writePrompt(cmd) {
+            const div = document.createElement('div');
+            const span = document.createElement('span');
+            span.textContent = '$ ';
+            span.className = 'prompt';
+            div.appendChild(span);
+            const cmdSpan = document.createElement('span');
+            cmdSpan.textContent = cmd;
+            cmdSpan.className = 'info';
+            div.appendChild(cmdSpan);
+            output.appendChild(div);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function writeResult(text, className = '') {
+            writeLine(text, className);
+        }
+
+        function logHttp(method, url, body) {
+            const msg = `[HTTP] ${method} ${url}` + (body ? ` (body: ${JSON.stringify(body).slice(0, 100)}...)` : '');
+            writeLine(msg, 'http');
+        }
+
+        function logHttpResponse(status, body) {
+            const msg = `[HTTP] → ${status} ${body ? body.slice(0, 100) : ''}` + (body && body.length > 100 ? '...' : '');
+            writeLine(msg, 'http');
+        }
+
+        function setStatus(text) {
+            statusText.textContent = text;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // 🧠  Core database helpers
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        async function getAllUsers() {
+            return await fbRequest('/users');
+        }
+
+        async function getUser(uid) {
+            const snap = await fbRequest(`/users/${uid}`);
+            if (!snap || !snap.encryptedData) throw new Error('User not found');
+            const dec = decryptData(snap.encryptedData, uid);
+            if (dec.error) throw new Error(dec.error);
+            return dec;
+        }
+
+        async function updateUser(uid, updates) {
+            const user = await getUser(uid);
+            Object.assign(user, updates);
+            const encrypted = encryptData(user, uid);
+            await fbRequest(`/users/${uid}`, 'PUT', { encryptedData });
+            return user;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // 📌  KYC helpers (new)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        async function getKYC(uid) {
+            try {
+                return await kycRequest(`/kyc/${uid}`);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function setKYC(uid, data) {
+            await kycRequest(`/kyc/${uid}`, 'PUT', data);
+        }
+
+        async function getAllKYC() {
+            try {
+                return await kycRequest('/kyc');
+            } catch (e) {
+                return {};
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // 📌  Command implementations
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        // ---- help ----
+        function showHelp() {
+            return `
+        ───  AVAILABLE COMMANDS  ───
+        help                          – show this help
+        list                          – list all users (short)
+        stats                         – show overall system stats
+        backup                        – export all users as JSON
+
+        ── USER MANAGEMENT ──
+        user list                     – same as list
+        user get <uid>                – show full user data
+        user get-by-email <email>     – find user by email
+        user get-by-account <acc>     – find by account number
+        user create <name> <email> <phone> <pin> <pass> [deposit]
+        user update <uid> <field>=<value> ...   – update fields (e.g. balance=1000 status=frozen)
+        user delete <uid>             – delete a user
+        user delete-all               – delete ALL users (confirm)
+
+        ── TRANSACTIONS ──
+        tx list <uid>                 – list all transactions
+        tx get <uid> <txId>           – get specific transaction
+        tx add <uid> --type deposit|withdraw|transfer --amount X [--desc "text"]
+        tx delete <uid> <txId>        – delete a transaction
+
+        ── LOANS ──
+        loan list <uid>               – list loans
+        loan approve <uid> <loanId>   – approve loan
+        loan reject <uid> <loanId>    – reject loan
+        loan delete <uid> <loanId>    – delete loan
+
+        ── INVESTMENTS ──
+        invest list <uid>             – list investments
+        invest delete <uid> <invId>   – delete investment
+
+        ── CARDS ──
+        card list <uid>               – list cards
+        card delete <uid> <cardId>    – delete card
+
+        ── KYC (FULL CONTROL) ──
+        kyc list                      – list all pending KYC (from KYC DB)
+        kyc list-all                  – list ALL KYC records (all statuses)
+        kyc view <uid>                – show full KYC details (with images)
+        kyc approve <uid>             – approve KYC (updates both DBs)
+        kyc reject <uid>              – reject KYC
+        kyc reset <uid>               – reset KYC status to 'none'
+        kyc sync <uid>                – sync KYC status from main user to KYC DB
+
+        ── BUSINESS & ITEMS ──
+        business get <uid>            – get business profile
+        business update <uid> <field>=<value> ... – update business fields
+        item list <uid>               – list business items
+        item add <uid> <name> <price> [qty] – add item
+        item delete <uid> <itemId>    – delete item
+
+        ── TICKETS ──
+        ticket list <uid>             – list tickets
+        ticket close <uid> <ticketId> – close ticket
+
+        ── UTILITIES ──
+        clear                         – clear screen
+        `;
+        }
+
+        // ---- list users ----
+        async function cmdList() {
+            const data = await getAllUsers();
+            if (!data || typeof data !== 'object') return 'No users found.';
+            const uids = Object.keys(data);
+            if (uids.length === 0) return 'No users.';
+            let out = `\n📋  ${uids.length} user(s):\n` + '─'.repeat(60) + '\n';
+            for (const uid of uids) {
+                const snap = data[uid];
+                if (!snap.encryptedData) { out += `⚠️  ${uid}: missing encryptedData\n`; continue; }
+                const dec = decryptData(snap.encryptedData, uid);
+                if (dec.error) { out += `⚠️  ${uid}: decryption error\n`; continue; }
+                out +=
+                    `🆔 ${uid}\n   Name: ${dec.fullName || 'N/A'}\n   Email: ${dec.email || 'N/A'}\n   Balance: GHS ${dec.balance || 0}\n   Account: ${dec.accountNumber || 'N/A'}\n` +
+                    '─'.repeat(60) + '\n';
+            }
+            return out;
+        }
+
+        // ---- user get ----
+        async function cmdUserGet(uid) {
+            const user = await getUser(uid);
+            return JSON.stringify(user, null, 2);
+        }
+
+        // ---- user get by email ----
+        async function cmdUserGetByEmail(email) {
+            const data = await getAllUsers();
+            for (const uid in data) {
+                if (!data[uid].encryptedData) continue;
+                const dec = decryptData(data[uid].encryptedData, uid);
+                if (dec.email === email) {
+                    return `Found: ${uid}\n${JSON.stringify(dec, null, 2)}`;
+                }
+            }
+            return 'No user with that email.';
+        }
+
+        // ---- user get by account ----
+        async function cmdUserGetByAccount(acc) {
+            const data = await getAllUsers();
+            for (const uid in data) {
+                if (!data[uid].encryptedData) continue;
+                const dec = decryptData(data[uid].encryptedData, uid);
+                if (dec.accountNumber === acc) {
+                    return `Found: ${uid}\n${JSON.stringify(dec, null, 2)}`;
+                }
+            }
+            return 'No user with that account number.';
+        }
+
+        // ---- user create ----
+        async function cmdUserCreate(args) {
+            if (args.length < 5) return '❌  Missing arguments. Usage: create <fullName> <email> <phone> <pin> <password> [deposit]';
+            const [fullName, email, phone, pin, password, deposit] = args;
+            const uid = Array.from({ length: 16 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+            const accNum = '215' + Array.from({ length: 10 }, () => Math.floor(Math.random() * 10).toString()).join('')
+                .slice(0, 10);
+            const memberID = 'CIT' + Array.from({ length: 7 }, () => Math.floor(Math.random() * 10).toString()).join('');
+            const userData = {
+                fullName,
+                email,
+                phone,
+                pin,
+                password,
+                accountNumber: accNum,
+                memberID: memberID,
+                balance: parseFloat(deposit) || 0,
+                transactions: {},
+                dob: '',
+                gender: '',
+                marital: '',
+                nationality: '',
+                placeOfBirth: '',
+                address: '',
+                city: '',
+                region: '',
+                postal: '',
+                idType: '',
+                idNumber: '',
+                accType: 'Savings',
+                branch: 'Main Branch - Accra',
+                currency: 'GHS',
+                nokName: '',
+                nokRel: '',
+                nokPhone: '',
+                nokEmail: '',
+                nokAddress: '',
+                nokCity: '',
+                occupation: '',
+                employer: '',
+                income: '',
+                sourceFunds: '',
+                purpose: '',
+                loans: {},
+                cards: {},
+                investments: {},
+                business: {},
+                items: [],
+                kyc: { status: 'none' },
+                loginHistory: [],
+                notifications: [],
+                createdAt: Date.now()
+            };
+            const encrypted = encryptData(userData, uid);
+            await fbRequest(`/users/${uid}`, 'PUT', { encryptedData });
+            return `✅  User created!\n   UID: ${uid}\n   Account: ${accNum}\n   Member ID: ${memberID}`;
+        }
+
+        // ---- user update ----
+        async function cmdUserUpdate(uid, updates) {
+            if (!uid || !updates || updates.length === 0) return '❌  Missing uid or updates. Usage: user update <uid> field=value ...';
+            const updateObj = {};
+            for (const kv of updates) {
+                const [key, val] = kv.split('=');
+                if (key && val !== undefined) {
+                    // try to parse numbers
+                    const num = parseFloat(val);
+                    updateObj[key] = isNaN(num) ? val : num;
+                }
+            }
+            const user = await updateUser(uid, updateObj);
+            return `✅  Updated user ${uid}\n${JSON.stringify(user, null, 2)}`;
+        }
+
+        // ---- user delete ----
+        async function cmdUserDelete(uid) {
+            if (!uid) return '❌  Missing uid.';
+            await fbRequest(`/users/${uid}`, 'DELETE');
+            return `✅  User ${uid} deleted.`;
+        }
+
+        // ---- user delete-all ----
+        async function cmdUserDeleteAll() {
+            const confirm = prompt('⚠️  DELETE ALL USERS? Type "DELETE ALL" to confirm:');
+            if (confirm !== 'DELETE ALL') return '❌  Cancelled.';
+            await fbRequest('/users', 'DELETE');
+            return '✅  All users deleted.';
+        }
+
+        // ---- stats ----
+        async function cmdStats() {
+            const data = await getAllUsers();
+            let total = 0,
+                totalBal = 0,
+                totalTx = 0,
+                totalLoans = 0,
+                totalInvest = 0;
+            for (const uid in data) {
+                if (!data[uid].encryptedData) continue;
+                const dec = decryptData(data[uid].encryptedData, uid);
+                if (dec.error) continue;
+                total++;
+                totalBal += parseFloat(dec.balance) || 0;
+                if (dec.transactions) totalTx += Object.keys(dec.transactions).length;
+                if (dec.loans) totalLoans += Object.keys(dec.loans).length;
+                if (dec.investments) totalInvest += Object.keys(dec.investments).length;
+            }
+            return `
+        ── SYSTEM STATS ──
+        Total users       : ${total}
+        Total balance     : GHS ${totalBal.toFixed(2)}
+        Total transactions: ${totalTx}
+        Total loans       : ${totalLoans}
+        Total investments : ${totalInvest}
+        `;
+        }
+
+        // ---- backup ----
+        async function cmdBackup() {
+            const data = await getAllUsers();
+            const backup = {};
+            for (const uid in data) {
+                if (!data[uid].encryptedData) continue;
+                const dec = decryptData(data[uid].encryptedData, uid);
+                if (dec.error) continue;
+                backup[uid] = dec;
+            }
+            const json = JSON.stringify(backup, null, 2);
+            // offer download
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `firebase_backup_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            return `✅  Backup downloaded (${Object.keys(backup).length} users).`;
+        }
+
+        // ---- transactions ----
+        async function cmdTxList(uid) {
+            const user = await getUser(uid);
+            const txs = user.transactions || {};
+            const arr = Object.values(txs);
+            if (arr.length === 0) return 'No transactions.';
+            return arr.map(t => `${t.id} | ${t.date} | ${t.type} | ${t.amount} | ${t.status || 'OK'}`).join('\n');
+        }
+
+        async function cmdTxGet(uid, txId) {
+            const user = await getUser(uid);
+            const tx = (user.transactions || {})[txId];
+            if (!tx) return 'Transaction not found.';
+            return JSON.stringify(tx, null, 2);
+        }
+
+        async function cmdTxAdd(uid, args) {
+            // parse --type, --amount, --desc
+            let type = '',
+                amount = 0,
+                desc = '';
+            for (let i = 0; i < args.length; i++) {
+                if (args[i] === '--type' && i + 1 < args.length) { type = args[++i]; } else if (args[i] === '--amount' && i +
+                    1 < args.length) { amount = parseFloat(args[++i]); } else if (args[i] === '--desc' && i + 1 < args
+                    .length) { desc = args[++i]; }
+            }
+            if (!type || !amount) return '❌  Need --type and --amount.';
+            const user = await getUser(uid);
+            user.transactions = user.transactions || {};
+            const txId = 'TX' + Date.now();
+            user.transactions[txId] = {
+                id: txId,
+                date: new Date().toISOString(),
+                type: type,
+                amount: amount,
+                description: desc || '',
+                status: 'SUCCESS',
+                read: false
+            };
+            await updateUser(uid, { transactions: user.transactions });
+            return `✅  Transaction ${txId} added.`;
+        }
+
+        async function cmdTxDelete(uid, txId) {
+            const user = await getUser(uid);
+            if (!user.transactions || !user.transactions[txId]) return 'Transaction not found.';
+            delete user.transactions[txId];
+            await updateUser(uid, { transactions: user.transactions });
+            return `✅  Transaction ${txId} deleted.`;
+        }
+
+        // ---- loans ----
+        async function cmdLoanList(uid) {
+            const user = await getUser(uid);
+            const loans = user.loans || {};
+            const arr = Object.values(loans);
+            if (arr.length === 0) return 'No loans.';
+            return arr.map(l => `${l.id} | ${l.amount} | ${l.status} | ${new Date(l.appliedAt).toLocaleString()}`).join(
+            '\n');
+        }
+
+        async function cmdLoanApprove(uid, loanId) {
+            const user = await getUser(uid);
+            if (!user.loans || !user.loans[loanId]) return 'Loan not found.';
+            user.loans[loanId].status = 'approved';
+            await updateUser(uid, { loans: user.loans });
+            return `✅  Loan ${loanId} approved.`;
+        }
+
+        async function cmdLoanReject(uid, loanId) {
+            const user = await getUser(uid);
+            if (!user.loans || !user.loans[loanId]) return 'Loan not found.';
+            user.loans[loanId].status = 'rejected';
+            await updateUser(uid, { loans: user.loans });
+            return `✅  Loan ${loanId} rejected.`;
+        }
+
+        async function cmdLoanDelete(uid, loanId) {
+            const user = await getUser(uid);
+            if (!user.loans || !user.loans[loanId]) return 'Loan not found.';
+            delete user.loans[loanId];
+            await updateUser(uid, { loans: user.loans });
+            return `✅  Loan ${loanId} deleted.`;
+        }
+
+        // ---- investments ----
+        async function cmdInvestList(uid) {
+            const user = await getUser(uid);
+            const inv = user.investments || {};
+            const arr = Object.values(inv);
+            if (arr.length === 0) return 'No investments.';
+            return arr.map(i => `${i.id} | ${i.plan} | ${i.amount} | ${i.status}`).join('\n');
+        }
+
+        async function cmdInvestDelete(uid, invId) {
+            const user = await getUser(uid);
+            if (!user.investments || !user.investments[invId]) return 'Investment not found.';
+            delete user.investments[invId];
+            await updateUser(uid, { investments: user.investments });
+            return `✅  Investment ${invId} deleted.`;
+        }
+
+        // ---- cards ----
+        async function cmdCardList(uid) {
+            const user = await getUser(uid);
+            const cards = user.cards || {};
+            const arr = Object.values(cards);
+            if (arr.length === 0) return 'No cards.';
+            return arr.map(c => `${c.id} | ${c.type} | ${c.status}`).join('\n');
+        }
+
+        async function cmdCardDelete(uid, cardId) {
+            const user = await getUser(uid);
+            if (!user.cards || !user.cards[cardId]) return 'Card not found.';
+            delete user.cards[cardId];
+            await updateUser(uid, { cards: user.cards });
+            return `✅  Card ${cardId} deleted.`;
+        }
+
+        // ---- KYC (new fully enhanced) ----
+        async function cmdKycList() {
+            const kycData = await getAllKYC();
+            if (!kycData || typeof kycData !== 'object') return 'No KYC records found.';
+            const uids = Object.keys(kycData);
+            if (uids.length === 0) return 'No KYC records.';
+            let out = `\n📋  ${uids.length} KYC record(s):\n` + '─'.repeat(60) + '\n';
+            for (const uid of uids) {
+                const record = kycData[uid];
+                out += `🆔 ${uid}\n   Status: ${record.status || 'unknown'}\n   Name: ${record.fullName || 'N/A'}\n   ID: ${record.idType || 'N/A'} - ${record.idNumber || 'N/A'}\n   Submitted: ${record.submittedAt ? new Date(record.submittedAt).toLocaleString() : 'N/A'}\n` +
+                    '─'.repeat(60) + '\n';
+            }
+            return out;
+        }
+
+        async function cmdKycListAll() {
+            const kycData = await getAllKYC();
+            if (!kycData || typeof kycData !== 'object') return 'No KYC records found.';
+            const uids = Object.keys(kycData);
+            if (uids.length === 0) return 'No KYC records.';
+            let out = `\n📋  ALL KYC records (${uids.length}):\n` + '─'.repeat(60) + '\n';
+            for (const uid of uids) {
+                const record = kycData[uid];
+                out += `🆔 ${uid}\n   Status: ${record.status || 'unknown'}\n   Name: ${record.fullName || 'N/A'}\n   ID: ${record.idType || 'N/A'} - ${record.idNumber || 'N/A'}\n   Submitted: ${record.submittedAt ? new Date(record.submittedAt).toLocaleString() : 'N/A'}\n` +
+                    '─'.repeat(60) + '\n';
+            }
+            return out;
+        }
+
+        async function cmdKycView(uid) {
+            if (!uid) return '❌  Missing uid.';
+            const record = await getKYC(uid);
+            if (!record) return `No KYC record found for ${uid}.`;
+
+            let out = `\n📄  KYC Details for ${uid}\n` + '═'.repeat(60) + '\n';
+            out += `Status        : ${record.status || 'unknown'}\n`;
+            out += `Full Name     : ${record.fullName || 'N/A'}\n`;
+            out += `Date of Birth : ${record.dob || 'N/A'}\n`;
+            out += `ID Type       : ${record.idType || 'N/A'}\n`;
+            out += `ID Number     : ${record.idNumber || 'N/A'}\n`;
+            out += `Submitted     : ${record.submittedAt ? new Date(record.submittedAt).toLocaleString() : 'N/A'}\n`;
+            out += `Updated       : ${record.updatedAt ? new Date(record.updatedAt).toLocaleString() : 'N/A'}\n`;
+            if (record.reviewedBy) out += `Reviewed By   : ${record.reviewedBy}\n`;
+
+            // Show image preview (base64 truncated)
+            if (record.idFront) {
+                out += `\n📸 ID Front    : ${record.idFront.slice(0, 60)}... (${record.idFront.length} chars)\n`;
+            }
+            if (record.idBack) {
+                out += `📸 ID Back     : ${record.idBack.slice(0, 60)}... (${record.idBack.length} chars)\n`;
+            }
+            if (record.addressProof) {
+                out += `📸 Address Proof: ${record.addressProof.slice(0, 60)}... (${record.addressProof.length} chars)\n`;
+            }
+            if (record.selfie) {
+                out += `📸 Selfie      : ${record.selfie.slice(0, 60)}... (${record.selfie.length} chars)\n`;
+            }
+            return out;
+        }
+
+        async function cmdKycApprove(uid) {
+            if (!uid) return '❌  Missing uid.';
+            // 1. Update KYC DB
+            const kycRecord = await getKYC(uid);
+            if (!kycRecord) return `No KYC record found for ${uid}.`;
+            kycRecord.status = 'approved';
+            kycRecord.updatedAt = Date.now();
+            kycRecord.reviewedBy = 'terminal';
+            await setKYC(uid, kycRecord);
+            // 2. Update main user's kyc status
+            try {
+                const user = await getUser(uid);
+                user.kyc = user.kyc || {};
+                user.kyc.status = 'approved';
+                user.kyc.updatedAt = Date.now();
+                user.kyc.reviewedBy = 'terminal';
+                await updateUser(uid, { kyc: user.kyc });
+            } catch (e) {
+                // user may not exist in main DB, ignore
+            }
+            return `✅  KYC for ${uid} approved.`;
+        }
+
+        async function cmdKycReject(uid) {
+            if (!uid) return '❌  Missing uid.';
+            const kycRecord = await getKYC(uid);
+            if (!kycRecord) return `No KYC record found for ${uid}.`;
+            kycRecord.status = 'rejected';
+            kycRecord.updatedAt = Date.now();
+            kycRecord.reviewedBy = 'terminal';
+            await setKYC(uid, kycRecord);
+            try {
+                const user = await getUser(uid);
+                user.kyc = user.kyc || {};
+                user.kyc.status = 'rejected';
+                user.kyc.updatedAt = Date.now();
+                user.kyc.reviewedBy = 'terminal';
+                await updateUser(uid, { kyc: user.kyc });
+            } catch (e) { /* ignore */ }
+            return `✅  KYC for ${uid} rejected.`;
+        }
+
+        async function cmdKycReset(uid) {
+            if (!uid) return '❌  Missing uid.';
+            const kycRecord = await getKYC(uid);
+            if (kycRecord) {
+                kycRecord.status = 'none';
+                kycRecord.updatedAt = Date.now();
+                await setKYC(uid, kycRecord);
+            }
+            try {
+                const user = await getUser(uid);
+                user.kyc = { status: 'none' };
+                await updateUser(uid, { kyc: user.kyc });
+            } catch (e) { /* ignore */ }
+            return `✅  KYC for ${uid} reset to none.`;
+        }
+
+        async function cmdKycSync(uid) {
+            if (!uid) return '❌  Missing uid.';
+            try {
+                const user = await getUser(uid);
+                const status = user.kyc ? user.kyc.status : 'none';
+                // Get current KYC record
+                let kycRecord = await getKYC(uid);
+                if (!kycRecord) {
+                    kycRecord = { status: status, syncedAt: Date.now() };
+                } else {
+                    kycRecord.status = status;
+                    kycRecord.syncedAt = Date.now();
+                }
+                await setKYC(uid, kycRecord);
+                return `✅  KYC for ${uid} synced to status: ${status}`;
+            } catch (e) {
+                return `❌  Sync failed: ${e.message}`;
+            }
+        }
+
+        // ---- business ----
+        async function cmdBusinessGet(uid) {
+            const user = await getUser(uid);
+            return JSON.stringify(user.business || {}, null, 2);
+        }
+
+        async function cmdBusinessUpdate(uid, updates) {
+            const user = await getUser(uid);
+            user.business = user.business || {};
+            for (const kv of updates) {
+                const [key, val] = kv.split('=');
+                if (key && val !== undefined) {
+                    const num = parseFloat(val);
+                    user.business[key] = isNaN(num) ? val : num;
+                }
+            }
+            await updateUser(uid, { business: user.business });
+            return `✅  Business updated.`;
+        }
+
+        // ---- items ----
+        async function cmdItemList(uid) {
+            const user = await getUser(uid);
+            const items = user.items || [];
+            if (items.length === 0) return 'No items.';
+            return items.map((item, i) => `${i+1}. ${item.name} | ${item.price} | qty: ${item.qty || 1}`).join('\n');
+        }
+
+        async function cmdItemAdd(uid, name, price, qty = 1) {
+            const user = await getUser(uid);
+            user.items = user.items || [];
+            const item = {
+                id: 'ITEM' + Date.now(),
+                name: name,
+                price: parseFloat(price),
+                qty: parseInt(qty) || 1
+            };
+            user.items.push(item);
+            await updateUser(uid, { items: user.items });
+            return `✅  Item added: ${item.id}`;
+        }
+
+        async function cmdItemDelete(uid, itemId) {
+            const user = await getUser(uid);
+            user.items = user.items || [];
+            const idx = user.items.findIndex(i => i.id === itemId);
+            if (idx === -1) return 'Item not found.';
+            user.items.splice(idx, 1);
+            await updateUser(uid, { items: user.items });
+            return `✅  Item ${itemId} deleted.`;
+        }
+
+        // ---- tickets ----
+        async function cmdTicketList(uid) {
+            const user = await getUser(uid);
+            const tickets = user.tickets || {};
+            const arr = Object.values(tickets);
+            if (arr.length === 0) return 'No tickets.';
+            return arr.map(t => `${t.id} | ${t.subject} | ${t.status} | ${new Date(t.createdAt).toLocaleString()}`).join(
+                '\n');
+        }
+
+        async function cmdTicketClose(uid, ticketId) {
+            const user = await getUser(uid);
+            if (!user.tickets || !user.tickets[ticketId]) return 'Ticket not found.';
+            user.tickets[ticketId].status = 'closed';
+            await updateUser(uid, { tickets: user.tickets });
+            return `✅  Ticket ${ticketId} closed.`;
+        }
+
+        // ---- clear ----
+        function cmdClear() {
+            output.innerHTML = '';
+            return '';
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // 🧭  Command router
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        async function routeCommand(cmd) {
+            const parts = cmd.trim().split(/\s+/);
+            if (parts.length === 0) return '';
+            const main = parts[0].toLowerCase();
+            const args = parts.slice(1);
+
+            try {
+                switch (main) {
+                    case 'help':
+                        return showHelp();
+                    case 'list':
+                        return await cmdList();
+                    case 'stats':
+                        return await cmdStats();
+                    case 'backup':
+                        return await cmdBackup();
+                    case 'clear':
+                        return cmdClear();
+
+                        // ---- user ----
+                    case 'user':
+                        if (args.length === 0) return 'Missing subcommand.';
+                        const sub = args[0].toLowerCase();
+                        const subArgs = args.slice(1);
+                        switch (sub) {
+                            case 'list':
+                                return await cmdList();
+                            case 'get':
+                                if (!subArgs[0]) return 'Missing uid.';
+                                return await cmdUserGet(subArgs[0]);
+                            case 'get-by-email':
+                                if (!subArgs[0]) return 'Missing email.';
+                                return await cmdUserGetByEmail(subArgs[0]);
+                            case 'get-by-account':
+                                if (!subArgs[0]) return 'Missing account number.';
+                                return await cmdUserGetByAccount(subArgs[0]);
+                            case 'create':
+                                return await cmdUserCreate(subArgs);
+                            case 'update':
+                                if (!subArgs[0]) return 'Missing uid.';
+                                return await cmdUserUpdate(subArgs[0], subArgs.slice(1));
+                            case 'delete':
+                                if (!subArgs[0]) return 'Missing uid.';
+                                return await cmdUserDelete(subArgs[0]);
+                            case 'delete-all':
+                                return await cmdUserDeleteAll();
+                            default:
+                                return `Unknown user subcommand: ${sub}`;
+                        }
+
+                        // ---- transactions ----
+                    case 'tx':
+                        if (args.length === 0) return 'Missing subcommand.';
+                        const txSub = args[0].toLowerCase();
+                        const txArgs = args.slice(1);
+                        switch (txSub) {
+                            case 'list':
+                                if (!txArgs[0]) return 'Missing uid.';
+                                return await cmdTxList(txArgs[0]);
+                            case 'get':
+                                if (txArgs.length < 2) return 'Need uid and txId.';
+                                return await cmdTxGet(txArgs[0], txArgs[1]);
+                            case 'add':
+                                if (!txArgs[0]) return 'Missing uid.';
+                                return await cmdTxAdd(txArgs[0], txArgs.slice(1));
+                            case 'delete':
+                                if (txArgs.length < 2) return 'Need uid and txId.';
+                                return await cmdTxDelete(txArgs[0], txArgs[1]);
+                            default:
+                                return `Unknown tx subcommand: ${txSub}`;
+                        }
+
+                        // ---- loans ----
+                    case 'loan':
+                        if (args.length === 0) return 'Missing subcommand.';
+                        const lnSub = args[0].toLowerCase();
+                        const lnArgs = args.slice(1);
+                        switch (lnSub) {
+                            case 'list':
+                                if (!lnArgs[0]) return 'Missing uid.';
+                                return await cmdLoanList(lnArgs[0]);
+                            case 'approve':
+                                if (lnArgs.length < 2) return 'Need uid and loanId.';
+                                return await cmdLoanApprove(lnArgs[0], lnArgs[1]);
+                            case 'reject':
+                                if (lnArgs.length < 2) return 'Need uid and loanId.';
+                                return await cmdLoanReject(lnArgs[0], lnArgs[1]);
+                            case 'delete':
+                                if (lnArgs.length < 2) return 'Need uid and loanId.';
+                                return await cmdLoanDelete(lnArgs[0], lnArgs[1]);
+                            default:
+                                return `Unknown loan subcommand: ${lnSub}`;
+                        }
+
+                        // ---- investments ----
+                    case 'invest':
+                        if (args.length === 0) return 'Missing subcommand.';
+                        const invSub = args[0].toLowerCase();
+                        const invArgs = args.slice(1);
+                        switch (invSub) {
+                            case 'list':
+                                if (!invArgs[0]) return 'Missing uid.';
+                                return await cmdInvestList(invArgs[0]);
+                            case 'delete':
+                                if (invArgs.length < 2) return 'Need uid and investId.';
+                                return await cmdInvestDelete(invArgs[0], invArgs[1]);
+                            default:
+                                return `Unknown invest subcommand: ${invSub}`;
+                        }
+
+                        // ---- cards ----
+                    case 'card':
+                        if (args.length === 0) return 'Missing subcommand.';
+                        const cardSub = args[0].toLowerCase();
+                        const cardArgs = args.slice(1);
+                        switch (cardSub) {
+                            case 'list':
+                                if (!cardArgs[0]) return 'Missing uid.';
+                                return await cmdCardList(cardArgs[0]);
+                            case 'delete':
+                                if (cardArgs.length < 2) return 'Need uid and cardId.';
+                                return await cmdCardDelete(cardArgs[0], cardArgs[1]);
+                            default:
+                                return `Unknown card subcommand: ${cardSub}`;
+                        }
+
+                        // ---- KYC (enhanced) ----
+                    case 'kyc':
+                        if (args.length === 0) return 'Missing subcommand.';
+                        const kycSub = args[0].toLowerCase();
+                        const kycArgs = args.slice(1);
+                        switch (kycSub) {
+                            case 'list':
+                                return await cmdKycList();
+                            case 'list-all':
+                                return await cmdKycListAll();
+                            case 'view':
+                                if (!kycArgs[0]) return 'Missing uid.';
+                                return await cmdKycView(kycArgs[0]);
+                            case 'approve':
+                                if (!kycArgs[0]) return 'Missing uid.';
+                                return await cmdKycApprove(kycArgs[0]);
+                            case 'reject':
+                                if (!kycArgs[0]) return 'Missing uid.';
+                                return await cmdKycReject(kycArgs[0]);
+                            case 'reset':
+                                if (!kycArgs[0]) return 'Missing uid.';
+                                return await cmdKycReset(kycArgs[0]);
+                            case 'sync':
+                                if (!kycArgs[0]) return 'Missing uid.';
+                                return await cmdKycSync(kycArgs[0]);
+                            default:
+                                return `Unknown kyc subcommand: ${kycSub}`;
+                        }
+
+                        // ---- business ----
+                    case 'business':
+                        if (args.length === 0) return 'Missing subcommand.';
+                        const bizSub = args[0].toLowerCase();
+                        const bizArgs = args.slice(1);
+                        switch (bizSub) {
+                            case 'get':
+                                if (!bizArgs[0]) return 'Missing uid.';
+                                return await cmdBusinessGet(bizArgs[0]);
+                            case 'update':
+                                if (!bizArgs[0]) return 'Missing uid.';
+                                return await cmdBusinessUpdate(bizArgs[0], bizArgs.slice(1));
+                            default:
+                                return `Unknown business subcommand: ${bizSub}`;
+                        }
+
+                        // ---- items ----
+                    case 'item':
+                        if (args.length === 0) return 'Missing subcommand.';
+                        const itemSub = args[0].toLowerCase();
+                        const itemArgs = args.slice(1);
+                        switch (itemSub) {
+                            case 'list':
+                                if (!itemArgs[0]) return 'Missing uid.';
+                                return await cmdItemList(itemArgs[0]);
+                            case 'add':
+                                if (itemArgs.length < 3) return 'Need uid, name, price [qty].';
+                                return await cmdItemAdd(itemArgs[0], itemArgs[1], itemArgs[2], itemArgs[3]);
+                            case 'delete':
+                                if (itemArgs.length < 2) return 'Need uid and itemId.';
+                                return await cmdItemDelete(itemArgs[0], itemArgs[1]);
+                            default:
+                                return `Unknown item subcommand: ${itemSub}`;
+                        }
+
+                        // ---- tickets ----
+                    case 'ticket':
+                        if (args.length === 0) return 'Missing subcommand.';
+                        const ticSub = args[0].toLowerCase();
+                        const ticArgs = args.slice(1);
+                        switch (ticSub) {
+                            case 'list':
+                                if (!ticArgs[0]) return 'Missing uid.';
+                                return await cmdTicketList(ticArgs[0]);
+                            case 'close':
+                                if (ticArgs.length < 2) return 'Need uid and ticketId.';
+                                return await cmdTicketClose(ticArgs[0], ticArgs[1]);
+                            default:
+                                return `Unknown ticket subcommand: ${ticSub}`;
+                        }
+
+                    default:
+                        return `❌  Unknown command: ${main}. Type 'help' for list.`;
+                }
+            } catch (err) {
+                return `❌  Error: ${err.message}`;
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // 🖥️  Terminal controller
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        const input = document.getElementById('cmd-input');
+        const btn = document.getElementById('btn-send');
+
+        async function submitCommand() {
+            const cmd = input.value.trim();
+            if (!cmd) return;
+            input.value = '';
+            writePrompt(cmd);
+            setStatus('⏳ Processing...');
+            const result = await routeCommand(cmd);
+            const lines = result.split('\n');
+            for (const line of lines) {
+                if (line.startsWith('✅')) writeResult(line, 'success');
+                else if (line.startsWith('❌')) writeResult(line, 'error');
+                else if (line.startsWith('⚠️')) writeResult(line, 'warning');
+                else writeResult(line, 'info');
+            }
+            setStatus('✅ Done');
+        }
+
+        input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitCommand(); });
+        btn.addEventListener('click', submitCommand);
+        window.addEventListener('load', () => {
+            input.focus();
+            writeResult('⚡ Firebase Admin Terminal ready. Type "help" for commands.', 'info');
+        });
+    </script>
+</body>
+</html>

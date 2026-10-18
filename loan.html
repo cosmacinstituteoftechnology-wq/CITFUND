@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CIT FUND | Loans</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    :root {
+        --primary: #0b1f4a;
+        --primary-dark: #06183d;
+        --accent: #ff5a00;
+        --accent-light: #ff8c42;
+        --bg: #f8f9fc;
+        --card: #ffffff;
+        --text: #1a2b4c;
+        --muted: #6b7a8f;
+        --border: #e8edf5;
+        --success: #00c853;
+        --danger: #e74c3c;
+        --warning: #ff9800;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+    .app-container { max-width: 480px; margin: 0 auto; background: var(--bg); min-height: 100vh; position: relative; padding-bottom: 100px; }
+
+    /* HEADER */
+    .top-header {
+        background: var(--primary);
+        padding: 25px 20px 55px;
+        display: flex; align-items: center; justify-content: space-between;
+        border-radius: 0 0 30px 30px; position: relative; z-index: 1;
+    }
+    .top-header .head-left { display: flex; align-items: center; gap: 14px; }
+    .back-btn {
+        width: 40px; height: 40px; border-radius: 50%;
+        background: rgba(255,255,255,0.1); color: white;
+        display: flex; align-items: center; justify-content: center;
+        text-decoration: none; font-size: 16px; transition: 0.2s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.2); }
+    .top-header .head-title h4 { font-size: 12px; color: rgba(255,255,255,0.7); font-weight: 400; margin-bottom: 2px; }
+    .top-header .head-title h2 { font-size: 18px; font-weight: 700; color: white; }
+    .top-header .notification-btn {
+        position: relative; background: transparent; border: none;
+        color: white; font-size: 22px; cursor: pointer; padding: 6px;
+        text-decoration: none;
+    }
+
+    /* BALANCE CARD */
+    .balance-card {
+        background: var(--card); border-radius: 24px;
+        padding: 22px 22px 20px; margin: -40px 20px 18px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.06);
+        position: relative; z-index: 2;
+    }
+    .balance-card .label { font-size: 13px; color: var(--muted); font-weight: 500; margin-bottom: 8px; }
+    .balance-card h1 { font-size: 30px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; margin-bottom: 16px; }
+    .balance-card .mini-stats {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+        padding-top: 16px; border-top: 1px solid var(--border);
+    }
+    .mini-stat .s-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+    .mini-stat .s-value { font-size: 15px; font-weight: 800; color: var(--primary); }
+
+    /* ELIGIBILITY CARD */
+    .elig-card {
+        margin: 0 20px 20px; border-radius: 20px; padding: 18px;
+        display: flex; align-items: flex-start; gap: 14px;
+        border: 1px solid var(--border);
+    }
+    .elig-card.ok { background: linear-gradient(135deg, rgba(0,200,83,0.08), rgba(0,200,83,0.03)); border-color: rgba(0,200,83,0.25); }
+    .elig-card.wait { background: linear-gradient(135deg, rgba(255,152,0,0.1), rgba(255,152,0,0.03)); border-color: rgba(255,152,0,0.3); }
+    .elig-card.blocked { background: linear-gradient(135deg, rgba(231,76,60,0.08), rgba(231,76,60,0.03)); border-color: rgba(231,76,60,0.25); }
+    .elig-icon {
+        width: 46px; height: 46px; border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px; flex-shrink: 0; color: white;
+    }
+    .elig-card.ok .elig-icon { background: var(--success); }
+    .elig-card.wait .elig-icon { background: var(--warning); }
+    .elig-card.blocked .elig-icon { background: var(--danger); }
+    .elig-body h4 { font-size: 14px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+    .elig-body p { font-size: 12px; color: var(--muted); font-weight: 500; line-height: 1.5; }
+    .elig-body .strong { color: var(--primary); font-weight: 700; }
+
+    /* SECTION HEADERS */
+    .section-header {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 0 20px; margin-bottom: 12px; margin-top: 6px;
+    }
+    .section-header h3 { font-size: 15px; font-weight: 700; color: var(--primary); }
+    .section-header .count-badge {
+        font-size: 11px; font-weight: 700; color: var(--accent);
+        background: rgba(255,90,0,0.08); padding: 4px 10px; border-radius: 20px;
+    }
+
+    /* PRODUCT CARD */
+    .products-list { padding: 0 20px; margin-bottom: 22px; }
+    .product-card {
+        background: var(--card); border-radius: 20px; padding: 18px;
+        margin-bottom: 12px; border: 1px solid var(--border);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: 0.25s;
+    }
+    .product-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 12px 25px rgba(255,90,0,0.08); }
+    .product-card.disabled { opacity: 0.55; pointer-events: none; }
+    .product-top { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+    .product-icon {
+        width: 46px; height: 46px; border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px; flex-shrink: 0;
+        background: rgba(11,31,74,0.08); color: var(--primary);
+    }
+    .product-icon.hot { background: rgba(255,90,0,0.1); color: var(--accent); }
+    .product-icon.biz { background: rgba(0,200,83,0.1); color: var(--success); }
+    .product-icon.emerg { background: rgba(231,76,60,0.1); color: var(--danger); }
+    .product-info { flex: 1; min-width: 0; }
+    .product-info h4 { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 3px; }
+    .product-info p { font-size: 12px; color: var(--muted); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .product-meta {
+        display: grid; grid-template-columns: repeat(3, 1fr);
+        gap: 10px; padding: 12px 0;
+        border-top: 1px dashed var(--border);
+        border-bottom: 1px dashed var(--border);
+        margin-bottom: 12px;
+    }
+    .product-meta .m-block .m-label { font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 2px; }
+    .product-meta .m-block .m-value { font-size: 13px; font-weight: 800; color: var(--primary); }
+    .product-meta .m-block .m-value.green { color: var(--success); }
+    .product-meta .m-block .m-value.orange { color: var(--accent); }
+
+    .apply-btn {
+        width: 100%; padding: 12px; border-radius: 12px;
+        border: none; background: var(--accent); color: white;
+        font-family: inherit; font-size: 13px; font-weight: 700;
+        cursor: pointer; transition: 0.25s;
+        box-shadow: 0 6px 15px rgba(255,90,0,0.25);
+    }
+    .apply-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(255,90,0,0.35); }
+    .apply-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* LOAN CARD */
+    .loans-list { padding: 0 20px; margin-bottom: 22px; }
+    .loan-card {
+        background: var(--card); border-radius: 20px; padding: 18px;
+        margin-bottom: 12px; border: 1px solid var(--border);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+    .loan-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+    .loan-title { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 3px; }
+    .loan-meta { font-size: 11px; color: var(--muted); font-weight: 500; }
+    .loan-status {
+        font-size: 10px; font-weight: 700; padding: 4px 10px;
+        border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
+        flex-shrink: 0;
+    }
+    .loan-status.pending { background: #fff3e0; color: var(--warning); }
+    .loan-status.approved { background: #e6f0ff; color: #1f6fff; }
+    .loan-status.active { background: #e6fff0; color: var(--success); }
+    .loan-status.rejected { background: #ffe6e6; color: var(--danger); }
+    .loan-status.repaid, .loan-status.closed { background: #eef1f6; color: var(--muted); }
+
+    .loan-amounts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .loan-amounts .a-block { background: var(--bg); border-radius: 12px; padding: 10px 12px; }
+    .loan-amounts .a-block .a-label { font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 3px; }
+    .loan-amounts .a-block .a-value { font-size: 14px; font-weight: 800; color: var(--primary); }
+    .loan-amounts .a-block .a-value.green { color: var(--success); }
+    .loan-amounts .a-block .a-value.orange { color: var(--accent); }
+
+    .loan-foot { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); font-weight: 600; padding-top: 10px; border-top: 1px dashed var(--border); }
+
+    .empty-state {
+        text-align: center; padding: 36px 20px; background: var(--card);
+        border-radius: 20px; border: 1px solid var(--border); margin: 0 20px 22px;
+    }
+    .empty-state i { font-size: 40px; color: #d0d8e0; margin-bottom: 12px; }
+    .empty-state p { font-size: 13px; color: var(--muted); font-weight: 600; }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+        position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+        width: 100%; max-width: 480px; background: var(--card);
+        border-top: 1px solid var(--border);
+        display: flex; justify-content: space-around; align-items: center;
+        padding: 8px 0 12px; z-index: 100; box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+    }
+    .bottom-nav a {
+        text-decoration: none; display: flex; flex-direction: column;
+        align-items: center; gap: 4px; font-size: 10px; color: var(--muted);
+        font-weight: 600; flex: 1; transition: 0.3s;
+    }
+    .bottom-nav a i { font-size: 22px; }
+    .bottom-nav a.active { color: var(--accent); }
+    .bottom-nav a.active::after {
+        content: ''; display: block; width: 20px; height: 3px;
+        background: var(--accent); border-radius: 3px; margin-top: 2px;
+    }
+    .bottom-nav .center-btn {
+        width: 60px; height: 60px; background: var(--accent);
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 24px; margin-top: -25px;
+        box-shadow: 0 10px 25px rgba(255,90,0,0.4);
+        cursor: pointer; border: none; transition: 0.3s;
+    }
+    .bottom-nav .center-btn:active { transform: scale(0.92); }
+
+    /* MODAL */
+    .modal-overlay {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+        backdrop-filter: blur(6px); z-index: 10000; display: none;
+        justify-content: center; align-items: flex-end;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+        background: white; border-radius: 30px 30px 0 0;
+        padding: 30px 22px 35px; width: 100%; max-width: 480px;
+        max-height: 92vh; overflow-y: auto;
+        animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 -15px 50px rgba(0,0,0,0.25);
+    }
+    .modal .handle { width: 50px; height: 5px; background: var(--border); border-radius: 3px; margin: 0 auto 22px; }
+    .modal h3 { font-size: 20px; font-weight: 800; color: var(--primary); margin-bottom: 5px; text-align: center; }
+    .modal .sub { font-size: 13px; color: var(--muted); text-align: center; margin-bottom: 22px; }
+
+    .form-section-label {
+        font-size: 11px; font-weight: 800; color: var(--primary);
+        text-transform: uppercase; letter-spacing: 0.8px;
+        padding: 16px 0 8px; border-bottom: 1px solid var(--border);
+        margin-bottom: 14px;
+    }
+
+    .field-group { margin-bottom: 16px; }
+    .field-group label {
+        display: block; font-size: 12px; font-weight: 700; color: var(--primary);
+        margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.4px;
+    }
+    .field-group input, .field-group select, .field-group textarea {
+        width: 100%; padding: 14px 16px; border-radius: 14px;
+        border: 1.5px solid var(--border); font-family: inherit;
+        font-size: 15px; font-weight: 600; color: var(--primary);
+        background: var(--bg); transition: 0.2s; outline: none;
+    }
+    .field-group textarea { resize: vertical; min-height: 70px; font-weight: 500; }
+    .field-group input:focus, .field-group select:focus, .field-group textarea:focus {
+        border-color: var(--accent); background: white;
+        box-shadow: 0 0 0 4px rgba(255,90,0,0.08);
+    }
+    .field-group .hint { font-size: 11px; color: var(--muted); margin-top: 6px; font-weight: 500; }
+
+    .quick-amounts { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .quick-amounts button {
+        flex: 1; min-width: 60px; padding: 9px;
+        background: var(--bg); border: 1.5px solid var(--border);
+        border-radius: 10px; font-family: inherit; font-size: 12px;
+        font-weight: 700; color: var(--primary); cursor: pointer; transition: 0.2s;
+    }
+    .quick-amounts button:hover, .quick-amounts button.active {
+        background: var(--accent); color: white; border-color: var(--accent);
+    }
+
+    .summary-box {
+        background: var(--bg); border-radius: 16px; padding: 16px;
+        margin-bottom: 18px; border: 1px solid var(--border);
+    }
+    .summary-box .row {
+        display: flex; justify-content: space-between;
+        padding: 7px 0; font-size: 13px;
+        border-bottom: 1px dashed var(--border);
+    }
+    .summary-box .row:last-child { border-bottom: none; padding-top: 12px; border-top: 1px solid var(--border); margin-top: 6px; }
+    .summary-box .row span { color: var(--muted); font-weight: 600; }
+    .summary-box .row strong { color: var(--primary); font-weight: 800; }
+    .summary-box .row strong.green { color: var(--success); }
+    .summary-box .row strong.orange { color: var(--accent); }
+    .summary-box .row.total { font-size: 14px; }
+    .summary-box .row.total strong { font-size: 16px; color: var(--accent); }
+
+    .checkbox-row {
+        display: flex; align-items: flex-start; gap: 10px;
+        padding: 12px; background: var(--bg); border-radius: 12px;
+        margin-bottom: 16px; border: 1px solid var(--border);
+    }
+    .checkbox-row input[type="checkbox"] {
+        width: 18px; height: 18px; accent-color: var(--accent);
+        margin-top: 2px; flex-shrink: 0; cursor: pointer;
+    }
+    .checkbox-row label { font-size: 12px; color: var(--text); font-weight: 500; line-height: 1.5; cursor: pointer; }
+
+    .btn-primary {
+        width: 100%; padding: 16px; border-radius: 14px; border: none;
+        background: linear-gradient(135deg, var(--accent), var(--accent-light));
+        color: white; font-family: inherit; font-size: 15px; font-weight: 700;
+        cursor: pointer; transition: 0.25s;
+        box-shadow: 0 10px 25px rgba(255,90,0,0.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(255,90,0,0.4); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .btn-secondary {
+        width: 100%; padding: 14px; border-radius: 14px;
+        border: 1.5px solid var(--border); background: white;
+        color: var(--primary); font-family: inherit; font-size: 14px;
+        font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--primary); }
+
+    /* SUCCESS VIEW */
+    .success-view { text-align: center; padding: 10px 0; }
+    .success-icon {
+        width: 80px; height: 80px; border-radius: 50%;
+        background: rgba(0,200,83,0.12); color: var(--success);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 44px; margin: 0 auto 18px;
+        animation: pop 0.5s ease;
+    }
+    .success-view h3 { font-size: 22px; color: var(--primary); margin-bottom: 8px; font-weight: 800; }
+    .success-view p { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+    .receipt {
+        text-align: left; background: var(--bg); border-radius: 16px;
+        padding: 16px; margin-bottom: 20px; border: 1px solid var(--border);
+    }
+    .receipt .r-row { display: flex; justify-content: space-between; padding: 7px 0; font-size: 12px; border-bottom: 1px dashed var(--border); gap: 10px; }
+    .receipt .r-row:last-child { border-bottom: none; }
+    .receipt .r-row span { color: var(--muted); font-weight: 600; flex-shrink: 0; }
+    .receipt .r-row strong { color: var(--primary); font-weight: 700; text-align: right; word-break: break-word; }
+
+    /* TOAST + LOADING */
+    .toast {
+        position: fixed; top: 20px; left: 50%;
+        transform: translateX(-50%) translateY(-20px);
+        background: var(--primary); color: white;
+        padding: 14px 24px; border-radius: 30px;
+        z-index: 99999; opacity: 0; visibility: hidden;
+        font-size: 13px; font-weight: 600; max-width: 90%; text-align: center;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.25); line-height: 1.4;
+    }
+    .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+    .toast.info { background: var(--primary); }
+
+    #loading-overlay {
+        position: fixed; inset: 0; background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(6px); display: flex; flex-direction: column;
+        justify-content: center; align-items: center;
+        z-index: 9998; color: var(--primary); transition: opacity 0.35s;
+    }
+    #loading-overlay.hide { opacity: 0; pointer-events: none; }
+    .spinner {
+        width: 46px; height: 46px;
+        border: 5px solid var(--border); border-top-color: var(--accent);
+        border-radius: 50%; animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    @keyframes pop { 0% { transform: scale(0); } 80% { transform: scale(1.15); } 100% { transform: scale(1); } }
+</style>
+</head>
+<body>
+
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <p style="margin-top:14px; font-weight:600; font-size:13px;">Loading loan center...</p>
+</div>
+
+<div class="app-container">
+
+    <header class="top-header">
+        <div class="head-left">
+            <a href="userdashboard.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="head-title">
+                <h4>Loan Center</h4>
+                <h2>Borrow &amp; Grow</h2>
+            </div>
+        </div>
+        <a href="usernotification.html" class="notification-btn">
+            <i class="fa-regular fa-bell"></i>
+        </a>
+    </header>
+
+    <div class="balance-card">
+        <div class="label">Available Balance</div>
+        <h1 id="availBalance">GHS 0.00</h1>
+        <div class="mini-stats">
+            <div class="mini-stat">
+                <div class="s-label">Active Loans</div>
+                <div class="s-value" id="activeLoans">0</div>
+            </div>
+            <div class="mini-stat">
+                <div class="s-label">Outstanding</div>
+                <div class="s-value" id="outstanding">GHS 0.00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="elig-card wait" id="eligCard">
+        <div class="elig-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="elig-body">
+            <h4 id="eligTitle">Checking eligibility...</h4>
+            <p id="eligText">Please wait while we verify your account.</p>
+        </div>
+    </div>
+
+    <div class="section-header">
+        <h3>Loan Products</h3>
+        <span class="count-badge" id="productsCount">0 available</span>
+    </div>
+    <div class="products-list" id="productsList">
+        <div class="empty-state"><i class="fa-solid fa-circle-notch fa-spin"></i><p>Loading products...</p></div>
+    </div>
+
+    <div class="section-header">
+        <h3>My Loans</h3>
+        <span class="count-badge" id="loansCount">0</span>
+    </div>
+    <div class="loans-list" id="loansList"></div>
+
+</div>
+
+<nav class="bottom-nav">
+    <a href="userdashboard.html"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="accountnumberupdate.html"><i class="fa-solid fa-book"></i> Accounts</a>
+    <button class="center-btn" onclick="location.href='userdashboard.html'"><i class="fa-solid fa-plus"></i></button>
+    <a href="usernotification.html"><i class="fa-solid fa-bell"></i> Alerts</a>
+    <a href="myprofile.html"><i class="fa-solid fa-user"></i> Profile</a>
+</nav>
+
+<div id="toast" class="toast"></div>
+
+<!-- ================= APPLY MODAL ================= -->
+<div class="modal-overlay" id="applyModal" onclick="closeApply(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="handle"></div>
+        <h3 id="modalProductName">Loan Application</h3>
+        <p class="sub" id="modalProductSub">Complete the form below to submit your request.</p>
+
+        <div id="applyForm">
+            <div class="form-section-label">1. Loan Details</div>
+
+            <div class="field-group">
+                <label>Amount Requested (GHS)</label>
+                <input type="number" id="applyAmount" inputmode="decimal" placeholder="0.00">
+                <div class="hint" id="amountHint">Enter an amount within the allowed range.</div>
+                <div class="quick-amounts" id="quickAmounts"></div>
+            </div>
+
+            <div class="field-group">
+                <label>Duration</label>
+                <select id="applyDuration"></select>
+                <div class="hint" id="durationHint"></div>
+            </div>
+
+            <div class="field-group">
+                <label>Purpose of Loan</label>
+                <textarea id="applyPurpose" placeholder="Briefly describe what the loan is for..."></textarea>
+            </div>
+
+            <div class="form-section-label">2. Financial Information</div>
+
+            <div class="field-group">
+                <label>Employment Status</label>
+                <select id="applyEmployment">
+                    <option value="">-- Select --</option>
+                    <option value="Employed (Public)">Employed (Public Sector)</option>
+                    <option value="Employed (Private)">Employed (Private Sector)</option>
+                    <option value="Self Employed">Self Employed</option>
+                    <option value="Business Owner">Business Owner</option>
+                    <option value="Student">Student</option>
+                    <option value="Unemployed">Unemployed</option>
+                    <option value="Retired">Retired</option>
+                </select>
+            </div>
+
+            <div class="field-group">
+                <label>Monthly Income (GHS)</label>
+                <input type="number" id="applyIncome" inputmode="decimal" placeholder="0.00">
+            </div>
+
+            <div class="field-group">
+                <label>Occupation / Business</label>
+                <input type="text" id="applyOccupation" placeholder="e.g. Trader, Teacher, Software Developer">
+            </div>
+
+            <div class="form-section-label">3. Loan Summary</div>
+
+            <div class="summary-box" id="summaryBox">
+                <div class="row"><span>Loan Amount</span><strong id="sumAmount">GHS 0.00</strong></div>
+                <div class="row"><span>Processing Fee (2%)</span><strong class="orange" id="sumFee">GHS 0.00</strong></div>
+                <div class="row"><span>Net Disbursed</span><strong id="sumNet">GHS 0.00</strong></div>
+                <div class="row"><span>Interest (<span id="sumRateLbl">0%</span>)</span><strong class="orange" id="sumInterest">GHS 0.00</strong></div>
+                <div class="row"><span>Payment Plan</span><strong id="sumPlan">-</strong></div>
+                <div class="row"><span>Installments</span><strong id="sumInstallments">0</strong></div>
+                <div class="row total"><span>Total Repayment</span><strong id="sumTotal">GHS 0.00</strong></div>
+            </div>
+
+            <div class="checkbox-row">
+                <input type="checkbox" id="agreeTerms">
+                <label for="agreeTerms">
+                    I confirm all information provided is accurate. I understand the <span style="color:var(--accent); font-weight:700;">2% processing fee</span>, the stated interest, and a <span style="color:var(--danger); font-weight:700;">12% penalty</span> on any missed or late installment.
+                </label>
+            </div>
+
+            <div class="field-group">
+                <label>Transaction PIN</label>
+                <input type="password" id="applyPin" inputmode="numeric" maxlength="6" placeholder="Enter your PIN">
+            </div>
+
+            <button class="btn-primary" id="submitLoanBtn" onclick="submitLoan()">
+                <i class="fa-solid fa-paper-plane"></i>&nbsp; Submit Loan Request
+            </button>
+            <button class="btn-secondary" onclick="closeApply()">Cancel</button>
+        </div>
+
+        <!-- SUCCESS VIEW -->
+        <div id="successView" class="success-view" style="display:none;">
+            <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+            <h3>Request Submitted!</h3>
+            <p>Your loan request has been received and forwarded to our loan officers for review. You will receive an SMS update shortly.</p>
+            <div class="receipt" id="successReceipt"></div>
+            <button class="btn-primary" onclick="closeApply(); loadAll();">Done</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// SESSION
+// ============================================================
+const session = JSON.parse(localStorage.getItem('cit_session') || 'null');
+if (!session || !session.uid) window.location.href = 'userlogin.html';
+
+// ============================================================
+// STATE
+// ============================================================
+let PRODUCTS = [];
+let userBalance = 0;
+let eligibility = { eligible: false, daysRemaining: 0, accountAgeDays: 0, hasActiveLoan: false };
+let myLoans = [];
+let selectedProduct = null;
+let toastTimer;
+
+// ============================================================
+// HELPERS
+// ============================================================
+function fmt(n) {
+    return 'GHS ' + Number(n || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+async function api(path, body) {
+    const res = await fetch(path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body || {}),
+        cache: 'no-store'
+    });
+    try { return await res.json(); }
+    catch (e) { return { success: false, error: 'Invalid server response' }; }
+}
+function hideLoading() {
+    const el = document.getElementById('loading-overlay');
+    if (el) { el.classList.add('hide'); setTimeout(() => el.style.display = 'none', 400); }
+}
+
+// ============================================================
+// LOAD ALL
+// ============================================================
+async function loadAll() {
+    try {
+        // 1. User data / balance
+        const dash = await api('/api/dashboard', { uid: session.uid });
+        if (dash.success && dash.user) {
+            userBalance = Number(dash.user.balance || 0);
+            document.getElementById('availBalance').textContent = fmt(userBalance);
+        } else if (dash.error && /not found/i.test(dash.error)) {
+            localStorage.removeItem('cit_session');
+            return window.location.href = 'userlogin.html';
+        }
+
+        // 2. Products
+        const p = await api('/api/loan/products', {});
+        if (p.success) PRODUCTS = Array.isArray(p.products) ? p.products : [];
+
+        // 3. Eligibility
+        const e = await api('/api/loan/eligibility', { uid: session.uid });
+        if (e.success) eligibility = e;
+
+        // 4. My loans
+        const l = await api('/api/loan/list', { uid: session.uid });
+        if (l.success) myLoans = Array.isArray(l.loans) ? l.loans : [];
+
+        renderEligibility();
+        renderProducts();
+        renderLoans();
+        updateStats();
+    } catch (err) {
+        showToast('Network error: ' + err.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// ============================================================
+// STATS
+// ============================================================
+function updateStats() {
+    const active = myLoans.filter(l => ['pending','approved','active'].includes((l.status||'').toLowerCase()));
+    document.getElementById('activeLoans').textContent = active.length;
+    const outstanding = active.reduce((sum, l) => {
+        if (l.status === 'active') return sum + Number(l.totalRepayment || 0) - Number(l.amountPaid || 0);
+        return sum;
+    }, 0);
+    document.getElementById('outstanding').textContent = fmt(outstanding);
+    document.getElementById('loansCount').textContent = myLoans.length;
+}
+
+// ============================================================
+// ELIGIBILITY
+// ============================================================
+function renderEligibility() {
+    const card = document.getElementById('eligCard');
+    const title = document.getElementById('eligTitle');
+    const text = document.getElementById('eligText');
+    card.className = 'elig-card';
+
+    if (eligibility.hasActiveLoan) {
+        card.classList.add('blocked');
+        title.textContent = 'Application Paused';
+        text.innerHTML = 'You currently have a <span class="strong">pending or active loan</span>. New requests are on hold until your current loan is settled.';
+        return;
+    }
+    if (eligibility.eligible) {
+        card.classList.add('ok');
+        title.textContent = 'You are Eligible';
+        text.innerHTML = 'Your account is <span class="strong">' + eligibility.accountAgeDays + ' days</span> old. You meet the 4-month requirement — you can apply for any loan product below.';
+    } else {
+        card.classList.add('wait');
+        title.textContent = 'Not Yet Eligible';
+        text.innerHTML = 'Loan eligibility requires <span class="strong">4 months</span> of active account history. You have <span class="strong">' + eligibility.accountAgeDays + ' days</span> so far — <span class="strong">' + eligibility.daysRemaining + ' more days</span> to go.';
+    }
+}
+
+// ============================================================
+// PRODUCTS
+// ============================================================
+function iconForProduct(id) {
+    switch ((id || '').toUpperCase()) {
+        case 'INSTANT':   return { cls: 'hot',   icon: 'fa-bolt' };
+        case 'BUSINESS':  return { cls: 'biz',   icon: 'fa-briefcase' };
+        case 'PERSONAL':  return { cls: '',      icon: 'fa-user-tie' };
+        case 'EMERGENCY': return { cls: 'emerg', icon: 'fa-kit-medical' };
+        default:          return { cls: '',      icon: 'fa-hand-holding-dollar' };
+    }
+}
+function durationLabel(p) {
+    return p.minDuration + '–' + p.maxDuration + ' ' + p.durationUnit;
+}
+function paymentFreqLabel(p) {
+    const f = p.paymentFrequency;
+    if (f === 'weekly') return 'Weekly';
+    if (f === 'biweekly') return 'Bi-Weekly';
+    return 'Monthly';
+}
+
+function renderProducts() {
+    const wrap = document.getElementById('productsList');
+    document.getElementById('productsCount').textContent = PRODUCTS.length + ' available';
+    if (!PRODUCTS.length) {
+        wrap.innerHTML = '<div class="empty-state"><i class="fa-solid fa-inbox"></i><p>No loan products available</p></div>';
+        return;
+    }
+
+    const canApply = eligibility.eligible && !eligibility.hasActiveLoan;
+
+    wrap.innerHTML = PRODUCTS.map(p => {
+        const meta = iconForProduct(p.id);
+        return `
+            <div class="product-card ${canApply ? '' : 'disabled'}">
+                <div class="product-top">
+                    <div class="product-icon ${meta.cls}"><i class="fa-solid ${meta.icon}"></i></div>
+                    <div class="product-info">
+                        <h4>${esc(p.name)}</h4>
+                        <p>${esc(p.desc || '')}</p>
+                    </div>
+                </div>
+                <div class="product-meta">
+                    <div class="m-block">
+                        <div class="m-label">Interest</div>
+                        <div class="m-value green">${Number(p.interestRate).toFixed(0)}%</div>
+                    </div>
+                    <div class="m-block">
+                        <div class="m-label">Payment</div>
+                        <div class="m-value orange">${paymentFreqLabel(p)}</div>
+                    </div>
+                    <div class="m-block">
+                        <div class="m-label">Duration</div>
+                        <div class="m-value">${durationLabel(p)}</div>
+                    </div>
+                </div>
+                <button class="apply-btn" ${canApply ? '' : 'disabled'} data-apply-id="${esc(p.id)}">
+                    ${canApply ? 'Apply Now' : 'Not Available'}
+                </button>
+            </div>`;
+    }).join('');
+
+    wrap.querySelectorAll('[data-apply-id]').forEach(btn => {
+        btn.addEventListener('click', () => openApply(btn.dataset.applyId));
+    });
+}
+
+// ============================================================
+// LOANS LIST
+// ============================================================
+function renderLoans() {
+    const wrap = document.getElementById('loansList');
+    if (!myLoans.length) {
+        wrap.innerHTML = '<div class="empty-state"><i class="fa-solid fa-file-invoice"></i><p>You have not applied for any loan yet</p></div>';
+        return;
+    }
+    const sorted = [...myLoans].sort((a, b) => (b.appliedAt || 0) - (a.appliedAt || 0));
+    wrap.innerHTML = sorted.map(l => loanCardHtml(l)).join('');
+}
+
+function loanCardHtml(l) {
+    const status = (l.status || 'pending').toLowerCase();
+    const statusClass = ['pending','approved','active','rejected','repaid','closed'].includes(status) ? status : 'pending';
+    const date = l.appliedAt ? new Date(l.appliedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
+    const totalRepay = Number(l.totalRepayment || 0);
+    const outstanding = Math.max(0, totalRepay - Number(l.amountPaid || 0));
+    const freq = l.paymentFrequency === 'weekly' ? 'Weekly' : (l.paymentFrequency === 'biweekly' ? 'Bi-Weekly' : 'Monthly');
+    return `
+        <div class="loan-card">
+            <div class="loan-head">
+                <div>
+                    <div class="loan-title">${esc(l.productName || 'Loan')}</div>
+                    <div class="loan-meta">${esc(l.id)} &middot; ${esc(date)}</div>
+                </div>
+                <span class="loan-status ${statusClass}">${esc(status)}</span>
+            </div>
+            <div class="loan-amounts">
+                <div class="a-block">
+                    <div class="a-label">Amount</div>
+                    <div class="a-value">${fmt(l.amount)}</div>
+                </div>
+                <div class="a-block">
+                    <div class="a-label">${status === 'active' ? 'Outstanding' : 'Total Repayable'}</div>
+                    <div class="a-value orange">${fmt(status === 'active' ? outstanding : totalRepay)}</div>
+                </div>
+            </div>
+            <div class="loan-foot">
+                <span>${esc(freq)} &middot; ${l.duration} ${esc(l.durationUnit || 'months')}</span>
+                <span>${Number(l.interestRate || 0).toFixed(0)}% interest</span>
+            </div>
+        </div>`;
+}
+
+// ============================================================
+// APPLY MODAL
+// ============================================================
+function openApply(productId) {
+    const p = PRODUCTS.find(x => x.id === productId);
+    if (!p) return showToast('Product not found', 'error');
+    if (!eligibility.eligible) return showToast('You are not yet eligible for a loan', 'error');
+    if (eligibility.hasActiveLoan) return showToast('You already have a pending/active loan', 'error');
+
+    selectedProduct = p;
+
+    document.getElementById('modalProductName').textContent = p.name;
+    document.getElementById('modalProductSub').textContent = p.desc || 'Complete the form below to submit your request.';
+    document.getElementById('successView').style.display = 'none';
+    document.getElementById('applyForm').style.display = 'block';
+
+    const amtInput = document.getElementById('applyAmount');
+    amtInput.value = '';
+    amtInput.min = p.minAmount;
+    amtInput.max = p.maxAmount;
+    amtInput.placeholder = 'Min ' + p.minAmount + ' – Max ' + p.maxAmount;
+    document.getElementById('amountHint').textContent = 'Allowed range: ' + fmt(p.minAmount) + ' to ' + fmt(p.maxAmount);
+
+    buildDurationOptions(p);
+    buildQuickAmounts(p);
+
+    document.getElementById('applyPurpose').value = '';
+    document.getElementById('applyEmployment').value = '';
+    document.getElementById('applyIncome').value = '';
+    document.getElementById('applyOccupation').value = '';
+    document.getElementById('applyPin').value = '';
+    document.getElementById('agreeTerms').checked = false;
+
+    amtInput.oninput = updateSummary;
+    document.getElementById('applyDuration').onchange = updateSummary;
+
+    updateSummary();
+    document.getElementById('applyModal').classList.add('show');
+    setTimeout(() => amtInput.focus(), 300);
+}
+
+function buildDurationOptions(p) {
+    const sel = document.getElementById('applyDuration');
+    let html = '';
+    for (let d = p.minDuration; d <= p.maxDuration; d++) {
+        html += `<option value="${d}">${d} ${p.durationUnit}</option>`;
+    }
+    sel.innerHTML = html;
+    const n = installmentCount(p, p.minDuration);
+    document.getElementById('durationHint').textContent =
+        `${paymentFreqLabel(p)} installments — ${n} payments over ${p.minDuration} ${p.durationUnit}`;
+}
+
+function buildQuickAmounts(p) {
+    const wrap = document.getElementById('quickAmounts');
+    const min = Number(p.minAmount);
+    const max = Number(p.maxAmount);
+    const options = [
+        min,
+        Math.min(max, min * 2),
+        Math.min(max, min * 5),
+        max
+    ].map(v => Math.round(v)).filter((v, i, a) => a.indexOf(v) === i);
+    wrap.innerHTML = options.map(v => `<button type="button" data-amt="${v}">${v.toLocaleString()}</button>`).join('');
+    wrap.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            wrap.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('applyAmount').value = btn.dataset.amt;
+            updateSummary();
+        });
+    });
+}
+
+function installmentCount(p, durationMonths) {
+    if (p.paymentFrequency === 'weekly') return Math.round(durationMonths * 4);
+    if (p.paymentFrequency === 'biweekly') return Math.round(durationMonths * 2);
+    return durationMonths;
+}
+
+function updateSummary() {
+    if (!selectedProduct) return;
+    const amt = Number(document.getElementById('applyAmount').value) || 0;
+    const dur = Number(document.getElementById('applyDuration').value) || selectedProduct.minDuration;
+    const rate = Number(selectedProduct.interestRate);
+    const feePercent = Number(selectedProduct.processingFeePercent || 2);
+
+    const interest = amt * (rate / 100);
+    const fee = amt * (feePercent / 100);
+    const netDisburse = Math.max(0, amt - fee);
+    const totalRepay = amt + interest;
+    const n = installmentCount(selectedProduct, dur);
+
+    document.getElementById('sumAmount').textContent = fmt(amt);
+    document.getElementById('sumFee').textContent = fmt(fee);
+    document.getElementById('sumNet').textContent = fmt(netDisburse);
+    document.getElementById('sumRateLbl').textContent = rate.toFixed(0) + '%';
+    document.getElementById('sumInterest').textContent = fmt(interest);
+    document.getElementById('sumPlan').textContent =
+        paymentFreqLabel(selectedProduct) + ' × ' + n;
+    document.getElementById('sumInstallments').textContent = n + ' payments';
+    document.getElementById('sumTotal').textContent = fmt(totalRepay);
+}
+
+function closeApply(e) {
+    if (e) e.stopPropagation();
+    document.getElementById('applyModal').classList.remove('show');
+    selectedProduct = null;
+}
+
+// ============================================================
+// SUBMIT
+// ============================================================
+async function submitLoan() {
+    if (!selectedProduct) return showToast('Select a product first', 'error');
+
+    const amt = Number(document.getElementById('applyAmount').value);
+    const dur = Number(document.getElementById('applyDuration').value);
+    const purpose = document.getElementById('applyPurpose').value.trim();
+    const employment = document.getElementById('applyEmployment').value;
+    const income = Number(document.getElementById('applyIncome').value) || 0;
+    const occupation = document.getElementById('applyOccupation').value.trim();
+    const pin = document.getElementById('applyPin').value.trim();
+    const agreed = document.getElementById('agreeTerms').checked;
+
+    if (!amt || amt <= 0) return showToast('Enter a valid amount', 'error');
+    if (amt < selectedProduct.minAmount) return showToast('Minimum is ' + fmt(selectedProduct.minAmount), 'error');
+    if (amt > selectedProduct.maxAmount) return showToast('Maximum is ' + fmt(selectedProduct.maxAmount), 'error');
+    if (!dur) return showToast('Select a duration', 'error');
+    if (!purpose || purpose.length < 5) return showToast('Please describe the purpose of the loan', 'error');
+    if (!employment) return showToast('Select your employment status', 'error');
+    if (!income || income <= 0) return showToast('Enter your monthly income', 'error');
+    if (!occupation) return showToast('Enter your occupation / business', 'error');
+    if (!pin) return showToast('Enter your transaction PIN', 'error');
+    if (!agreed) return showToast('Please accept the terms to continue', 'error');
+
+    const btn = document.getElementById('submitLoanBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>&nbsp; Submitting...';
+
+    try {
+        const r = await api('/api/loan/apply', {
+            uid: session.uid,
+            productId: selectedProduct.id,
+            amount: amt,
+            duration: dur,
+            purpose, employment, income, occupation,
+            pin
+        });
+
+        if (r.success) {
+            renderSuccess(r);
+        } else {
+            showToast(r.error || 'Loan request failed', 'error');
+        }
+    } catch (err) {
+        showToast('Network error: ' + err.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i>&nbsp; Submit Loan Request';
+    }
+}
+
+function renderSuccess(r) {
+    document.getElementById('applyForm').style.display = 'none';
+    const sv = document.getElementById('successView');
+    sv.style.display = 'block';
+
+    const amt = Number(r.amount || 0);
+    const interest = Number(r.interest || 0);
+    const fee = Number(r.processingFee || 0);
+    const net = Number(r.netDisbursed || amt - fee);
+    const total = Number(r.totalRepayment || amt + interest);
+
+    document.getElementById('successReceipt').innerHTML = `
+        <div class="r-row"><span>Loan ID</span><strong>${esc(r.loanId || '-')}</strong></div>
+        <div class="r-row"><span>Product</span><strong>${esc(r.productName || '')}</strong></div>
+        <div class="r-row"><span>Amount</span><strong>${fmt(amt)}</strong></div>
+        <div class="r-row"><span>Processing Fee (2%)</span><strong>${fmt(fee)}</strong></div>
+        <div class="r-row"><span>Net Disbursed</span><strong>${fmt(net)}</strong></div>
+        <div class="r-row"><span>Interest</span><strong>${fmt(interest)}</strong></div>
+        <div class="r-row"><span>Total Repayment</span><strong>${fmt(total)}</strong></div>
+        <div class="r-row"><span>Status</span><strong style="color:var(--warning);">PENDING REVIEW</strong></div>
+    `;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadAll();
+setTimeout(hideLoading, 5000);
+</script>
+</body>
+</html>

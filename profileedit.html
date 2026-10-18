@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CITFUND ENTERPRISE | Edit Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    :root {
+        --green: #0B7A2E;
+        --green-dark: #075C22;
+        --green-light: #14A344;
+        --gold: #FFC72C;
+        --gold-soft: #FFD75E;
+        --red: #E30613;
+
+        --bg: #f4f9f6;
+        --card: #ffffff;
+        --text: #1a2b4c;
+        --muted: #6b7a8f;
+        --border: #e6f0e9;
+        --success: #00a86b;
+        --danger: #e74c3c;
+        --warning: #ff9800;
+
+        --primary: var(--green);
+        --primary-dark: var(--green-dark);
+        --accent: var(--green);
+        --accent-light: var(--green-light);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+    /* ===== DESKTOP SIDEBAR ===== */
+    .sidebar {
+        width: 260px;
+        background: linear-gradient(180deg, var(--green) 0%, var(--green-dark) 100%);
+        color: white;
+        padding: 22px 18px;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        height: 100vh;
+        left: 0;
+        top: 0;
+        z-index: 100;
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        overflow-y: auto;
+    }
+    .sidebar .brand {
+        margin-bottom: 26px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .sidebar .brand .logo-icon {
+        width: 46px; height: 46px;
+        background: var(--gold);
+        color: var(--green-dark);
+        border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 22px;
+        box-shadow: 0 8px 20px rgba(255,199,44,0.3);
+        flex-shrink: 0;
+    }
+    .sidebar .brand .brand-text h2 {
+        font-size: 17px;
+        font-weight: 900;
+        letter-spacing: 0.3px;
+    }
+    .sidebar .brand .brand-text h2 span { color: var(--gold); }
+    .sidebar .brand .brand-text p {
+        font-size: 9.5px;
+        letter-spacing: 1.5px;
+        color: rgba(255,255,255,0.65);
+        font-weight: 600;
+        margin-top: 2px;
+    }
+    .sidebar nav a {
+        display: flex; align-items: center; gap: 14px;
+        padding: 12px 14px;
+        text-decoration: none;
+        color: rgba(255,255,255,0.8);
+        border-radius: 12px;
+        margin-bottom: 4px;
+        font-size: 13.5px;
+        font-weight: 600;
+        transition: 0.25s;
+    }
+    .sidebar nav a i { width: 20px; font-size: 15px; }
+    .sidebar nav a:hover {
+        background: rgba(255,255,255,0.1);
+        color: white;
+        transform: translateX(2px);
+    }
+    .sidebar nav a.active {
+        background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+        color: var(--green-dark);
+        box-shadow: 0 6px 15px rgba(255,199,44,0.3);
+    }
+    .sidebar nav a.active i { color: var(--green-dark); }
+    .sidebar nav a.logout { color: #ff9a9a; margin-top: 8px; }
+    .sidebar nav a.logout:hover { background: rgba(227,6,19,0.2); color: #ffb8b8; }
+
+    .sidebar .admin-profile {
+        margin-top: auto;
+        padding: 12px 14px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+    .sidebar .admin-profile img {
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        border: 2px solid var(--gold);
+        object-fit: cover;
+    }
+    .sidebar .admin-profile .ap-text h5 {
+        font-size: 13px;
+        color: white;
+        font-weight: 800;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .sidebar .admin-profile .ap-text p {
+        font-size: 10.5px;
+        color: var(--gold);
+        font-weight: 700;
+        letter-spacing: 0.4px;
+    }
+
+    .sidebar .close-btn {
+        display: none;
+        position: absolute;
+        top: 16px; right: 16px;
+        width: 32px; height: 32px;
+        background: rgba(255,255,255,0.15);
+        border-radius: 50%;
+        display: none;
+        align-items: center; justify-content: center;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+    }
+    .sidebar-overlay {
+        display: none;
+        position: fixed; inset: 0;
+        background: rgba(7,92,34,0.6);
+        backdrop-filter: blur(4px);
+        z-index: 99;
+    }
+    .sidebar-overlay.show { display: block; }
+
+    /* ===== MOBILE TOP HEADER ===== */
+    .mobile-header {
+        display: none;
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        padding: 16px 18px;
+        color: white;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        border-radius: 0 0 24px 24px;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        box-shadow: 0 6px 20px rgba(11,122,46,0.18);
+    }
+    .mobile-header .mh-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+        min-width: 0;
+    }
+    .mobile-header .menu-toggle {
+        width: 38px; height: 38px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.15);
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .mobile-header .mh-title h1 {
+        font-size: 16px;
+        font-weight: 800;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .mobile-header .mh-title p {
+        font-size: 10.5px;
+        color: rgba(255,255,255,0.75);
+        font-weight: 500;
+        margin-top: 1px;
+    }
+    .mobile-header .mh-notif {
+        width: 38px; height: 38px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.15);
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        position: relative;
+        text-decoration: none;
+    }
+    .mobile-header .mh-notif .dot {
+        width: 7px; height: 7px;
+        background: var(--gold);
+        border-radius: 50%;
+        position: absolute;
+        top: 7px; right: 7px;
+        border: 1.5px solid var(--green-dark);
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content-wrap {
+        margin-left: 260px;
+        padding: 24px 30px 80px;
+        min-height: 100vh;
+    }
+
+    /* ===== PAGE TITLE ===== */
+    .page-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .page-title .pt-left h1 {
+        font-size: 24px;
+        font-weight: 900;
+        color: var(--green-dark);
+        letter-spacing: -0.3px;
+    }
+    .page-title .pt-left p {
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 600;
+        margin-top: 4px;
+    }
+    .page-title .pt-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    .page-title .icon-btn {
+        width: 42px; height: 42px;
+        background: var(--card);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        color: var(--green);
+        font-size: 16px;
+        cursor: pointer;
+        text-decoration: none;
+        border: 1px solid var(--border);
+        transition: 0.2s;
+        position: relative;
+    }
+    .page-title .icon-btn:hover { background: var(--green); color: white; border-color: var(--green); }
+    .page-title .icon-btn .dot {
+        width: 8px; height: 8px;
+        background: var(--red);
+        border-radius: 50%;
+        position: absolute;
+        top: 5px; right: 5px;
+        border: 2px solid var(--card);
+    }
+
+    /* ===== PROFILE HERO CARD ===== */
+    .photo-card {
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        border-radius: 24px;
+        padding: 28px 26px;
+        margin-bottom: 22px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 45px rgba(11,122,46,0.2);
+    }
+    .photo-card::before {
+        content: '';
+        position: absolute;
+        top: -60px; right: -60px;
+        width: 220px; height: 220px;
+        background: radial-gradient(circle, rgba(255,199,44,0.35), transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .photo-card::after {
+        content: '';
+        position: absolute;
+        bottom: -100px; left: -60px;
+        width: 200px; height: 200px;
+        background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .photo-card .pc-content {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        position: relative;
+        z-index: 2;
+    }
+    .photo-card .avatar-wrap {
+        position: relative;
+        flex-shrink: 0;
+    }
+    .photo-card .avatar-wrap img {
+        width: 110px; height: 110px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--gold);
+        background: linear-gradient(135deg, var(--green-light), var(--green));
+        box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+        display: block;
+    }
+    .photo-card .avatar-wrap .change-overlay {
+        position: absolute;
+        bottom: 0; right: 0;
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        background: var(--gold);
+        color: var(--green-dark);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px;
+        border: 3px solid var(--green-dark);
+        cursor: pointer;
+        transition: 0.2s;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .photo-card .avatar-wrap .change-overlay:hover { transform: scale(1.1); }
+
+    .photo-card .pc-info {
+        flex: 1;
+        min-width: 0;
+        color: white;
+    }
+    .photo-card .pc-info h2 {
+        font-size: 22px;
+        font-weight: 900;
+        letter-spacing: 0.2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .photo-card .pc-info .pc-sub {
+        font-size: 13px;
+        color: rgba(255,255,255,0.85);
+        font-weight: 600;
+        margin-top: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .photo-card .pc-info .pc-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+    }
+    .photo-card .pc-info .pc-actions button {
+        padding: 10px 18px;
+        border-radius: 30px;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: 800;
+        font-size: 12.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.2s;
+    }
+    .photo-card .pc-info .btn-upload {
+        background: var(--gold);
+        color: var(--green-dark);
+        box-shadow: 0 6px 15px rgba(255,199,44,0.35);
+    }
+    .photo-card .pc-info .btn-upload:hover { transform: translateY(-2px); }
+    .photo-card .pc-info .btn-remove {
+        background: rgba(255,255,255,0.15);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.25);
+    }
+    .photo-card .pc-info .btn-remove:hover { background: rgba(255,255,255,0.25); }
+
+    /* ===== FORM SECTIONS ===== */
+    .section {
+        background: var(--card);
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 18px;
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 15px rgba(11,122,46,0.03);
+        transition: 0.25s;
+    }
+    .section:hover {
+        border-color: rgba(11,122,46,0.15);
+        box-shadow: 0 8px 25px rgba(11,122,46,0.06);
+    }
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+        padding-bottom: 14px;
+        border-bottom: 1px dashed var(--border);
+    }
+    .section-title .st-icon {
+        width: 40px; height: 40px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+        box-shadow: 0 6px 15px rgba(11,122,46,0.22);
+    }
+    .section-title .st-icon.gold {
+        background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+        color: var(--green-dark);
+        box-shadow: 0 6px 15px rgba(255,199,44,0.35);
+    }
+    .section-title .st-text h3 {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--green-dark);
+        letter-spacing: 0.2px;
+    }
+    .section-title .st-text p {
+        font-size: 11.5px;
+        color: var(--muted);
+        font-weight: 600;
+        margin-top: 2px;
+    }
+
+    /* ===== FORM FIELDS ===== */
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+    .field {
+        display: flex;
+        flex-direction: column;
+    }
+    .field.full { grid-column: 1 / -1; }
+    .field label {
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--green-dark);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .field label .req { color: var(--red); margin-left: 2px; }
+    .field .input-wrap {
+        position: relative;
+    }
+    .field .input-wrap i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--green);
+        font-size: 14px;
+        pointer-events: none;
+    }
+    .field input, .field select {
+        width: 100%;
+        padding: 13px 16px 13px 40px;
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        font-size: 14px;
+        background: var(--bg);
+        color: var(--green-dark);
+        font-family: inherit;
+        font-weight: 600;
+        outline: none;
+        transition: 0.2s;
+        appearance: none;
+        -webkit-appearance: none;
+    }
+    .field select {
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%230B7A2E' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        background-size: 12px;
+        padding-right: 40px;
+        cursor: pointer;
+    }
+    .field input:focus, .field select:focus {
+        border-color: var(--green);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(11,122,46,0.08);
+    }
+    .field input::placeholder { color: #b8c4d1; font-weight: 500; }
+    .field input:disabled, .field select:disabled {
+        background: #f0f4f2;
+        color: var(--muted);
+        cursor: not-allowed;
+    }
+    .field .hint {
+        font-size: 10.5px;
+        color: var(--muted);
+        font-weight: 600;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .field input.invalid { border-color: var(--danger); background: #fff5f5; }
+
+    /* ===== FILE UPLOAD (inline) ===== */
+    .file-upload {
+        border: 2px dashed var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.25s;
+        background: var(--bg);
+        position: relative;
+        overflow: hidden;
+    }
+    .file-upload:hover { border-color: var(--green); background: #eef6f0; }
+    .file-upload.has-file {
+        border-color: var(--success);
+        border-style: solid;
+        background: linear-gradient(135deg, #e6fff0, #d3f5df);
+    }
+    .file-upload i { font-size: 22px; color: var(--green); display: block; margin-bottom: 6px; }
+    .file-upload.has-file i { color: var(--success); }
+    .file-upload p { font-size: 12px; font-weight: 700; color: var(--muted); }
+    .file-upload .file-name {
+        display: block;
+        font-size: 11px;
+        color: var(--green-dark);
+        font-weight: 700;
+        margin-top: 4px;
+        word-break: break-all;
+    }
+    .file-upload input { display: none; }
+
+    /* ===== SAVE BAR (floating) ===== */
+    .save-bar {
+        display: flex;
+        gap: 12px;
+        padding: 20px 24px;
+        background: var(--card);
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        box-shadow: 0 -4px 20px rgba(11,122,46,0.05);
+        margin-top: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .save-bar .save-info {
+        flex: 1;
+        min-width: 200px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 12.5px;
+        color: var(--muted);
+        font-weight: 700;
+    }
+    .save-bar .save-info i { color: var(--gold); font-size: 16px; }
+    .save-bar .save-info .status-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: var(--success);
+        box-shadow: 0 0 0 3px rgba(0,168,107,0.2);
+        animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+    .btn {
+        padding: 14px 28px;
+        border-radius: 12px;
+        font-weight: 800;
+        cursor: pointer;
+        border: none;
+        font-size: 14px;
+        transition: 0.25s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-family: inherit;
+        letter-spacing: 0.2px;
+    }
+    .btn-reset {
+        background: var(--bg);
+        color: var(--green-dark);
+        border: 1.5px solid var(--border);
+    }
+    .btn-reset:hover { background: #eef6f0; border-color: var(--green); }
+    .btn-save {
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.3);
+    }
+    .btn-save:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(11,122,46,0.4); }
+    .btn-save:disabled { background: #cbd5e0; box-shadow: none; transform: none; cursor: not-allowed; }
+
+    /* ===== MESSAGE BOX ===== */
+    .msg-box {
+        margin-top: 16px;
+        padding: 14px 18px;
+        border-radius: 12px;
+        display: none;
+        font-size: 13px;
+        font-weight: 700;
+        align-items: center;
+        gap: 10px;
+        animation: slideDown 0.3s ease;
+    }
+    .msg-box.show { display: flex; }
+    .msg-box.success {
+        background: #e6fff0;
+        color: #006b3c;
+        border-left: 5px solid var(--success);
+    }
+    .msg-box.error {
+        background: #ffe6e6;
+        color: #a30000;
+        border-left: 5px solid var(--danger);
+    }
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-6px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== MODALS ===== */
+    .modal-bg {
+        position: fixed;
+        inset: 0;
+        background: rgba(7,92,34,0.85);
+        backdrop-filter: blur(8px);
+        z-index: 9999;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+    .modal-bg.show { display: flex; }
+    .modal-box {
+        background: white;
+        border-radius: 24px;
+        padding: 34px 28px;
+        max-width: 400px;
+        width: 100%;
+        text-align: center;
+        animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    @keyframes popIn {
+        from { transform: scale(0.9); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    .modal-box .loader-ring {
+        width: 90px; height: 90px;
+        margin: 0 auto 20px;
+        position: relative;
+    }
+    .modal-box .loader-ring .ring {
+        position: absolute; inset: 0;
+        border: 5px solid rgba(11,122,46,0.1);
+        border-top-color: var(--green);
+        border-right-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    .modal-box .loader-ring i {
+        position: absolute;
+        inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 32px;
+        color: var(--green);
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .modal-box h2 {
+        font-size: 20px;
+        font-weight: 900;
+        color: var(--green-dark);
+        margin-bottom: 6px;
+    }
+    .modal-box p {
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 600;
+        line-height: 1.6;
+    }
+    .modal-box .icon-wrap {
+        width: 90px; height: 90px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 44px;
+        margin: 0 auto 20px;
+        animation: bounceIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes bounceIn {
+        0% { transform: scale(0); }
+        60% { transform: scale(1.15); }
+        100% { transform: scale(1); }
+    }
+    .modal-box .icon-wrap.success {
+        background: linear-gradient(135deg, var(--success), #00c853);
+        color: white;
+        box-shadow: 0 15px 35px rgba(0,168,107,0.4);
+    }
+    .modal-box .icon-wrap.error {
+        background: linear-gradient(135deg, var(--danger), #ff6b6b);
+        color: white;
+        box-shadow: 0 15px 35px rgba(231,76,60,0.4);
+    }
+
+    /* ===== MOBILE BOTTOM NAV ===== */
+    .bottom-nav {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 480px;
+        background: var(--card);
+        border-top: 1px solid var(--border);
+        padding: 8px 0 12px;
+        z-index: 100;
+        justify-content: space-around;
+        align-items: center;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+    }
+    .bottom-nav a {
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        font-size: 10px;
+        color: var(--muted);
+        font-weight: 600;
+        flex: 1;
+        padding-top: 4px;
+    }
+    .bottom-nav a i { font-size: 22px; }
+    .bottom-nav a.active { color: var(--green); }
+    .bottom-nav a.active::after {
+        content: '';
+        display: block;
+        width: 20px;
+        height: 3px;
+        background: var(--gold);
+        border-radius: 3px;
+        margin-top: 2px;
+    }
+    .bottom-nav .center-btn {
+        width: 60px; height: 60px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        color: white;
+        font-size: 24px;
+        margin-top: -25px;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.4);
+        cursor: pointer;
+        border: 3px solid var(--bg);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1200px) {
+        .main-content-wrap { margin-left: 0; padding: 0 16px 90px; }
+        .sidebar { transform: translateX(-100%); }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar .close-btn { display: flex; }
+        .mobile-header { display: flex; }
+        .bottom-nav { display: flex; }
+        .page-title { display: none; }
+        .photo-card { margin-top: 16px; }
+    }
+    @media (max-width: 640px) {
+        .form-grid { grid-template-columns: 1fr; }
+        .photo-card .pc-content { flex-direction: column; text-align: center; }
+        .photo-card .pc-info { text-align: center; }
+        .photo-card .pc-info .pc-actions { justify-content: center; }
+        .save-bar { flex-direction: column; align-items: stretch; }
+        .save-bar .save-info { justify-content: center; }
+        .btn { width: 100%; }
+    }
+    @media (max-width: 360px) {
+        .photo-card .avatar-wrap img { width: 90px; height: 90px; }
+        .photo-card .pc-info h2 { font-size: 18px; }
+        .section { padding: 18px; }
+    }
+</style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR OVERLAY ===== -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- ===== SIDEBAR (DESKTOP) ===== -->
+<aside class="sidebar" id="sidebar">
+    <button class="close-btn" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
+
+    <div class="brand">
+        <div class="logo-icon"><i class="fa-solid fa-building-columns"></i></div>
+        <div class="brand-text">
+            <h2>CIT<span>FUND</span></h2>
+            <p>ENTERPRISE</p>
+        </div>
+    </div>
+
+    <nav>
+        <a href="userdashboard.html"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a href="account.html"><i class="fa-solid fa-book"></i> Accounts</a>
+        <a href="usertransfer.html"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transactions</a>
+        <a href="loanapplication.html"><i class="fa-solid fa-file-invoice-dollar"></i> Loans</a>
+        <a href="investmentplans.html"><i class="fa-solid fa-chart-line"></i> Investments</a>
+        <a href="card.html"><i class="fa-solid fa-credit-card"></i> Cards</a>
+        <a href="usernotification.html"><i class="fa-solid fa-bell"></i> Notifications</a>
+        <a href="chat.html"><i class="fa-solid fa-comments"></i> Community</a>
+        <a href="myprofile.html" class="active"><i class="fa-solid fa-user"></i> Profile</a>
+        <a href="#" onclick="logout(event)" class="logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </nav>
+
+    <div class="admin-profile">
+        <img id="sidebarPic" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230B7A2E'/><circle cx='50' cy='38' r='18' fill='%23FFC72C'/><path d='M18 92c0-20 14-34 32-34s32 14 32 34' fill='%23FFC72C'/></svg>" alt="Profile">
+        <div class="ap-text">
+            <h5 id="sidebarName">Loading...</h5>
+            <p>CITFUND Member</p>
+        </div>
+    </div>
+</aside>
+
+<!-- ===== MOBILE HEADER ===== -->
+<header class="mobile-header">
+    <div class="mh-left">
+        <button class="menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+        <div class="mh-title">
+            <h1>Edit Profile</h1>
+            <p>CITFUND ENTERPRISE</p>
+        </div>
+    </div>
+    <a href="usernotification.html" class="mh-notif">
+        <i class="fa-regular fa-bell"></i>
+        <span class="dot"></span>
+    </a>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-content-wrap">
+
+    <!-- PAGE TITLE (desktop) -->
+    <div class="page-title">
+        <div class="pt-left">
+            <h1>Edit Profile</h1>
+            <p>Update your personal and account information</p>
+        </div>
+        <div class="pt-actions">
+            <a href="usernotification.html" class="icon-btn">
+                <i class="fa-regular fa-bell"></i>
+                <span class="dot"></span>
+            </a>
+            <a href="myprofile.html" class="icon-btn" title="View Profile">
+                <i class="fa-solid fa-user"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- ===== PHOTO CARD ===== -->
+    <div class="photo-card">
+        <div class="pc-content">
+            <div class="avatar-wrap">
+                <img id="profileImage" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230B7A2E'/><circle cx='50' cy='38' r='18' fill='%23FFC72C'/><path d='M18 92c0-20 14-34 32-34s32 14 32 34' fill='%23FFC72C'/></svg>" alt="Profile">
+                <div class="change-overlay" onclick="document.getElementById('uploadImage').click()">
+                    <i class="fa-solid fa-camera"></i>
+                </div>
+            </div>
+            <div class="pc-info">
+                <h2 id="name">Loading profile...</h2>
+                <div class="pc-sub" id="email">fetching details</div>
+                <div class="pc-actions">
+                    <button class="btn-upload" onclick="document.getElementById('uploadImage').click()">
+                        <i class="fa-solid fa-camera"></i> Change Photo
+                    </button>
+                    <button class="btn-remove" onclick="removePhoto()">
+                        <i class="fa-solid fa-trash"></i> Remove
+                    </button>
+                    <input type="file" id="uploadImage" accept="image/*" style="display:none;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SECTION 1: PERSONAL ===== -->
+    <div class="section">
+        <div class="section-title">
+            <div class="st-icon"><i class="fa-solid fa-user"></i></div>
+            <div class="st-text">
+                <h3>Personal Information</h3>
+                <p>Your basic details & background</p>
+            </div>
+        </div>
+        <div class="form-grid">
+            <div class="field full">
+                <label>Full Name <span class="req">*</span></label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="inpFullName" placeholder="Your full legal name">
+                </div>
+            </div>
+            <div class="field">
+                <label>Date of Birth</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-calendar"></i>
+                    <input type="date" id="inpDob">
+                </div>
+            </div>
+            <div class="field">
+                <label>Gender</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-venus-mars"></i>
+                    <select id="inpGender">
+                        <option value="">Select</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <label>Marital Status</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-heart"></i>
+                    <select id="inpMarital">
+                        <option value="">Select</option>
+                        <option>Single</option>
+                        <option>Married</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <label>Nationality</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-globe"></i>
+                    <select id="inpNationality">
+                        <option value="">Select</option>
+                        <option>Ghanaian</option>
+                        <option>Nigerian</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <label>Occupation</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-briefcase"></i>
+                    <input type="text" id="inpOccupation" placeholder="e.g. Teacher, Trader">
+                </div>
+            </div>
+            <div class="field">
+                <label>Employer / Business</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-industry"></i>
+                    <input type="text" id="inpEmployer" placeholder="Company or business name">
+                </div>
+            </div>
+            <div class="field">
+                <label>Monthly Income Range</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                    <select id="inpIncome">
+                        <option value="">Select</option>
+                        <option>Below GHS 1,000</option>
+                        <option>GHS 1,000 - 5,000</option>
+                        <option>Above GHS 5,000</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SECTION 2: CONTACT ===== -->
+    <div class="section">
+        <div class="section-title">
+            <div class="st-icon"><i class="fa-solid fa-phone"></i></div>
+            <div class="st-text">
+                <h3>Contact Information</h3>
+                <p>How we reach you</p>
+            </div>
+        </div>
+        <div class="form-grid">
+            <div class="field">
+                <label>Phone Number <span class="req">*</span></label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-phone"></i>
+                    <input type="tel" id="inpPhone" placeholder="024XXXXXXX" inputmode="numeric">
+                </div>
+            </div>
+            <div class="field">
+                <label>Email Address <span class="req">*</span></label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="inpEmail" placeholder="you@example.com">
+                </div>
+            </div>
+            <div class="field full">
+                <label>Residential Address</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-house"></i>
+                    <input type="text" id="inpAddress" placeholder="Street, house number">
+                </div>
+            </div>
+            <div class="field">
+                <label>City / Town</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-city"></i>
+                    <input type="text" id="inpCity" placeholder="e.g. Accra">
+                </div>
+            </div>
+            <div class="field">
+                <label>Region</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-map"></i>
+                    <select id="inpRegion">
+                        <option value="">Select</option>
+                        <option>Greater Accra</option>
+                        <option>Ashanti</option>
+                        <option>Western</option>
+                        <option>Central</option>
+                        <option>Volta</option>
+                        <option>Northern</option>
+                        <option>Eastern</option>
+                        <option>Upper East</option>
+                        <option>Upper West</option>
+                        <option>Bono</option>
+                        <option>Ahafo</option>
+                        <option>Oti</option>
+                        <option>North East</option>
+                        <option>Savannah</option>
+                        <option>Western North</option>
+                        <option>Bono East</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <label>Postal Code</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-envelope-open-text"></i>
+                    <input type="text" id="inpPostal" placeholder="e.g. GA-123-4567">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SECTION 3: IDENTIFICATION ===== -->
+    <div class="section">
+        <div class="section-title">
+            <div class="st-icon gold"><i class="fa-solid fa-id-card"></i></div>
+            <div class="st-text">
+                <h3>Identification</h3>
+                <p>Verify your identity documents</p>
+            </div>
+        </div>
+        <div class="form-grid">
+            <div class="field">
+                <label>ID Type</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-id-card"></i>
+                    <select id="inpIdType">
+                        <option value="">Select</option>
+                        <option>Ghana Card</option>
+                        <option>Passport</option>
+                        <option>Driver's License</option>
+                        <option>Voter ID</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <label>ID Number</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-hashtag"></i>
+                    <input type="text" id="inpIdNumber" placeholder="e.g. GHA-XXXXXXXXX-X">
+                </div>
+            </div>
+            <div class="field">
+                <label>Date of Issue</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <input type="date" id="inpIdIssue">
+                </div>
+            </div>
+            <div class="field">
+                <label>ID Front Image</label>
+                <div class="file-upload" id="idFrontBox" onclick="document.getElementById('idFront').click()">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <p>Click to upload</p>
+                    <span class="file-name" id="idFrontName">No file chosen</span>
+                    <input type="file" id="idFront" accept="image/*">
+                </div>
+            </div>
+            <div class="field">
+                <label>ID Back Image</label>
+                <div class="file-upload" id="idBackBox" onclick="document.getElementById('idBack').click()">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <p>Click to upload</p>
+                    <span class="file-name" id="idBackName">No file chosen</span>
+                    <input type="file" id="idBack" accept="image/*">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SECTION 4: NEXT OF KIN ===== -->
+    <div class="section">
+        <div class="section-title">
+            <div class="st-icon"><i class="fa-solid fa-user-group"></i></div>
+            <div class="st-text">
+                <h3>Next of Kin</h3>
+                <p>Emergency contact information</p>
+            </div>
+        </div>
+        <div class="form-grid">
+            <div class="field">
+                <label>Full Name</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="inpNokName" placeholder="Full name">
+                </div>
+            </div>
+            <div class="field">
+                <label>Relationship</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-link"></i>
+                    <select id="inpNokRel">
+                        <option value="">Select</option>
+                        <option>Spouse</option>
+                        <option>Parent</option>
+                        <option>Sibling</option>
+                        <option>Child</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <label>Phone Number</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-phone"></i>
+                    <input type="tel" id="inpNokPhone" placeholder="024XXXXXXX" inputmode="numeric">
+                </div>
+            </div>
+            <div class="field">
+                <label>Email (Optional)</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="inpNokEmail" placeholder="nok@example.com">
+                </div>
+            </div>
+            <div class="field full">
+                <label>Residential Address</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-house"></i>
+                    <input type="text" id="inpNokAddress" placeholder="Street, house number">
+                </div>
+            </div>
+            <div class="field">
+                <label>City / Town</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-city"></i>
+                    <input type="text" id="inpNokCity" placeholder="City">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SECTION 5: PREFERENCES ===== -->
+    <div class="section">
+        <div class="section-title">
+            <div class="st-icon gold"><i class="fa-solid fa-sliders"></i></div>
+            <div class="st-text">
+                <h3>Account Preferences</h3>
+                <p>Branch & notification settings</p>
+            </div>
+        </div>
+        <div class="form-grid">
+            <div class="field">
+                <label>Preferred Branch</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-code-branch"></i>
+                    <select id="inpBranch">
+                        <option>Main Branch - Accra</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <label>Language</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-language"></i>
+                    <select id="inpLanguage">
+                        <option>English</option>
+                        <option>French</option>
+                        <option>Twi</option>
+                        <option>Ga</option>
+                        <option>Ewe</option>
+                        <option>Hausa</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <label>Email Notifications</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-envelope-circle-check"></i>
+                    <select id="inpEmailNotif">
+                        <option>Enabled</option>
+                        <option>Disabled</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <label>SMS Alerts</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-comment-sms"></i>
+                    <select id="inpSmsAlert">
+                        <option>Enabled</option>
+                        <option>Disabled</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MESSAGE BOX ===== -->
+    <div class="msg-box" id="msg"></div>
+
+    <!-- ===== SAVE BAR ===== -->
+    <div class="save-bar">
+        <div class="save-info" id="saveInfo">
+            <span class="status-dot"></span>
+            <span>All changes are saved locally until you submit</span>
+        </div>
+        <button class="btn btn-reset" onclick="resetForm()">
+            <i class="fa-solid fa-rotate-left"></i> Reset
+        </button>
+        <button class="btn btn-save" id="saveBtn" onclick="saveProfile()">
+            <i class="fa-solid fa-check"></i> Save Changes
+        </button>
+    </div>
+
+</div>
+
+<!-- ===== MOBILE BOTTOM NAV ===== -->
+<nav class="bottom-nav">
+    <a href="userdashboard.html"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="account.html"><i class="fa-solid fa-book"></i> Accounts</a>
+    <button class="center-btn" onclick="location.href='userdeposit.html'"><i class="fa-solid fa-plus"></i></button>
+    <a href="usernotification.html"><i class="fa-solid fa-bell"></i> Alerts</a>
+    <a href="myprofile.html" class="active"><i class="fa-solid fa-user"></i> Profile</a>
+</nav>
+
+<!-- ===== LOADING MODAL ===== -->
+<div class="modal-bg" id="loading-modal">
+    <div class="modal-box">
+        <div class="loader-ring">
+            <div class="ring"></div>
+            <i class="fa-solid fa-building-columns"></i>
+        </div>
+        <h2 id="loadingTitle">Loading Profile...</h2>
+        <p id="loadingSub">Fetching & decrypting your secure data</p>
+    </div>
+</div>
+
+<!-- ===== RESULT MODAL ===== -->
+<div class="modal-bg" id="result-modal">
+    <div class="modal-box">
+        <div class="icon-wrap success" id="resultIconWrap">
+            <i class="fa-solid fa-check" id="resultIcon"></i>
+        </div>
+        <h2 id="resultTitle">Profile Updated</h2>
+        <p id="resultMessage">Your changes have been saved successfully.</p>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// SESSION
+// ============================================================
+const session = JSON.parse(localStorage.getItem('cit_session') || 'null');
+if (!session || !session.uid) window.location.href = 'userlogin.html';
+
+let originalData = {};       // used for reset
+let hasUnsavedChanges = false;
+const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230B7A2E'/><circle cx='50' cy='38' r='18' fill='%23FFC72C'/><path d='M18 92c0-20 14-34 32-34s32 14 32 34' fill='%23FFC72C'/></svg>";
+
+// ============================================================
+// HELPERS
+// ============================================================
+function showLoading(show, title, sub) {
+    const el = document.getElementById('loading-modal');
+    if (title) document.getElementById('loadingTitle').textContent = title;
+    if (sub) document.getElementById('loadingSub').textContent = sub;
+    el.classList.toggle('show', !!show);
+}
+function showResult(title, msg, success) {
+    const wrap = document.getElementById('resultIconWrap');
+    const icon = document.getElementById('resultIcon');
+    wrap.className = 'icon-wrap ' + (success ? 'success' : 'error');
+    icon.className = success ? 'fa-solid fa-check' : 'fa-solid fa-xmark';
+    document.getElementById('resultTitle').textContent = title;
+    document.getElementById('resultMessage').textContent = msg;
+    const modal = document.getElementById('result-modal');
+    modal.classList.add('show');
+    setTimeout(() => modal.classList.remove('show'), 2500);
+}
+function showMsg(text, type) {
+    const el = document.getElementById('msg');
+    el.className = 'msg-box show ' + type;
+    el.innerHTML = '<i class="fa-solid ' + (type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation') + '"></i><span>' + escapeHtml(text) + '</span>';
+    clearTimeout(showMsg._t);
+    showMsg._t = setTimeout(() => el.classList.remove('show'), 5000);
+}
+function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// ============================================================
+// LOAD PROFILE
+// ============================================================
+async function loadProfile() {
+    showLoading(true, 'Loading Profile...', 'Fetching & decrypting your secure data');
+    try {
+        const res = await fetch('/api/user-data?t=' + Date.now(), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ uid: session.uid }),
+            cache: 'no-store'
+        });
+        const raw = await res.text();
+        let data;
+        try { data = JSON.parse(raw); }
+        catch (e) { throw new Error('Server returned invalid response'); }
+        if (!data.success || !data.user) throw new Error(data.error || 'Failed to load');
+
+        const u = data.user;
+        originalData = JSON.parse(JSON.stringify(u));
+
+        // Hero
+        document.getElementById('name').textContent = u.fullName || 'CITFUND User';
+        document.getElementById('email').textContent = u.email || 'No email';
+        document.getElementById('sidebarName').textContent = u.fullName || 'CITFUND Member';
+
+        const imgSrc = (u.photo && String(u.photo).trim().length) ? u.photo : DEFAULT_AVATAR;
+        const heroImg = document.getElementById('profileImage');
+        heroImg.src = imgSrc;
+        heroImg.onerror = () => { heroImg.onerror = null; heroImg.src = DEFAULT_AVATAR; };
+        document.getElementById('sidebarPic').src = imgSrc;
+
+        // Fill all fields
+        const fill = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.value = val || '';
+        };
+        fill('inpFullName', u.fullName);
+        fill('inpDob', u.dob);
+        fill('inpGender', u.gender || 'Male');
+        fill('inpMarital', u.marital || 'Single');
+        fill('inpNationality', u.nationality || 'Ghanaian');
+        fill('inpOccupation', u.occupation);
+        fill('inpEmployer', u.employer);
+        fill('inpIncome', u.income);
+
+        fill('inpPhone', u.phone);
+        fill('inpEmail', u.email);
+        fill('inpAddress', u.address);
+        fill('inpCity', u.city);
+        fill('inpRegion', u.region || 'Greater Accra');
+        fill('inpPostal', u.postal);
+
+        fill('inpIdType', u.idType || 'Ghana Card');
+        fill('inpIdNumber', u.idNumber);
+        fill('inpIdIssue', u.idIssue);
+
+        fill('inpNokName', u.nokName);
+        fill('inpNokRel', u.nokRel || 'Spouse');
+        fill('inpNokPhone', u.nokPhone);
+        fill('inpNokEmail', u.nokEmail);
+        fill('inpNokAddress', u.nokAddress);
+        fill('inpNokCity', u.nokCity);
+
+        fill('inpBranch', u.branch || 'Main Branch - Accra');
+        fill('inpLanguage', u.language || 'English');
+        fill('inpEmailNotif', u.emailNotif || 'Enabled');
+        fill('inpSmsAlert', u.smsAlert || 'Enabled');
+
+        hasUnsavedChanges = false;
+        showLoading(false);
+    } catch (e) {
+        console.error('Load error:', e);
+        showLoading(false);
+        showMsg('Error loading profile: ' + e.message, 'error');
+    }
+}
+
+// ============================================================
+// PHOTO UPLOAD
+// ============================================================
+document.getElementById('uploadImage').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+        showMsg('Please select an image file', 'error');
+        return;
+    }
+    if (file.size > 4 * 1024 * 1024) {
+        showMsg('Image too large (max 4 MB)', 'error');
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = ev => {
+        const heroImg = document.getElementById('profileImage');
+        heroImg.src = ev.target.result;
+        document.getElementById('sidebarPic').src = ev.target.result;
+        hasUnsavedChanges = true;
+        showMsg('Photo ready. Click "Save Changes" to apply.', 'success');
+    };
+    reader.readAsDataURL(file);
+});
+
+function removePhoto() {
+    document.getElementById('profileImage').src = DEFAULT_AVATAR;
+    document.getElementById('sidebarPic').src = DEFAULT_AVATAR;
+    hasUnsavedChanges = true;
+    showMsg('Photo removed. Click "Save Changes" to apply.', 'success');
+}
+
+// ============================================================
+// FILE UPLOAD (ID images)
+// ============================================================
+document.getElementById('idFront').addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+    const box = document.getElementById('idFrontBox');
+    const name = document.getElementById('idFrontName');
+    name.textContent = file.name.length > 22 ? file.name.slice(0, 20) + '…' : file.name;
+    box.classList.add('has-file');
+    hasUnsavedChanges = true;
+});
+document.getElementById('idBack').addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+    const box = document.getElementById('idBackBox');
+    const name = document.getElementById('idBackName');
+    name.textContent = file.name.length > 22 ? file.name.slice(0, 20) + '…' : file.name;
+    box.classList.add('has-file');
+    hasUnsavedChanges = true;
+});
+
+// ============================================================
+// TRACK UNSAVED CHANGES
+// ============================================================
+document.querySelectorAll('.field input, .field select').forEach(el => {
+    el.addEventListener('input', () => { hasUnsavedChanges = true; });
+    el.addEventListener('change', () => { hasUnsavedChanges = true; });
+});
+
+window.addEventListener('beforeunload', (e) => {
+    if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
+// ============================================================
+// RESET FORM
+// ============================================================
+function resetForm() {
+    if (hasUnsavedChanges && !confirm('Discard all unsaved changes and reload from server?')) return;
+    loadProfile();
+    hasUnsavedChanges = false;
+    showMsg('Form reloaded from server', 'success');
+}
+
+// ============================================================
+// SAVE PROFILE
+// ============================================================
+async function saveProfile() {
+    const btn = document.getElementById('saveBtn');
+
+    // Basic validation
+    const fullName = document.getElementById('inpFullName').value.trim();
+    const phone = document.getElementById('inpPhone').value.trim();
+    const email = document.getElementById('inpEmail').value.trim();
+
+    if (!fullName || fullName.length < 3) {
+        showMsg('Please enter a valid full name (min 3 characters)', 'error');
+        return;
+    }
+    if (phone && phone.replace(/\D/g, '').length < 9) {
+        showMsg('Please enter a valid phone number', 'error');
+        return;
+    }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showMsg('Please enter a valid email address', 'error');
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving…';
+    showLoading(true, 'Saving Changes...', 'Updating your secure profile');
+
+    const payload = {
+        uid: session.uid,
+        fullName,
+        dob: document.getElementById('inpDob').value,
+        gender: document.getElementById('inpGender').value,
+        marital: document.getElementById('inpMarital').value,
+        nationality: document.getElementById('inpNationality').value,
+        occupation: document.getElementById('inpOccupation').value.trim(),
+        employer: document.getElementById('inpEmployer').value.trim(),
+        income: document.getElementById('inpIncome').value,
+        phone,
+        email,
+        address: document.getElementById('inpAddress').value.trim(),
+        city: document.getElementById('inpCity').value.trim(),
+        region: document.getElementById('inpRegion').value,
+        postal: document.getElementById('inpPostal').value.trim(),
+        idType: document.getElementById('inpIdType').value,
+        idNumber: document.getElementById('inpIdNumber').value.trim(),
+        idIssue: document.getElementById('inpIdIssue').value,
+        nokName: document.getElementById('inpNokName').value.trim(),
+        nokRel: document.getElementById('inpNokRel').value,
+        nokPhone: document.getElementById('inpNokPhone').value.trim(),
+        nokEmail: document.getElementById('inpNokEmail').value.trim(),
+        nokAddress: document.getElementById('inpNokAddress').value.trim(),
+        nokCity: document.getElementById('inpNokCity').value.trim(),
+        branch: document.getElementById('inpBranch').value,
+        language: document.getElementById('inpLanguage').value,
+        emailNotif: document.getElementById('inpEmailNotif').value,
+        smsAlert: document.getElementById('inpSmsAlert').value,
+        photo: document.getElementById('profileImage').src
+    };
+
+    try {
+        const res = await fetch('/api/update-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const raw = await res.text();
+        let data;
+        try { data = JSON.parse(raw); }
+        catch (e) { throw new Error('Server returned invalid response'); }
+
+        if (!data.success) throw new Error(data.error || 'Update failed');
+
+        showLoading(false);
+        hasUnsavedChanges = false;
+        showResult('Profile Updated', 'Your changes have been saved securely.', true);
+
+        // Update sidebar name in real-time
+        document.getElementById('sidebarName').textContent = fullName;
+        document.getElementById('name').textContent = fullName;
+
+        setTimeout(() => window.location.href = 'myprofile.html', 2200);
+    } catch (e) {
+        console.error('Save error:', e);
+        showLoading(false);
+        showMsg('Save failed: ' + e.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Save Changes';
+    }
+}
+
+// ============================================================
+// SIDEBAR TOGGLE
+// ============================================================
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('show');
+}
+
+// ============================================================
+// LOGOUT
+// ============================================================
+function logout(e) {
+    if (e) e.preventDefault();
+    if (hasUnsavedChanges && !confirm('You have unsaved changes. Log out anyway?')) return;
+    localStorage.removeItem('cit_session');
+    window.location.href = 'userlogin.html';
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadProfile();
+</script>
+</body>
+</html>
