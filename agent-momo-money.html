@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CIT FUND | Mobile Money Withdrawal</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #0b1f4a;
+            --primary-dark: #06183d;
+            --accent: #ff5a00;
+            --gold: #e0a800;
+            --bg: #f4f6fb;
+            --card: #ffffff;
+            --text: #1a2b4c;
+            --muted: #6b7a8f;
+            --border: #e8edf5;
+            --success: #00c853;
+            --danger: #e74c3c;
+            --warning: #ff9800;
+            --shadow: 0 5px 20px rgba(0,0,0,0.03);
+            --radius: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        .app-container { max-width: 480px; margin: 0 auto; background: var(--bg); min-height: 100vh; position: relative; padding-bottom: 80px; }
+
+        /* Top Header */
+        .top-header {
+            background: var(--card);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+        .top-header .left { display: flex; align-items: center; gap: 15px; }
+        .top-header .logo { width: 40px; height: 40px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold; }
+        .top-header .greeting h4 { font-size: 14px; color: var(--muted); font-weight: 500; }
+        .top-header .greeting h2 { font-size: 18px; font-weight: 700; color: var(--primary); }
+        .top-header .right { display: flex; align-items: center; gap: 12px; }
+        .top-header .back-btn {
+            background: var(--bg);
+            border: none;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        .top-header .back-btn:hover { background: var(--primary); color: white; }
+        .top-header .profile-img {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            background: var(--bg);
+        }
+
+        /* Balance Card */
+        .balance-card {
+            margin: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 20px;
+            padding: 25px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .balance-card::after {
+            content: '';
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(255,90,0,0.3), transparent 70%);
+            border-radius: 50%;
+        }
+        .balance-card .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .balance-card .label { font-size: 13px; color: rgba(255,255,255,0.8); }
+        .balance-card .total { font-size: 32px; font-weight: 800; margin: 5px 0; }
+        .balance-card .available { font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 10px; }
+        .balance-card .acc-info { font-size: 12px; color: rgba(255,255,255,0.6); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
+
+        /* Form Card */
+        .form-card {
+            margin: 0 20px 20px;
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+        .form-card .header-icon {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--bg);
+        }
+        .form-card .header-icon i { font-size: 28px; color: var(--gold); }
+        .form-card .header-icon h3 { font-size: 20px; font-weight: 700; color: var(--primary); }
+        .form-card .header-icon p { font-size: 13px; color: var(--muted); margin-left: auto; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 6px;
+            letter-spacing: 0.3px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 13px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            background: var(--bg);
+            color: var(--text);
+            transition: all 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--accent);
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(255,90,0,0.1);
+        }
+        .form-group input::placeholder { color: #bbb; }
+        .form-group .input-hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent), #ff8c42);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,90,0,0.35); }
+        .btn-submit:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 30px;
+            z-index: 9999;
+            display: none;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            animation: slideUp 0.35s ease;
+            max-width: 90%;
+            text-align: center;
+        }
+        .toast.show { display: block; }
+        .toast.error { background: var(--danger); }
+        .toast.success { background: var(--success); }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+        }
+
+        /* Loading overlay */
+        #loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+        }
+        #loading-overlay.show { display: flex; }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #loading-overlay p { margin-top: 14px; font-size: 16px; font-weight: 500; }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 15px;
+            z-index: 100;
+        }
+        .bottom-nav a {
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+        .bottom-nav a.active { color: var(--accent); }
+        .bottom-nav a i { font-size: 20px; }
+        .bottom-nav .center-btn {
+            width: 60px; height: 60px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-top: -20px;
+            box-shadow: 0 10px 20px rgba(255,90,0,0.4);
+        }
+
+        @media (max-width: 480px) {
+            .top-header { padding: 12px 16px; }
+            .top-header .title h2 { font-size: 16px; }
+            .top-header .back-btn { padding: 8px 14px; font-size: 12px; }
+            .form-card { padding: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <p id="loadingText">Processing...</p>
+</div>
+
+<div class="app-container">
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="left">
+            <div class="logo">C</div>
+            <div class="greeting">
+                <h4>Mobile Money</h4>
+                <h2>Withdraw to CIT</h2>
+            </div>
+        </div>
+        <div class="right">
+            <button class="back-btn" onclick="window.location.href='userdashboard.html'">
+                <i class="fa-solid fa-arrow-left"></i> Dashboard
+            </button>
+            <img id="profilePic" class="profile-img" src="https://via.placeholder.com/40" alt="Profile" onclick="location.href='myprofile.html'">
+        </div>
+    </header>
+
+    <!-- Balance Card -->
+    <div class="balance-card">
+        <div class="top">
+            <div class="label">Your CIT Balance</div>
+            <span style="font-size:20px; font-weight:bold; color:var(--accent);">CIT</span>
+        </div>
+        <div class="total" id="balanceDisplay">GHS 0.00</div>
+        <div class="available">Available for withdrawal</div>
+        <div class="acc-info" id="accountInfo">Loading account details...</div>
+    </div>
+
+    <!-- Form -->
+    <div class="form-card">
+        <div class="header-icon">
+            <i class="fa-solid fa-mobile-screen-button"></i>
+            <h3>Withdraw from Mobile Money</h3>
+            <p style="font-size:12px; color:var(--muted);">Paystack verified</p>
+        </div>
+
+        <div class="form-group">
+            <label>Mobile Money Network</label>
+            <select id="momoNetwork">
+                <option value="mtn">MTN Mobile Money</option>
+                <option value="vodafone">Vodafone Cash</option>
+                <option value="airteltigo">AirtelTigo Money</option>
+            </select>
+            <span class="input-hint">Select your mobile money provider</span>
+        </div>
+
+        <div class="form-group">
+            <label>Mobile Money Phone Number</label>
+            <input type="tel" id="momoPhone" placeholder="0XXXXXXXXX" maxlength="10">
+            <span class="input-hint">Enter the phone number registered with your mobile money account</span>
+        </div>
+
+        <div class="form-group">
+            <label>Amount (GHS)</label>
+            <input type="number" id="amountInput" placeholder="0.00" min="1" step="0.01">
+            <span class="input-hint">Minimum amount: GHS 1.00</span>
+        </div>
+
+        <button class="btn-submit" id="submitBtn" onclick="initiateWithdrawal()">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i> Withdraw Now
+        </button>
+
+        <div id="errorMsg" style="color:var(--danger); margin-top:12px; text-align:center; display:none;"></div>
+    </div>
+</div>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+    <a href="userdashboard.html"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="accountnumberupdate.html"><i class="fa-solid fa-book"></i> Accounts</a>
+    <div class="center-btn" onclick="location.href='scan_and_pay.html'"><i class="fa-solid fa-qrcode"></i></div>
+    <a href="usernotification.html"><i class="fa-solid fa-bell"></i> Notifications</a>
+    <a href="myprofile.html"><i class="fa-solid fa-user"></i> Profile</a>
+</nav>
+
+<div id="toast" class="toast"></div>
+
+<script>
+    // ============================================================
+    // SESSION CHECK
+    // ============================================================
+    const session = JSON.parse(localStorage.getItem('cit_session') || 'null');
+    if (!session || !session.uid) {
+        window.location.href = 'userlogin.html';
+    }
+
+    // ============================================================
+    // DOM REFS
+    // ============================================================
+    const $ = id => document.getElementById(id);
+    const balanceDisplay = $('balanceDisplay');
+    const accountInfo = $('accountInfo');
+    const profilePic = $('profilePic');
+    const momoPhone = $('momoPhone');
+    const amountInput = $('amountInput');
+    const submitBtn = $('submitBtn');
+    const errorMsg = $('errorMsg');
+    const toast = $('toast');
+    const loading = $('loading-overlay');
+    const loadingText = $('loadingText');
+
+    // ============================================================
+    // TOAST
+    // ============================================================
+    function showToast(msg, type = 'info') {
+        toast.textContent = msg;
+        toast.className = 'toast';
+        if (type === 'error') toast.classList.add('error');
+        else if (type === 'success') toast.classList.add('success');
+        toast.classList.add('show');
+        clearTimeout(toast._timeout);
+        toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
+    }
+
+    // ============================================================
+    // LOAD USER DATA
+    // ============================================================
+    async function loadData() {
+        loading.classList.add('show');
+        loadingText.textContent = 'Loading your account...';
+        try {
+            const res = await fetch('/api/dashboard', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ uid: session.uid })
+            });
+            const data = await res.json();
+            if (data.success) {
+                const user = data.user;
+                let bal = parseFloat(user.balance) || 0;
+                balanceDisplay.textContent = 'GHS ' + bal.toFixed(2);
+                accountInfo.textContent = 'Account: ' + (user.accountNumber || '') + ' | ' + (user.memberID || '');
+                if (user.photo) profilePic.src = user.photo;
+                if (user.fullName) document.querySelector('.greeting h2').textContent = user.fullName;
+                // Pre-fill phone if available
+                if (user.phone) momoPhone.value = user.phone;
+            } else {
+                showToast('Failed to load account data', 'error');
+            }
+        } catch (e) {
+            showToast('Error loading data: ' + e.message, 'error');
+        } finally {
+            loading.classList.remove('show');
+        }
+    }
+
+    // ============================================================
+    // VALIDATE PHONE (Ghana format: 0XXXXXXXXX)
+    // ============================================================
+    function validatePhone(phone) {
+        return /^0[0-9]{9}$/.test(phone);
+    }
+
+    // ============================================================
+    // INITIATE WITHDRAWAL (Mobile Money → CIT)
+    // ============================================================
+    async function initiateWithdrawal() {
+        const network = document.getElementById('momoNetwork').value;
+        const phone = momoPhone.value.trim();
+        const amount = parseFloat(amountInput.value);
+
+        // Reset error
+        errorMsg.style.display = 'none';
+        errorMsg.textContent = '';
+
+        // Validate
+        if (!validatePhone(phone)) {
+            errorMsg.textContent = 'Please enter a valid Ghana phone number (0XXXXXXXXX).';
+            errorMsg.style.display = 'block';
+            return;
+        }
+        if (!amount || amount <= 0) {
+            errorMsg.textContent = 'Please enter a valid amount (minimum GHS 1.00).';
+            errorMsg.style.display = 'block';
+            return;
+        }
+
+        // Disable button
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+        loading.classList.add('show');
+        loadingText.textContent = 'Initiating withdrawal...';
+
+        try {
+            const payload = {
+                uid: session.uid,
+                phone: phone,
+                network: network,
+                amount: amount
+            };
+            const res = await fetch('/api/init-momo-deposit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success && data.authorization_url) {
+                // Redirect to Paystack
+                window.location.href = data.authorization_url;
+            } else {
+                throw new Error(data.error || 'Failed to initiate withdrawal');
+            }
+        } catch (e) {
+            showToast('❌ ' + e.message, 'error');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Withdraw Now';
+            loading.classList.remove('show');
+        }
+    }
+
+    // ============================================================
+    // CHECK FOR PAYSTACK RETURN (success/failure)
+    // ============================================================
+    (function checkPaystackReturn() {
+        const params = new URLSearchParams(window.location.search);
+        const reference = params.get('reference');
+        const status = params.get('status');
+        if (reference && status) {
+            // Verify payment
+            loading.classList.add('show');
+            loadingText.textContent = 'Verifying payment...';
+            fetch('/api/verify-momo-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ uid: session.uid, reference })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('✅ Withdrawal successful! Your balance has been updated.', 'success');
+                    // Reload balance
+                    loadData();
+                } else {
+                    showToast('❌ Payment verification failed: ' + (data.error || 'Unknown'), 'error');
+                }
+            })
+            .catch(err => {
+                showToast('Error verifying payment: ' + err.message, 'error');
+            })
+            .finally(() => {
+                loading.classList.remove('show');
+                // Clean URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            });
+        }
+    })();
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    window.onload = function() {
+        if (session && session.uid) {
+            loadData();
+        }
+    };
+</script>
+</body>
+</html>

@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CITFUND ENTERPRISE | My Account</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    :root {
+        --green: #0B7A2E;
+        --green-dark: #075C22;
+        --green-light: #14A344;
+        --gold: #FFC72C;
+        --gold-soft: #FFD75E;
+        --red: #E30613;
+
+        --bg: #f4f9f6;
+        --card: #ffffff;
+        --text: #1a2b4c;
+        --muted: #6b7a8f;
+        --border: #e6f0e9;
+        --success: #00a86b;
+        --danger: #e74c3c;
+        --warning: #ff9800;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+    .app-container { max-width: 480px; margin: 0 auto; background: var(--bg); min-height: 100vh; position: relative; padding-bottom: 100px; }
+
+    /* ===== TOP HEADER ===== */
+    .top-header {
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        padding: 22px 20px 60px;
+        display: flex; align-items: center; justify-content: space-between;
+        border-radius: 0 0 30px 30px;
+        position: relative; z-index: 1; gap: 10px; overflow: hidden;
+    }
+    .top-header::before {
+        content: ''; position: absolute; top: -80px; right: -60px;
+        width: 220px; height: 220px;
+        background: radial-gradient(circle, rgba(255,199,44,0.28), transparent 70%);
+        border-radius: 50%; pointer-events: none;
+    }
+    .top-header::after {
+        content: ''; position: absolute; bottom: -100px; left: -80px;
+        width: 200px; height: 200px;
+        background: radial-gradient(circle, rgba(227,6,19,0.12), transparent 70%);
+        border-radius: 50%; pointer-events: none;
+    }
+    .header-left {
+        display: flex; align-items: center; gap: 12px;
+        min-width: 0; flex: 1; position: relative; z-index: 2;
+    }
+    .back-btn {
+        width: 40px; height: 40px; border-radius: 50%;
+        background: rgba(255,255,255,0.15); color: white;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 15px; flex-shrink: 0; transition: 0.2s;
+        cursor: pointer; border: none;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.28); }
+    .profile-section { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
+    .avatar-wrapper { position: relative; flex-shrink: 0; }
+    .avatar-wrapper img {
+        width: 46px; height: 46px; border-radius: 50%;
+        object-fit: cover; border: 2.5px solid var(--gold);
+        background: rgba(255,255,255,0.1);
+    }
+    .verified-badge {
+        position: absolute; bottom: -1px; right: -1px;
+        background: var(--gold); color: var(--green-dark);
+        width: 18px; height: 18px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 8px; border: 2px solid var(--green-dark);
+    }
+    .greeting { min-width: 0; flex: 1; }
+    .greeting h4 {
+        font-size: 11.5px; color: rgba(255,255,255,0.75);
+        font-weight: 400; margin-bottom: 2px;
+    }
+    .greeting h2 {
+        font-size: 15.5px; font-weight: 700; color: white;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        line-height: 1.2;
+    }
+    .greeting .acc-num {
+        font-size: 10.5px; color: rgba(255,255,255,0.6);
+        font-weight: 500; margin-top: 2px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .header-actions {
+        display: flex; gap: 8px; z-index: 2; flex-shrink: 0;
+    }
+    .header-actions button, .header-actions a {
+        width: 42px; height: 42px; border-radius: 50%;
+        background: rgba(255,255,255,0.15);
+        border: none; color: white; font-size: 16px; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        text-decoration: none; transition: 0.2s;
+    }
+    .header-actions button:hover, .header-actions a:hover { background: rgba(255,255,255,0.28); }
+    .header-actions button.spin i { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .shimmer {
+        background: linear-gradient(90deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.28) 50%, rgba(255,255,255,0.12) 100%);
+        background-size: 200% 100%;
+        border-radius: 6px; display: inline-block;
+        animation: shimmer 1.4s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    /* ===== BALANCE CARD ===== */
+    .balance-card {
+        background: var(--card); border-radius: 24px;
+        padding: 22px 22px 20px; margin: -45px 20px 18px;
+        box-shadow: 0 20px 45px rgba(11,122,46,0.08);
+        position: relative; z-index: 2;
+        border: 1px solid rgba(11,122,46,0.06);
+    }
+    .balance-card .label {
+        font-size: 12px; color: var(--muted); font-weight: 700;
+        margin-bottom: 8px; text-transform: uppercase;
+        letter-spacing: 0.6px; display: flex; align-items: center; gap: 8px;
+    }
+    .balance-card .label::before {
+        content: ''; width: 8px; height: 8px;
+        background: var(--gold); border-radius: 50%;
+        box-shadow: 0 0 0 3px rgba(255,199,44,0.25);
+    }
+    .balance-card h1 {
+        font-size: 30px; font-weight: 900; color: var(--green);
+        letter-spacing: -0.5px; margin-bottom: 16px;
+    }
+    .balance-card .mini-stats {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+        padding-top: 16px; border-top: 1px dashed var(--border);
+    }
+    .mini-stat .s-label {
+        font-size: 10.5px; color: var(--muted); font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        margin-bottom: 3px;
+    }
+    .mini-stat .s-value {
+        font-size: 13px; font-weight: 800; color: var(--green);
+        font-family: 'Courier New', monospace; letter-spacing: 0.5px;
+        word-break: break-all;
+    }
+    .mini-stat .s-value.pill {
+        font-family: 'Poppins', sans-serif;
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 3px 10px; border-radius: 20px;
+        font-size: 11px; letter-spacing: 0.3px;
+    }
+    .mini-stat .s-value.pill.ok {
+        background: #e6fff0; color: var(--success);
+    }
+    .mini-stat .s-value.pill.warn {
+        background: #fff8e1; color: #a06d00;
+    }
+    .mini-stat .s-value.pill.bad {
+        background: #ffe6e6; color: var(--danger);
+    }
+
+    /* ===== FORM CARD ===== */
+    .form-card {
+        background: var(--card); border-radius: 20px;
+        padding: 20px; margin: 0 20px 16px;
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 15px rgba(11,122,46,0.03);
+    }
+    .card-title {
+        font-size: 14px; font-weight: 800; color: var(--green);
+        margin-bottom: 16px;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        display: flex; align-items: center; gap: 10px;
+    }
+    .card-title::before {
+        content: ''; width: 4px; height: 16px;
+        background: var(--gold); border-radius: 2px;
+    }
+    .card-title .count {
+        margin-left: auto;
+        font-size: 10px; font-weight: 900;
+        padding: 3px 9px; border-radius: 20px;
+        background: rgba(11,122,46,0.08);
+        color: var(--green); letter-spacing: 0.3px;
+    }
+
+    /* ===== CITFUND BANK CARD ===== */
+    .cit-card-wrap { padding: 0 20px 16px; }
+    .cit-card {
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        border-radius: 22px; padding: 24px 22px;
+        color: white; position: relative; overflow: hidden;
+        box-shadow: 0 20px 45px rgba(11,122,46,0.35);
+    }
+    .cit-card::before {
+        content: ''; position: absolute; top: -60px; right: -60px;
+        width: 220px; height: 220px;
+        background: radial-gradient(circle, rgba(255,199,44,0.35), transparent 70%);
+        border-radius: 50%; pointer-events: none;
+    }
+    .cit-card::after {
+        content: ''; position: absolute; bottom: -80px; left: -40px;
+        width: 180px; height: 180px;
+        background: radial-gradient(circle, rgba(227,6,19,0.12), transparent 70%);
+        border-radius: 50%; pointer-events: none;
+    }
+    .cc-top {
+        display: flex; justify-content: space-between;
+        align-items: center; margin-bottom: 20px;
+        position: relative; z-index: 1;
+    }
+    .cc-brand {
+        display: flex; align-items: center; gap: 10px;
+        font-size: 13.5px; font-weight: 800; letter-spacing: 0.5px;
+    }
+    .cc-logo {
+        width: 34px; height: 34px; background: var(--gold);
+        color: var(--green-dark); border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 17px; font-weight: 900;
+    }
+    .cc-status {
+        background: rgba(255,255,255,0.18);
+        border: 1px solid rgba(255,255,255,0.28);
+        color: white; font-size: 10px; font-weight: 800;
+        padding: 5px 12px; border-radius: 20px;
+        letter-spacing: 0.6px; text-transform: uppercase;
+        display: flex; align-items: center; gap: 5px;
+    }
+    .cc-status .status-dot {
+        width: 6px; height: 6px; border-radius: 50%;
+        background: #00e676;
+        box-shadow: 0 0 0 2px rgba(0,230,118,0.3);
+    }
+    .cc-label {
+        font-size: 10.5px; color: rgba(255,255,255,0.7);
+        text-transform: uppercase; letter-spacing: 1.5px;
+        font-weight: 700; margin-bottom: 6px;
+        position: relative; z-index: 1;
+    }
+    .cc-account {
+        font-size: 25px; font-weight: 900;
+        letter-spacing: 3px;
+        font-family: 'Courier New', monospace;
+        color: white;
+        text-shadow: 0 3px 12px rgba(0,0,0,0.25);
+        margin-bottom: 14px;
+        position: relative; z-index: 1;
+        word-break: break-all;
+    }
+    .cc-bottom {
+        display: flex; justify-content: space-between;
+        align-items: flex-end; gap: 12px;
+        position: relative; z-index: 1;
+    }
+    .cc-name-label {
+        font-size: 10.5px; color: rgba(255,255,255,0.7);
+        text-transform: uppercase; letter-spacing: 1.2px;
+        font-weight: 700; margin-bottom: 4px;
+    }
+    .cc-name {
+        font-size: 14px; font-weight: 800;
+        letter-spacing: 0.5px; text-transform: uppercase;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cc-copy-btn {
+        width: 42px; height: 42px; border-radius: 50%;
+        background: rgba(255,255,255,0.18);
+        border: 1px solid rgba(255,255,255,0.28);
+        color: white; cursor: pointer; font-size: 16px;
+        flex-shrink: 0; transition: 0.25s;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .cc-copy-btn:hover, .cc-copy-btn.copied {
+        background: var(--gold); color: var(--green-dark);
+        border-color: var(--gold);
+        transform: scale(1.08);
+    }
+
+    /* ===== QUICK ACTIONS ===== */
+    .quick-actions {
+        display: grid; grid-template-columns: repeat(4, 1fr);
+        gap: 8px; padding: 0 20px 16px;
+    }
+    .qa-item {
+        background: var(--card);
+        border-radius: 14px; padding: 12px 6px;
+        display: flex; flex-direction: column;
+        align-items: center; gap: 6px;
+        text-decoration: none; color: var(--green-dark);
+        border: 1px solid var(--border);
+        transition: 0.25s; cursor: pointer;
+    }
+    .qa-item:hover {
+        border-color: var(--green); transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(11,122,46,0.1);
+    }
+    .qa-item .qa-icon {
+        width: 34px; height: 34px; border-radius: 10px;
+        background: linear-gradient(135deg, rgba(11,122,46,0.12), rgba(20,163,68,0.18));
+        color: var(--green);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 15px;
+    }
+    .qa-item .qa-icon.gold {
+        background: linear-gradient(135deg, rgba(255,199,44,0.2), rgba(255,215,94,0.3));
+        color: #a06d00;
+    }
+    .qa-item .qa-icon.blue {
+        background: linear-gradient(135deg, rgba(21,101,192,0.15), rgba(30,136,229,0.2));
+        color: #1565C0;
+    }
+    .qa-item .qa-icon.purple {
+        background: linear-gradient(135deg, rgba(106,27,154,0.15), rgba(156,39,176,0.2));
+        color: #6A1B9A;
+    }
+    .qa-item .qa-label {
+        font-size: 10px; font-weight: 800;
+        letter-spacing: 0.2px; text-align: center;
+        color: var(--green-dark);
+    }
+
+    /* ===== DETAILS ROWS ===== */
+    .detail-row {
+        display: flex; justify-content: space-between;
+        align-items: center; padding: 13px 0;
+        border-bottom: 1px dashed var(--border);
+        gap: 12px;
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-row .label {
+        color: var(--muted); font-size: 12px; font-weight: 700;
+        display: flex; align-items: center; gap: 8px;
+        flex-shrink: 0;
+    }
+    .detail-row .label i {
+        color: var(--green); font-size: 13px;
+        width: 16px; text-align: center;
+    }
+    .detail-row .value-wrap {
+        display: flex; align-items: center;
+        gap: 8px; min-width: 0;
+    }
+    .detail-row .value {
+        color: var(--green-dark); font-weight: 700;
+        font-size: 13.5px; word-break: break-all;
+        text-align: right;
+    }
+    .detail-row .value.mono {
+        font-family: 'Courier New', monospace;
+        letter-spacing: 1px;
+    }
+
+    .copy-btn {
+        background: #eef6f0;
+        border: 1px solid var(--border);
+        color: var(--green);
+        width: 32px; height: 32px;
+        border-radius: 8px; font-size: 12px;
+        cursor: pointer; transition: 0.25s;
+        flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .copy-btn:hover { background: var(--green); color: white; border-color: var(--green); }
+    .copy-btn.copied { background: var(--success); color: white; border-color: var(--success); }
+
+    /* ===== INFO BOX ===== */
+    .info-box {
+        background: linear-gradient(135deg, #fff8e1 0%, #ffeeba 100%);
+        border: 1px solid #ffe082;
+        border-radius: 14px; padding: 14px;
+        margin-bottom: 12px;
+        display: flex; align-items: flex-start; gap: 12px;
+        font-size: 12.5px; color: #8a6d1a;
+        font-weight: 600; line-height: 1.5;
+    }
+    .info-box:last-child { margin-bottom: 0; }
+    .info-box > i {
+        width: 32px; height: 32px;
+        background: var(--gold);
+        color: var(--green-dark);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px; flex-shrink: 0;
+    }
+    .info-box strong {
+        color: var(--green-dark);
+        display: block; margin-bottom: 2px; font-weight: 800;
+    }
+
+    /* ===== QR CODE CARD ===== */
+    .qr-wrap {
+        display: flex; flex-direction: column;
+        align-items: center; padding: 16px 0 4px;
+    }
+    .qr-box {
+        width: 200px; height: 200px;
+        background: white;
+        border-radius: 16px;
+        padding: 10px;
+        border: 1.5px solid var(--border);
+        box-shadow: 0 8px 25px rgba(11,122,46,0.1);
+        display: flex; align-items: center; justify-content: center;
+    }
+    .qr-box img {
+        width: 100%; height: 100%;
+        object-fit: contain; border-radius: 8px;
+        image-rendering: pixelated;
+    }
+    .qr-caption {
+        font-size: 11.5px; font-weight: 700;
+        color: var(--muted); margin-top: 12px;
+        text-align: center; line-height: 1.5;
+    }
+    .qr-caption strong { color: var(--green); }
+
+    /* ===== SAVED PAYMENT METHODS ===== */
+    .pm-item {
+        display: flex; align-items: center; gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px dashed var(--border);
+    }
+    .pm-item:last-child { border-bottom: none; }
+    .pm-item .pm-icon {
+        width: 42px; height: 42px; border-radius: 12px;
+        background: linear-gradient(135deg, rgba(11,122,46,0.1), rgba(20,163,68,0.15));
+        color: var(--green);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 17px; flex-shrink: 0;
+    }
+    .pm-item .pm-icon.gold {
+        background: linear-gradient(135deg, rgba(255,199,44,0.2), rgba(255,215,94,0.3));
+        color: #a06d00;
+    }
+    .pm-item .pm-info {
+        flex: 1; min-width: 0;
+    }
+    .pm-item .pm-info .name {
+        font-size: 13px; font-weight: 800;
+        color: var(--green-dark);
+        margin-bottom: 2px;
+    }
+    .pm-item .pm-info .value {
+        font-size: 11.5px; color: var(--muted);
+        font-weight: 600;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .pm-item .pm-empty {
+        color: var(--muted); font-style: italic;
+        font-weight: 600;
+    }
+    .pm-item .pm-action {
+        background: #eef6f0;
+        border: 1px solid var(--border);
+        color: var(--green);
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 11px; font-weight: 800;
+        cursor: pointer; font-family: inherit;
+        text-decoration: none;
+        display: flex; align-items: center; gap: 4px;
+        flex-shrink: 0;
+    }
+    .pm-item .pm-action:hover {
+        background: var(--green); color: white;
+        border-color: var(--green);
+    }
+
+    /* ===== RECENT TRANSACTIONS ===== */
+    .txn-item {
+        display: flex; align-items: center; gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px dashed var(--border);
+    }
+    .txn-item:last-child { border-bottom: none; }
+    .txn-item .txn-icon {
+        width: 40px; height: 40px; border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 15px; flex-shrink: 0;
+    }
+    .txn-item .txn-icon.credit {
+        background: linear-gradient(135deg, rgba(0,168,107,0.15), rgba(0,200,83,0.2));
+        color: var(--success);
+    }
+    .txn-item .txn-icon.debit {
+        background: linear-gradient(135deg, rgba(231,76,60,0.12), rgba(255,107,107,0.2));
+        color: var(--danger);
+    }
+    .txn-item .txn-icon.pending {
+        background: linear-gradient(135deg, rgba(255,152,0,0.15), rgba(255,183,77,0.2));
+        color: var(--warning);
+    }
+    .txn-item .txn-info { flex: 1; min-width: 0; }
+    .txn-item .txn-info .title {
+        font-size: 13px; font-weight: 800;
+        color: var(--green-dark);
+        margin-bottom: 2px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .txn-item .txn-info .meta {
+        font-size: 11px; color: var(--muted); font-weight: 600;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .txn-item .txn-amount {
+        text-align: right; flex-shrink: 0;
+    }
+    .txn-item .txn-amount .value {
+        font-size: 13px; font-weight: 900;
+    }
+    .txn-item .txn-amount .value.credit { color: var(--success); }
+    .txn-item .txn-amount .value.debit { color: var(--danger); }
+    .txn-item .txn-amount .value.pending { color: var(--warning); }
+    .txn-item .txn-amount .status {
+        font-size: 9px; font-weight: 800;
+        text-transform: uppercase; letter-spacing: 0.4px;
+        margin-top: 2px;
+    }
+    .txn-item .txn-amount .status.credit { color: var(--success); }
+    .txn-item .txn-amount .status.debit { color: var(--danger); }
+    .txn-item .txn-amount .status.pending { color: var(--warning); }
+
+    .empty-txn {
+        text-align: center;
+        padding: 25px 15px;
+        color: var(--muted);
+    }
+    .empty-txn i {
+        font-size: 32px; color: #cfe3d6;
+        margin-bottom: 10px; display: block;
+    }
+    .empty-txn p { font-size: 12px; font-weight: 600; }
+
+    /* ===== COMING SOON CARD ===== */
+    .coming-soon {
+        background: linear-gradient(135deg, #f4f9f6 0%, #eaf6ee 100%);
+        border: 1.5px dashed rgba(11,122,46,0.25);
+        border-radius: 20px;
+        padding: 26px 20px;
+        margin: 0 20px 16px;
+        text-align: center;
+    }
+    .coming-soon .cs-icon {
+        width: 68px; height: 68px; border-radius: 50%;
+        background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+        color: var(--green-dark);
+        font-size: 28px;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 16px;
+        box-shadow: 0 12px 25px rgba(255,199,44,0.35);
+        animation: pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); box-shadow: 0 12px 25px rgba(255,199,44,0.35); }
+        50% { transform: scale(1.05); box-shadow: 0 16px 35px rgba(255,199,44,0.55); }
+    }
+    .coming-soon h3 {
+        font-size: 16px; font-weight: 800;
+        color: var(--green); margin-bottom: 8px;
+    }
+    .coming-soon p {
+        font-size: 12.5px; color: var(--muted);
+        line-height: 1.6; max-width: 320px; margin: 0 auto;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-primary {
+        width: 100%; padding: 16px; border-radius: 14px; border: none;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white; font-family: inherit; font-size: 15px; font-weight: 800;
+        cursor: pointer; transition: 0.25s;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.3);
+        letter-spacing: 0.3px;
+        display: inline-flex; align-items: center;
+        justify-content: center; gap: 8px;
+    }
+    .btn-primary:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 30px rgba(11,122,46,0.4);
+    }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .btn-secondary {
+        padding: 14px; border-radius: 14px;
+        border: 1.5px solid var(--border); background: white;
+        color: var(--green-dark); font-family: inherit; font-size: 13.5px;
+        font-weight: 700; cursor: pointer; transition: 0.2s;
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .btn-secondary:hover { border-color: var(--green); background: #f4f9f6; }
+
+    .action-grid {
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: 10px; margin-top: 12px;
+    }
+    .action-grid .btn-primary { grid-column: span 2; }
+
+    /* ===== BOTTOM NAV ===== */
+    .bottom-nav {
+        position: fixed; bottom: 0; left: 50%;
+        transform: translateX(-50%);
+        width: 100%; max-width: 480px; background: var(--card);
+        border-top: 1px solid var(--border);
+        display: flex; justify-content: space-around; align-items: center;
+        padding: 8px 0 12px; z-index: 100;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+    }
+    .bottom-nav a {
+        text-decoration: none; display: flex; flex-direction: column;
+        align-items: center; gap: 4px; font-size: 10px;
+        color: var(--muted); font-weight: 600; flex: 1;
+        transition: 0.3s; padding-top: 4px;
+    }
+    .bottom-nav a i { font-size: 22px; }
+    .bottom-nav a.active { color: var(--green); }
+    .bottom-nav a.active::after {
+        content: ''; display: block;
+        width: 20px; height: 3px;
+        background: var(--gold); border-radius: 3px;
+        margin-top: 2px;
+    }
+    .bottom-nav .center-btn {
+        width: 60px; height: 60px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 24px; margin-top: -25px;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.4);
+        cursor: pointer; border: 3px solid var(--bg);
+        transition: 0.3s;
+    }
+    .bottom-nav .center-btn:active { transform: scale(0.92); }
+
+    /* ===== TOAST + LOADING ===== */
+    .toast {
+        position: fixed; top: 20px; left: 50%;
+        transform: translateX(-50%) translateY(-20px);
+        background: var(--green); color: white;
+        padding: 14px 24px; border-radius: 30px;
+        z-index: 99999; opacity: 0; visibility: hidden;
+        font-size: 13px; font-weight: 700;
+        max-width: 90%; text-align: center;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 30px rgba(11,122,46,0.3);
+        line-height: 1.4;
+    }
+    .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+    .toast.info { background: var(--green); }
+
+    #loading-overlay {
+        position: fixed; inset: 0;
+        background: rgba(244,249,246,0.96);
+        backdrop-filter: blur(6px);
+        display: flex; flex-direction: column;
+        justify-content: center; align-items: center;
+        z-index: 9998; color: var(--green);
+        transition: opacity 0.35s;
+    }
+    #loading-overlay.hide { opacity: 0; pointer-events: none; }
+    .spinner {
+        width: 46px; height: 46px;
+        border: 5px solid var(--border);
+        border-top-color: var(--green);
+        border-right-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @media (max-width: 360px) {
+        .balance-card h1 { font-size: 26px; }
+        .cit-card .cc-account { font-size: 20px; letter-spacing: 2px; }
+        .quick-actions { grid-template-columns: repeat(4, 1fr); }
+        .qa-item .qa-label { font-size: 9px; }
+    }
+</style>
+</head>
+<body>
+
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <p style="margin-top:14px; font-weight:700; font-size:13px;">Loading account...</p>
+</div>
+
+<div class="app-container">
+
+    <!-- ===== HEADER ===== -->
+    <header class="top-header">
+        <div class="header-left">
+            <button class="back-btn" onclick="window.location.href='userdashboard.html'">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="profile-section">
+                <div class="avatar-wrapper">
+                    <img id="profilePic" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230B7A2E'/><circle cx='50' cy='38' r='18' fill='%23FFC72C'/><path d='M18 92c0-20 14-34 32-34s32 14 32 34' fill='%23FFC72C'/></svg>" alt="Profile">
+                    <div class="verified-badge"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="greeting">
+                    <h4 id="greetingTime">Welcome,</h4>
+                    <h2 id="userName"><span class="shimmer" style="width: 90px; height: 14px;"></span></h2>
+                    <div class="acc-num" id="userAccNum">•••• ••••</div>
+                </div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button onclick="refreshAll()" id="refreshBtn" title="Refresh">
+                <i class="fa-solid fa-rotate"></i>
+            </button>
+            <a href="usernotification.html" title="Alerts">
+                <i class="fa-regular fa-bell"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- BALANCE -->
+    <div class="balance-card">
+        <div class="label">Available Balance</div>
+        <h1 id="balanceDisplay">GHS 0.00</h1>
+        <div class="mini-stats">
+            <div class="mini-stat">
+                <div class="s-label">Member ID</div>
+                <div class="s-value" id="miniMemberID">—</div>
+            </div>
+            <div class="mini-stat">
+                <div class="s-label">KYC Status</div>
+                <div class="s-value pill warn" id="miniKYC"><i class="fa-solid fa-hourglass-half"></i> Not verified</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== CITFUND BANK CARD ===== -->
+    <div class="cit-card-wrap">
+        <div class="cit-card">
+            <div class="cc-top">
+                <div class="cc-brand">
+                    <div class="cc-logo">C</div>
+                    CITFUND ENTERPRISE
+                </div>
+                <div class="cc-status"><span class="status-dot"></span> Active</div>
+            </div>
+            <div class="cc-label">CITFUND Account Number</div>
+            <div class="cc-account" id="ccAccountNumber">— — — — — —</div>
+            <div class="cc-bottom">
+                <div style="min-width: 0;">
+                    <div class="cc-name-label">Account Holder</div>
+                    <div class="cc-name" id="ccAccountName">—</div>
+                </div>
+                <button class="cc-copy-btn" onclick="copyField('ccAccountNumber', this)" title="Copy account number">
+                    <i class="fa-regular fa-copy"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== QUICK ACTIONS ===== -->
+    <div class="quick-actions">
+        <a href="userdeposit.html" class="qa-item">
+            <div class="qa-icon"><i class="fa-solid fa-circle-plus"></i></div>
+            <div class="qa-label">Deposit</div>
+        </a>
+        <a href="withdraw.html" class="qa-item">
+            <div class="qa-icon gold"><i class="fa-solid fa-money-bill-transfer"></i></div>
+            <div class="qa-label">Withdraw</div>
+        </a>
+        <a href="usertransfer.html" class="qa-item">
+            <div class="qa-icon blue"><i class="fa-solid fa-paper-plane"></i></div>
+            <div class="qa-label">Transfer</div>
+        </a>
+        <button onclick="shareDetails()" class="qa-item" style="border: 1.5px solid var(--border);">
+            <div class="qa-icon purple"><i class="fa-solid fa-share-nodes"></i></div>
+            <div class="qa-label">Share</div>
+        </button>
+    </div>
+
+    <!-- ===== QR CODE ===== -->
+    <div class="form-card">
+        <div class="card-title">Scan to Pay Me</div>
+        <div class="qr-wrap">
+            <div class="qr-box">
+                <img id="qrImage" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f4f9f6'/><text x='50' y='55' text-anchor='middle' font-family='sans-serif' font-size='10' fill='%236b7a8f'>Loading…</text></svg>" alt="QR Code">
+            </div>
+            <div class="qr-caption">
+                Another CITFUND member can scan this code to <strong>send you money instantly</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ACCOUNT DETAILS ===== -->
+    <div class="form-card">
+        <div class="card-title">Account Information</div>
+
+        <div class="detail-row">
+            <div class="label"><i class="fa-solid fa-hashtag"></i> Account Number</div>
+            <div class="value-wrap">
+                <span class="value mono" id="rowAccountNumber">—</span>
+                <button class="copy-btn" onclick="copyField('rowAccountNumber', this)">
+                    <i class="fa-regular fa-copy"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label"><i class="fa-solid fa-user"></i> Account Name</div>
+            <div class="value-wrap">
+                <span class="value" id="rowAccountName">—</span>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label"><i class="fa-solid fa-id-card"></i> Member ID</div>
+            <div class="value-wrap">
+                <span class="value mono" id="rowMemberID">—</span>
+                <button class="copy-btn" onclick="copyField('rowMemberID', this)">
+                    <i class="fa-regular fa-copy"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label"><i class="fa-solid fa-building-columns"></i> Account Type</div>
+            <div class="value-wrap">
+                <span class="value" id="rowAccType">Savings</span>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label"><i class="fa-solid fa-money-bill"></i> Currency</div>
+            <div class="value-wrap">
+                <span class="value">GHS — Ghana Cedi</span>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label"><i class="fa-solid fa-phone"></i> Registered Phone</div>
+            <div class="value-wrap">
+                <span class="value mono" id="rowPhone">—</span>
+            </div>
+        </div>
+
+        <div class="action-grid">
+            <button class="btn-secondary" onclick="copyAll()">
+                <i class="fa-regular fa-copy"></i> Copy All
+            </button>
+            <button class="btn-secondary" onclick="shareDetails()">
+                <i class="fa-solid fa-share-nodes"></i> Share
+            </button>
+            <button class="btn-primary" onclick="printDetails()">
+                <i class="fa-solid fa-print"></i> Print / Save Account Slip
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== SAVED PAYMENT METHODS ===== -->
+    <div class="form-card">
+        <div class="card-title">Saved Payment Methods</div>
+
+        <div class="pm-item">
+            <div class="pm-icon gold"><i class="fa-solid fa-mobile-screen-button"></i></div>
+            <div class="pm-info">
+                <div class="name">Mobile Money</div>
+                <div class="value" id="pmMomo">No MoMo saved yet</div>
+            </div>
+            <a href="accountnumberupdate.html" class="pm-action">
+                <i class="fa-solid fa-pen"></i> Update
+            </a>
+        </div>
+
+        <div class="pm-item">
+            <div class="pm-icon"><i class="fa-solid fa-building-columns"></i></div>
+            <div class="pm-info">
+                <div class="name">Bank Account</div>
+                <div class="value" id="pmBank">No bank saved yet</div>
+            </div>
+            <a href="accountnumberupdate.html" class="pm-action">
+                <i class="fa-solid fa-pen"></i> Update
+            </a>
+        </div>
+    </div>
+
+    <!-- ===== RECENT TRANSACTIONS ===== -->
+    <div class="form-card">
+        <div class="card-title">
+            Recent Transactions
+            <span class="count" id="txnCount">0</span>
+        </div>
+        <div id="recentTxns">
+            <div class="empty-txn">
+                <i class="fa-regular fa-clock"></i>
+                <p>Loading transactions...</p>
+            </div>
+        </div>
+        <div class="action-grid" style="margin-top: 12px;">
+            <button class="btn-secondary" style="grid-column: span 2;" onclick="location.href='usernotification.html'">
+                <i class="fa-solid fa-list"></i> View All Transactions
+            </a>
+        </div>
+    </div>
+
+    <!-- ===== HOW TO RECEIVE MONEY ===== -->
+    <div class="form-card">
+        <div class="card-title">How to Receive Money</div>
+
+        <div class="info-box">
+            <i class="fa-solid fa-users"></i>
+            <div>
+                <strong>From another CITFUND member</strong>
+                Share your CITFUND account number above. Transfers between CITFUND members are <strong>instant and FREE</strong>.
+            </div>
+        </div>
+
+        <div class="info-box">
+            <i class="fa-solid fa-clock"></i>
+            <div>
+                <strong>From any bank or mobile money</strong>
+                Dedicated virtual account is coming soon. Our team is working on it. Please use your CITFUND account number with other CITFUND members in the meantime.
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== COMING SOON: DVA ===== -->
+    <div class="coming-soon">
+        <div class="cs-icon"><i class="fa-solid fa-hammer"></i></div>
+        <h3>Dedicated Virtual Account Coming Soon</h3>
+        <p>We're working with our banking partners to give you a dedicated virtual account number that can receive money from any Ghanaian bank or mobile money wallet. This feature will be available soon.</p>
+    </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <a href="userdashboard.html">
+        <i class="fa-solid fa-house"></i> Home
+    </a>
+    <a href="account.html" class="active">
+        <i class="fa-solid fa-book"></i> Accounts
+    </a>
+    <button class="center-btn" onclick="location.href='userdeposit.html'">
+        <i class="fa-solid fa-plus"></i>
+    </button>
+    <a href="usernotification.html">
+        <i class="fa-solid fa-bell"></i> Alerts
+    </a>
+    <a href="myprofile.html">
+        <i class="fa-solid fa-user"></i> Profile
+    </a>
+</nav>
+
+<div id="toast" class="toast"></div>
+
+<script>
+// ============================================================
+// SESSION GUARD
+// ============================================================
+const session = JSON.parse(localStorage.getItem('cit_session') || 'null');
+if (!session || !session.uid) window.location.href = 'userlogin.html';
+
+// ============================================================
+// STATE
+// ============================================================
+let currentUser = null;
+let toastTimer = null;
+const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230B7A2E'/><circle cx='50' cy='38' r='18' fill='%23FFC72C'/><path d='M18 92c0-20 14-34 32-34s32 14 32 34' fill='%23FFC72C'/></svg>";
+
+// ============================================================
+// HELPERS
+// ============================================================
+function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+function hideLoading() {
+    const el = document.getElementById('loading-overlay');
+    if (el) { el.classList.add('hide'); setTimeout(() => el.style.display = 'none', 400); }
+}
+function setGreeting() {
+    const el = document.getElementById('greetingTime');
+    const hour = new Date().getHours();
+    if (hour < 12) el.textContent = 'Good Morning,';
+    else if (hour < 17) el.textContent = 'Good Afternoon,';
+    else el.textContent = 'Good Evening,';
+}
+function prettyAccount(acc) {
+    if (!acc) return '— — — — — —';
+    return String(acc).replace(/(\d{3})(?=\d)/g, '$1 ');
+}
+async function api(path, body) {
+    const res = await fetch(path + '?t=' + Date.now(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body || {}),
+        cache: 'no-store'
+    });
+    try { return await res.json(); }
+    catch (e) { return { success: false, error: 'Invalid server response' }; }
+}
+
+// ============================================================
+// COPY
+// ============================================================
+function copyField(elId, btn) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    let text = '';
+    el.childNodes.forEach(n => { if (n.nodeType === Node.TEXT_NODE) text += n.textContent; });
+    text = text.trim();
+    if (!text || text === '—' || text === '— — — — — —') {
+        showToast('Nothing to copy', 'error');
+        return;
+    }
+    const done = () => {
+        if (btn) {
+            const original = btn.innerHTML;
+            btn.classList.add('copied');
+            btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            setTimeout(() => {
+                btn.classList.remove('copied');
+                btn.innerHTML = original;
+            }, 1500);
+        }
+        showToast('📋 Copied to clipboard', 'success');
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+    } else {
+        fallbackCopy(text, done);
+    }
+}
+window.copyField = copyField;
+
+function fallbackCopy(text, done) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); done(); }
+    catch (e) { showToast('Copy failed', 'error'); }
+    document.body.removeChild(ta);
+}
+
+function copyAll() {
+    if (!currentUser) return;
+    const text =
+`CITFUND ENTERPRISE – Account Details
+================================
+Account Number: ${currentUser.accountNumber || '-'}
+Account Name:   ${currentUser.fullName || '-'}
+Member ID:      ${currentUser.memberID || '-'}
+Account Type:   ${currentUser.accType || 'Savings'}
+Currency:       GHS
+Phone:          ${currentUser.phone || '-'}
+================================
+Share this account number with other CITFUND members to receive money instantly.`;
+    fallbackCopy(text, () => showToast('📋 All details copied', 'success'));
+}
+window.copyAll = copyAll;
+
+// ============================================================
+// SHARE
+// ============================================================
+function shareDetails() {
+    if (!currentUser) { showToast('Loading...', 'info'); return; }
+    const text =
+`My CITFUND Account
+Account Number: ${currentUser.accountNumber || '-'}
+Account Name: ${currentUser.fullName || '-'}
+Member ID: ${currentUser.memberID || '-'}
+
+Send me money instantly — free for CITFUND members.`;
+    if (navigator.share) {
+        navigator.share({ title: 'My CITFUND Account', text })
+            .catch(() => fallbackCopy(text, () => showToast('📋 Copied for sharing', 'success')));
+    } else {
+        fallbackCopy(text, () => showToast('📋 Copied for sharing', 'success'));
+    }
+}
+window.shareDetails = shareDetails;
+
+// ============================================================
+// PRINT
+// ============================================================
+function printDetails() {
+    if (!currentUser) { showToast('Loading...', 'info'); return; }
+    const w = window.open('', '_blank');
+    w.document.write(`
+<html>
+<head>
+<title>CITFUND ENTERPRISE – Account Slip</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+    @page { margin: 12mm; }
+    body { font-family: 'Poppins', Arial, sans-serif; padding: 30px; color: #1a2b4c; max-width: 620px; margin: auto; }
+    .header { text-align: center; padding-bottom: 20px; border-bottom: 3px solid #0B7A2E; margin-bottom: 24px; }
+    .header .logo { width: 64px; height: 64px; background: #0B7A2E; color: white; border-radius: 14px; font-size: 32px; font-weight: 900; line-height: 64px; margin: 0 auto 14px; text-align: center; }
+    .header h1 { color: #0B7A2E; font-size: 22px; margin: 0; letter-spacing: 0.5px; }
+    .header p { color: #6b7a8f; margin-top: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+    .card { background: #f4f9f6; border-radius: 16px; padding: 26px; margin-bottom: 24px; border: 1px solid #e6f0e9; }
+    .row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed #e6f0e9; font-size: 13px; gap: 12px; }
+    .row:last-child { border-bottom: none; }
+    .row .label { color: #6b7a8f; font-weight: 600; }
+    .row .value { font-weight: 800; color: #075C22; font-family: monospace; font-size: 14px; letter-spacing: 1px; text-align: right; word-break: break-all; }
+    .footer { text-align: center; margin-top: 30px; font-size: 11px; color: #6b7a8f; line-height: 1.6; }
+    .badge { display: inline-block; background: #0B7A2E; color: white; padding: 4px 14px; border-radius: 20px; font-size: 10px; font-weight: 800; letter-spacing: 1px; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">C</div>
+        <h1>CITFUND ENTERPRISE</h1>
+        <p>Account Slip</p>
+    </div>
+    <div style="text-align:center;"><span class="badge">ACTIVE ACCOUNT</span></div>
+    <div class="card">
+        <div class="row"><span class="label">Account Number</span><span class="value">${currentUser.accountNumber || '-'}</span></div>
+        <div class="row"><span class="label">Account Name</span><span class="value" style="font-family: 'Poppins'; letter-spacing: 0.5px;">${(currentUser.fullName || '-').toUpperCase()}</span></div>
+        <div class="row"><span class="label">Member ID</span><span class="value">${currentUser.memberID || '-'}</span></div>
+        <div class="row"><span class="label">Account Type</span><span class="value" style="font-family: 'Poppins'; letter-spacing: 0;">${currentUser.accType || 'Savings'}</span></div>
+        <div class="row"><span class="label">Currency</span><span class="value" style="font-family: 'Poppins'; letter-spacing: 0;">GHS — Ghana Cedi</span></div>
+        <div class="row"><span class="label">Phone</span><span class="value">${currentUser.phone || '-'}</span></div>
+        <div class="row"><span class="label">Email</span><span class="value" style="font-family: 'Poppins'; font-size:12px; letter-spacing: 0;">${currentUser.email || '-'}</span></div>
+        <div class="row"><span class="label">Balance</span><span class="value">GHS ${(parseFloat(currentUser.balance)||0).toFixed(2)}</span></div>
+    </div>
+    <div class="footer">
+        Share your account number with other CITFUND members.<br>
+        Transfers between CITFUND members are instant and FREE.<br>
+        Support: 0205720154<br><br>
+        © CITFUND ENTERPRISE ${new Date().getFullYear()}
+    </div>
+    <script>window.onload=function(){setTimeout(function(){window.print();},300);};</script>
+</body>
+</html>`);
+    w.document.close();
+}
+window.printDetails = printDetails;
+
+// ============================================================
+// QR CODE
+// ============================================================
+function buildQR() {
+    if (!currentUser || !currentUser.accountNumber) return;
+    const payload = JSON.stringify({
+        type: 'citfund_pay',
+        account: currentUser.accountNumber,
+        name: currentUser.fullName || ''
+    });
+    const url = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=10&color=075C22&bgcolor=ffffff&data=${encodeURIComponent(payload)}`;
+    const img = document.getElementById('qrImage');
+    img.crossOrigin = 'anonymous';
+    img.onerror = () => {
+        // Fallback: encode just the account number
+        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(currentUser.accountNumber)}`;
+    };
+    img.src = url;
+}
+
+// ============================================================
+// RECENT TRANSACTIONS
+// ============================================================
+function renderTxns(transactions) {
+    const wrap = document.getElementById('recentTxns');
+    const txnCount = document.getElementById('txnCount');
+    const list = Object.values(transactions || {})
+        .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
+        .slice(0, 3);
+
+    txnCount.textContent = list.length;
+
+    if (!list.length) {
+        wrap.innerHTML = `
+            <div class="empty-txn">
+                <i class="fa-regular fa-clock"></i>
+                <p>No transactions yet. Make your first deposit to get started.</p>
+            </div>`;
+        return;
+    }
+
+    wrap.innerHTML = list.map(tx => {
+        const type = String(tx.type || '').toLowerCase();
+        const status = String(tx.status || 'pending').toLowerCase();
+        const amt = Number(tx.amount || 0);
+        const isCredit = ['deposit', 'transfer_in', 'received'].includes(type) || type === 'deposit';
+        const isDebit = ['withdraw', 'transfer', 'transfer_out', 'invest', 'order', 'bill', 'airtime'].includes(type);
+
+        let iconClass, iconName, amountClass, statusClass;
+        if (status === 'success' || status === 'successful' || status === 'completed') {
+            if (isCredit) { iconClass = 'credit'; iconName = 'fa-arrow-down'; amountClass = 'credit'; statusClass = 'credit'; }
+            else { iconClass = 'debit'; iconName = 'fa-arrow-up'; amountClass = 'debit'; statusClass = 'debit'; }
+        } else if (status === 'failed' || status === 'cancelled' || status === 'reversed') {
+            iconClass = 'debit'; iconName = 'fa-xmark'; amountClass = 'debit'; statusClass = 'debit';
+        } else {
+            iconClass = 'pending'; iconName = 'fa-clock'; amountClass = 'pending'; statusClass = 'pending';
+        }
+
+        const prefix = status === 'success' ? (isCredit ? '+' : '-') : '';
+        const titleMap = {
+            deposit: 'Deposit',
+            withdraw: 'Withdrawal',
+            transfer: 'Transfer',
+            invest: 'Investment',
+            order: 'Purchase',
+            bill: 'Bill Payment',
+            airtime: 'Airtime'
+        };
+        const title = titleMap[type] || (type.charAt(0).toUpperCase() + type.slice(1));
+
+        const date = tx.date
+            ? new Date(tx.date).toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+            : '—';
+        const narration = tx.narration || tx.plan || tx.biller || tx.receiverName || tx.senderName || '';
+
+        return `
+            <div class="txn-item">
+                <div class="txn-icon ${iconClass}"><i class="fa-solid ${iconName}"></i></div>
+                <div class="txn-info">
+                    <div class="title">${title}</div>
+                    <div class="meta">${date}${narration ? ' · ' + narration : ''}</div>
+                </div>
+                <div class="txn-amount">
+                    <div class="value ${amountClass}">${prefix} GHS ${amt.toFixed(2)}</div>
+                    <div class="status ${statusClass}">${status}</div>
+                </div>
+            </div>`;
+    }).join('');
+}
+
+// ============================================================
+// SAVED PAYMENT METHODS
+// ============================================================
+function renderPaymentMethods(u) {
+    // MoMo
+    const momo = document.getElementById('pmMomo');
+    if (u.momoPhone && u.momoNetwork) {
+        momo.textContent = `${String(u.momoNetwork).toUpperCase()} · ${u.momoPhone}`;
+        momo.style.color = 'var(--green-dark)';
+        momo.style.fontWeight = '800';
+    } else {
+        momo.textContent = 'No MoMo saved yet';
+        momo.style.color = '';
+        momo.style.fontWeight = '';
+    }
+    // Bank
+    const bank = document.getElementById('pmBank');
+    if (u.bankAccount && (u.bankName || u.bankCode)) {
+        bank.textContent = `${u.bankName || 'Bank'} · ${u.bankAccount}`;
+        bank.style.color = 'var(--green-dark)';
+        bank.style.fontWeight = '800';
+    } else {
+        bank.textContent = 'No bank saved yet';
+        bank.style.color = '';
+        bank.style.fontWeight = '';
+    }
+}
+
+// ============================================================
+// KYC PILL
+// ============================================================
+function renderKYC(u) {
+    const kycStatus = (u.kyc && u.kyc.status) || 'none';
+    const el = document.getElementById('miniKYC');
+    el.classList.remove('ok', 'warn', 'bad');
+    if (kycStatus === 'approved') {
+        el.classList.add('ok');
+        el.innerHTML = '<i class="fa-solid fa-circle-check"></i> Verified';
+    } else if (kycStatus === 'pending') {
+        el.classList.add('warn');
+        el.innerHTML = '<i class="fa-solid fa-hourglass-half"></i> Pending';
+    } else if (kycStatus === 'rejected') {
+        el.classList.add('bad');
+        el.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Rejected';
+    } else {
+        el.classList.add('warn');
+        el.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Not verified';
+    }
+}
+
+// ============================================================
+// LOAD USER
+// ============================================================
+async function loadUser(showRefreshSpinner) {
+    setGreeting();
+    if (showRefreshSpinner) {
+        const btn = document.getElementById('refreshBtn');
+        btn.classList.add('spin');
+        setTimeout(() => btn.classList.remove('spin'), 900);
+    }
+    try {
+        const data = await api('/api/dashboard', { uid: session.uid });
+        if (data.success && data.user) {
+            currentUser = data.user;
+            const bal = parseFloat(currentUser.balance) || 0;
+
+            document.getElementById('balanceDisplay').textContent = 'GHS ' + bal.toFixed(2);
+            document.getElementById('userName').textContent = currentUser.fullName || 'Customer';
+            document.getElementById('userAccNum').textContent =
+                currentUser.accountNumber ? ('Acc ' + currentUser.accountNumber) : 'CITFUND Member';
+
+            document.getElementById('miniMemberID').textContent = currentUser.memberID || '—';
+
+            // Bank card
+            document.getElementById('ccAccountNumber').textContent = prettyAccount(currentUser.accountNumber);
+            document.getElementById('ccAccountName').textContent = (currentUser.fullName || '—').toUpperCase();
+
+            // Rows
+            document.getElementById('rowAccountNumber').textContent = currentUser.accountNumber || '—';
+            document.getElementById('rowAccountName').textContent = currentUser.fullName || '—';
+            document.getElementById('rowMemberID').textContent = currentUser.memberID || '—';
+            document.getElementById('rowAccType').textContent = currentUser.accType || 'Savings';
+            document.getElementById('rowPhone').textContent = currentUser.phone || '—';
+
+            // Avatar
+            const pic = document.getElementById('profilePic');
+            if (currentUser.photo && String(currentUser.photo).trim().length > 0) {
+                pic.src = currentUser.photo;
+            } else {
+                pic.src = DEFAULT_AVATAR;
+            }
+            pic.onerror = () => { pic.onerror = null; pic.src = DEFAULT_AVATAR; };
+
+            // Sub-sections
+            renderKYC(currentUser);
+            renderPaymentMethods(currentUser);
+            renderTxns(currentUser.transactions || {});
+            buildQR();
+
+            // Cache user for offline
+            try {
+                localStorage.setItem('cit_user_cache_' + session.uid, JSON.stringify({
+                    fullName: currentUser.fullName,
+                    accountNumber: currentUser.accountNumber,
+                    memberID: currentUser.memberID,
+                    phone: currentUser.phone,
+                    accType: currentUser.accType,
+                    balance: currentUser.balance
+                }));
+            } catch (e) {}
+
+            if (showRefreshSpinner) showToast('✅ Refreshed', 'success');
+
+        } else if (data.error && /not found/i.test(data.error)) {
+            localStorage.removeItem('cit_session');
+            window.location.href = 'userlogin.html';
+        } else {
+            // Fallback to cached
+            loadFromCache();
+            if (showRefreshSpinner) showToast('Could not refresh', 'error');
+        }
+    } catch (e) {
+        console.error('Load error:', e);
+        loadFromCache();
+        if (showRefreshSpinner) showToast('Network error', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+function loadFromCache() {
+    try {
+        const cached = JSON.parse(localStorage.getItem('cit_user_cache_' + session.uid) || 'null');
+        if (cached) {
+            document.getElementById('userName').textContent = cached.fullName || 'Customer';
+            document.getElementById('userAccNum').textContent =
+                cached.accountNumber ? ('Acc ' + cached.accountNumber) : 'CITFUND Member';
+            document.getElementById('ccAccountNumber').textContent = prettyAccount(cached.accountNumber);
+            document.getElementById('ccAccountName').textContent = (cached.fullName || '—').toUpperCase();
+            document.getElementById('rowAccountNumber').textContent = cached.accountNumber || '—';
+            document.getElementById('rowAccountName').textContent = cached.fullName || '—';
+            document.getElementById('rowMemberID').textContent = cached.memberID || '—';
+            document.getElementById('rowAccType').textContent = cached.accType || 'Savings';
+            document.getElementById('rowPhone').textContent = cached.phone || '—';
+            document.getElementById('balanceDisplay').textContent = 'GHS ' + (parseFloat(cached.balance) || 0).toFixed(2);
+        } else {
+            document.getElementById('userName').textContent = 'Customer';
+            document.getElementById('userAccNum').textContent = 'CITFUND Member';
+            document.getElementById('recentTxns').innerHTML = `
+                <div class="empty-txn">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <p>Could not load account details. Tap the refresh button to retry.</p>
+                </div>`;
+        }
+    } catch (e) {
+        document.getElementById('userName').textContent = 'Customer';
+    }
+}
+
+function refreshAll() {
+    loadUser(true);
+}
+window.refreshAll = refreshAll;
+
+// ============================================================
+// INIT
+// ============================================================
+loadUser(false);
+setTimeout(hideLoading, 5000);
+</script>
+</body>
+</html>

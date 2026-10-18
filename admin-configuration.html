@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIT FUND | Secure Configuration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #f4f6fb; color: #333; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .title { font-size: 24px; font-weight: 800; color: #0b1f4a; margin-bottom: 10px; }
+        .subtitle { font-size: 14px; color: #888; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { font-size: 13px; font-weight: 600; color: #555; display: block; margin-bottom: 8px; }
+        .form-group input { width: 100%; padding: 14px; border: 2px solid #f0f0f0; border-radius: 10px; font-size: 16px; }
+        .form-group input:focus { border-color: #e0a800; outline: none; }
+        .btn { width: 100%; padding: 16px; background: #0b1f4a; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
+        .btn:hover { background: #06183d; }
+        .warning { background: #ffe6e6; color: #a30000; padding: 15px; border-radius: 10px; font-size: 13px; margin-bottom: 20px; display: none; }
+        .success { background: #e6fff0; color: #006b3c; padding: 15px; border-radius: 10px; font-size: 13px; margin-bottom: 20px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">System Configuration</h1>
+        <p class="subtitle">Securely encrypt and store your system keys.</p>
+
+        <div class="warning" id="warningBox">
+            <strong>Security Alert:</strong> You cannot store <code>sk_live</code> keys here. Doing so will expose your funds. Use <code>pk_live</code> keys only.
+        </div>
+        <div class="success" id="successBox">Configuration saved and encrypted successfully!</div>
+
+        <div class="form-group">
+            <label>Paystack Public Key (pk_live...)</label>
+            <input type="text" id="paystackKey" placeholder="pk_live_xxxxxxxx">
+        </div>
+        <div class="form-group">
+            <label>SMS API Key</label>
+            <input type="text" id="smsKey" placeholder="Enter SMS API Key">
+        </div>
+        <div class="form-group">
+            <label>Master Encryption Passphrase (Any text)</label>
+            <input type="password" id="masterPass" placeholder="Enter a secret phrase">
+        </div>
+
+        <button class="btn" onclick="saveConfig()">Save & Encrypt Configuration</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyACD-ew_Fyx_6TBwmBFRethJb8k9Z286uM",
+            authDomain: "sir-cosmos.firebaseapp.com",
+            databaseURL: "https://sir-cosmos-default-rtdb.firebaseio.com",
+            projectId: "sir-cosmos",
+            storageBucket: "sir-cosmos.firebasestorage.app",
+            messagingSenderId: "226122622281",
+            appId: "1:226122622281:web:bd27cc7198261ab853a698"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) { alert("You must be logged in as an admin."); window.location = "userlogin.html"; }
+        });
+
+        window.saveConfig = async function() {
+            const pk = document.getElementById("paystackKey").value.trim();
+            const sms = document.getElementById("smsKey").value.trim();
+            const pass = document.getElementById("masterPass").value;
+            const warn = document.getElementById("warningBox");
+            const success = document.getElementById("successBox");
+            warn.style.display = "none";
+            success.style.display = "none";
+
+            // Security check
+            if (pk.startsWith("sk_live")) {
+                warn.style.display = "block";
+                return;
+            }
+            if (!pk || !sms || !pass) { alert("Fill all fields"); return; }
+
+            // Encrypt the config
+            const encryptedConfig = CryptoJS.AES.encrypt(JSON.stringify({ pk: pk, sms: sms }), pass).toString();
+
+            try {
+                await set(ref(db, 'system_config'), {
+                    data: encryptedConfig,
+                    updatedAt: Date.now()
+                });
+                success.style.display = "block";
+                setTimeout(() => { success.style.display = "none"; }, 3000);
+            } catch (e) { alert("Database Error: " + e.message); }
+        };
+    </script>
+</body>
+</html>

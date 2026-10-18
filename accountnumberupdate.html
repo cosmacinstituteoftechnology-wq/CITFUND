@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CITFUND ENTERPRISE | My Account</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    :root {
+        --green: #0B7A2E; --green-dark: #075C22; --green-light: #14A344;
+        --gold: #FFC72C; --gold-soft: #FFD75E; --red: #E30613;
+        --bg: #f4f9f6; --card: #ffffff; --text: #1a2b4c; --muted: #6b7a8f;
+        --border: #e6f0e9; --success: #00a86b; --danger: #e74c3c; --warning: #ff9800;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+    .app-container { max-width: 480px; margin: 0 auto; background: var(--bg); min-height: 100vh; position: relative; padding-bottom: 100px; }
+
+    /* HEADER */
+    .top-header {
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        padding: 22px 20px 60px;
+        display: flex; align-items: center; justify-content: space-between;
+        border-radius: 0 0 30px 30px;
+        position: relative; z-index: 1; gap: 10px; overflow: hidden;
+    }
+    .top-header::before {
+        content: ''; position: absolute; top: -80px; right: -60px;
+        width: 220px; height: 220px;
+        background: radial-gradient(circle, rgba(255,199,44,0.28), transparent 70%);
+        border-radius: 50%; pointer-events: none;
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; position: relative; z-index: 2; }
+    .back-btn {
+        width: 40px; height: 40px; border-radius: 50%;
+        background: rgba(255,255,255,0.15); color: white;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 15px; flex-shrink: 0; border: none; cursor: pointer;
+    }
+    .profile-section { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
+    .avatar-wrapper { position: relative; flex-shrink: 0; }
+    .avatar-wrapper img {
+        width: 46px; height: 46px; border-radius: 50%;
+        object-fit: cover; border: 2.5px solid var(--gold);
+        background: rgba(255,255,255,0.1);
+    }
+    .verified-badge {
+        position: absolute; bottom: -1px; right: -1px;
+        background: var(--gold); color: var(--green-dark);
+        width: 18px; height: 18px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 8px; border: 2px solid var(--green-dark);
+    }
+    .greeting { min-width: 0; flex: 1; }
+    .greeting h4 { font-size: 11.5px; color: rgba(255,255,255,0.75); font-weight: 400; margin-bottom: 2px; }
+    .greeting h2 {
+        font-size: 15.5px; font-weight: 700; color: white;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2;
+    }
+    .greeting .acc-num {
+        font-size: 10.5px; color: rgba(255,255,255,0.6);
+        font-weight: 500; margin-top: 2px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .header-actions { display: flex; gap: 8px; z-index: 2; flex-shrink: 0; }
+    .header-actions button, .header-actions a {
+        width: 42px; height: 42px; border-radius: 50%;
+        background: rgba(255,255,255,0.15);
+        border: none; color: white; font-size: 16px; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        text-decoration: none; transition: 0.2s;
+    }
+    .header-actions button.spin i { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* BALANCE */
+    .balance-card {
+        background: var(--card); border-radius: 24px;
+        padding: 22px 22px 20px; margin: -45px 20px 18px;
+        box-shadow: 0 20px 45px rgba(11,122,46,0.08);
+        position: relative; z-index: 2;
+        border: 1px solid rgba(11,122,46,0.06);
+    }
+    .balance-card .label {
+        font-size: 12px; color: var(--muted); font-weight: 700;
+        margin-bottom: 8px; text-transform: uppercase;
+        letter-spacing: 0.6px; display: flex; align-items: center; gap: 8px;
+    }
+    .balance-card .label::before {
+        content: ''; width: 8px; height: 8px;
+        background: var(--gold); border-radius: 50%;
+        box-shadow: 0 0 0 3px rgba(255,199,44,0.25);
+    }
+    .balance-card h1 { font-size: 30px; font-weight: 900; color: var(--green); letter-spacing: -0.5px; margin-bottom: 16px; }
+    .mini-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-top: 16px; border-top: 1px dashed var(--border); }
+    .mini-stat .s-label {
+        font-size: 10.5px; color: var(--muted); font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px;
+    }
+    .mini-stat .s-value {
+        font-size: 13px; font-weight: 800; color: var(--green);
+        font-family: 'Courier New', monospace; letter-spacing: 0.5px;
+        word-break: break-all;
+    }
+    .mini-stat .s-value.pill {
+        font-family: 'Poppins', sans-serif;
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 3px 10px; border-radius: 20px;
+        font-size: 11px;
+    }
+    .mini-stat .s-value.pill.ok { background: #e6fff0; color: var(--success); }
+    .mini-stat .s-value.pill.warn { background: #fff8e1; color: #a06d00; }
+    .mini-stat .s-value.pill.bad { background: #ffe6e6; color: var(--danger); }
+
+    /* CIT CARD */
+    .cit-card-wrap { padding: 0 20px 16px; }
+    .cit-card {
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        border-radius: 22px; padding: 24px 22px;
+        color: white; position: relative; overflow: hidden;
+        box-shadow: 0 20px 45px rgba(11,122,46,0.35);
+    }
+    .cit-card::before {
+        content: ''; position: absolute; top: -60px; right: -60px;
+        width: 220px; height: 220px;
+        background: radial-gradient(circle, rgba(255,199,44,0.35), transparent 70%);
+        border-radius: 50%; pointer-events: none;
+    }
+    .cc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: relative; z-index: 1; }
+    .cc-brand { display: flex; align-items: center; gap: 10px; font-size: 13.5px; font-weight: 800; }
+    .cc-logo {
+        width: 34px; height: 34px; background: var(--gold);
+        color: var(--green-dark); border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 17px; font-weight: 900;
+    }
+    .cc-status {
+        background: rgba(255,255,255,0.18);
+        border: 1px solid rgba(255,255,255,0.28);
+        color: white; font-size: 10px; font-weight: 800;
+        padding: 5px 12px; border-radius: 20px;
+        letter-spacing: 0.6px; text-transform: uppercase;
+        display: flex; align-items: center; gap: 5px;
+    }
+    .cc-status .status-dot {
+        width: 6px; height: 6px; border-radius: 50%;
+        background: #00e676;
+        box-shadow: 0 0 0 2px rgba(0,230,118,0.3);
+    }
+    .cc-label {
+        font-size: 10.5px; color: rgba(255,255,255,0.7);
+        text-transform: uppercase; letter-spacing: 1.5px;
+        font-weight: 700; margin-bottom: 6px; position: relative; z-index: 1;
+    }
+    .cc-account {
+        font-size: 25px; font-weight: 900; letter-spacing: 3px;
+        font-family: 'Courier New', monospace; color: white;
+        text-shadow: 0 3px 12px rgba(0,0,0,0.25);
+        margin-bottom: 14px; position: relative; z-index: 1;
+        word-break: break-all;
+    }
+    .cc-bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; position: relative; z-index: 1; }
+    .cc-name-label {
+        font-size: 10.5px; color: rgba(255,255,255,0.7);
+        text-transform: uppercase; letter-spacing: 1.2px;
+        font-weight: 700; margin-bottom: 4px;
+    }
+    .cc-name {
+        font-size: 14px; font-weight: 800;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cc-copy-btn {
+        width: 42px; height: 42px; border-radius: 50%;
+        background: rgba(255,255,255,0.18);
+        border: 1px solid rgba(255,255,255,0.28);
+        color: white; cursor: pointer; font-size: 16px;
+        flex-shrink: 0; transition: 0.25s;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .cc-copy-btn.copied { background: var(--gold); color: var(--green-dark); border-color: var(--gold); }
+
+    /* QUICK ACTIONS */
+    .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 20px 16px; }
+    .qa-item {
+        background: var(--card); border-radius: 14px; padding: 12px 6px;
+        display: flex; flex-direction: column; align-items: center; gap: 6px;
+        text-decoration: none; color: var(--green-dark);
+        border: 1px solid var(--border); transition: 0.25s; cursor: pointer;
+        font-family: inherit; font-size: inherit;
+    }
+    .qa-item .qa-icon {
+        width: 34px; height: 34px; border-radius: 10px;
+        background: linear-gradient(135deg, rgba(11,122,46,0.12), rgba(20,163,68,0.18));
+        color: var(--green);
+        display: flex; align-items: center; justify-content: center; font-size: 15px;
+    }
+    .qa-item .qa-icon.gold { background: linear-gradient(135deg, rgba(255,199,44,0.2), rgba(255,215,94,0.3)); color: #a06d00; }
+    .qa-item .qa-icon.blue { background: linear-gradient(135deg, rgba(21,101,192,0.15), rgba(30,136,229,0.2)); color: #1565C0; }
+    .qa-item .qa-icon.purple { background: linear-gradient(135deg, rgba(106,27,154,0.15), rgba(156,39,176,0.2)); color: #6A1B9A; }
+    .qa-item .qa-label { font-size: 10px; font-weight: 800; text-align: center; color: var(--green-dark); }
+
+    /* FORM CARD */
+    .form-card {
+        background: var(--card); border-radius: 20px;
+        padding: 20px; margin: 0 20px 16px;
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 15px rgba(11,122,46,0.03);
+    }
+    .card-title {
+        font-size: 14px; font-weight: 800; color: var(--green);
+        margin-bottom: 16px;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        display: flex; align-items: center; gap: 10px;
+    }
+    .card-title::before { content: ''; width: 4px; height: 16px; background: var(--gold); border-radius: 2px; }
+
+    .detail-row {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 13px 0; border-bottom: 1px dashed var(--border); gap: 12px;
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-row .label {
+        color: var(--muted); font-size: 12px; font-weight: 700;
+        display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+    }
+    .detail-row .label i { color: var(--green); font-size: 13px; width: 16px; text-align: center; }
+    .detail-row .value-wrap { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .detail-row .value {
+        color: var(--green-dark); font-weight: 700;
+        font-size: 13.5px; word-break: break-all; text-align: right;
+    }
+    .detail-row .value.mono { font-family: 'Courier New', monospace; letter-spacing: 1px; }
+
+    .copy-btn {
+        background: #eef6f0; border: 1px solid var(--border); color: var(--green);
+        width: 32px; height: 32px; border-radius: 8px; font-size: 12px;
+        cursor: pointer; transition: 0.25s; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .copy-btn.copied { background: var(--success); color: white; border-color: var(--success); }
+
+    .info-box {
+        background: linear-gradient(135deg, #fff8e1 0%, #ffeeba 100%);
+        border: 1px solid #ffe082; border-radius: 14px; padding: 14px;
+        margin-bottom: 12px;
+        display: flex; align-items: flex-start; gap: 12px;
+        font-size: 12.5px; color: #8a6d1a; font-weight: 600; line-height: 1.5;
+    }
+    .info-box:last-child { margin-bottom: 0; }
+    .info-box > i {
+        width: 32px; height: 32px; background: var(--gold); color: var(--green-dark);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px; flex-shrink: 0;
+    }
+    .info-box strong { color: var(--green-dark); display: block; margin-bottom: 2px; font-weight: 800; }
+
+    .pm-item {
+        display: flex; align-items: center; gap: 12px;
+        padding: 12px 0; border-bottom: 1px dashed var(--border);
+    }
+    .pm-item:last-child { border-bottom: none; }
+    .pm-item .pm-icon {
+        width: 42px; height: 42px; border-radius: 12px;
+        background: linear-gradient(135deg, rgba(11,122,46,0.1), rgba(20,163,68,0.15));
+        color: var(--green);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 17px; flex-shrink: 0;
+    }
+    .pm-item .pm-icon.gold { background: linear-gradient(135deg, rgba(255,199,44,0.2), rgba(255,215,94,0.3)); color: #a06d00; }
+    .pm-item .pm-info { flex: 1; min-width: 0; }
+    .pm-item .pm-info .name { font-size: 13px; font-weight: 800; color: var(--green-dark); margin-bottom: 2px; }
+    .pm-item .pm-info .value {
+        font-size: 11.5px; color: var(--muted); font-weight: 600;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .pm-item .pm-action {
+        background: #eef6f0; border: 1px solid var(--border); color: var(--green);
+        padding: 7px 12px; border-radius: 20px;
+        font-size: 11px; font-weight: 800; cursor: pointer;
+        text-decoration: none;
+        display: flex; align-items: center; gap: 4px; flex-shrink: 0;
+    }
+
+    .txn-item {
+        display: flex; align-items: center; gap: 12px;
+        padding: 12px 0; border-bottom: 1px dashed var(--border);
+    }
+    .txn-item:last-child { border-bottom: none; }
+    .txn-item .txn-icon {
+        width: 40px; height: 40px; border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 15px; flex-shrink: 0;
+    }
+    .txn-item .txn-icon.credit { background: rgba(0,168,107,0.15); color: var(--success); }
+    .txn-item .txn-icon.debit { background: rgba(231,76,60,0.12); color: var(--danger); }
+    .txn-item .txn-icon.pending { background: rgba(255,152,0,0.15); color: var(--warning); }
+    .txn-item .txn-info { flex: 1; min-width: 0; }
+    .txn-item .txn-info .title {
+        font-size: 13px; font-weight: 800; color: var(--green-dark);
+        margin-bottom: 2px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .txn-item .txn-info .meta {
+        font-size: 11px; color: var(--muted); font-weight: 600;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .txn-item .txn-amount { text-align: right; flex-shrink: 0; }
+    .txn-item .txn-amount .value { font-size: 13px; font-weight: 900; }
+    .txn-item .txn-amount .value.credit { color: var(--success); }
+    .txn-item .txn-amount .value.debit { color: var(--danger); }
+    .txn-item .txn-amount .value.pending { color: var(--warning); }
+    .txn-item .txn-amount .status { font-size: 9px; font-weight: 800; text-transform: uppercase; margin-top: 2px; }
+    .txn-item .txn-amount .status.credit { color: var(--success); }
+    .txn-item .txn-amount .status.debit { color: var(--danger); }
+    .txn-item .txn-amount .status.pending { color: var(--warning); }
+
+    .empty-txn { text-align: center; padding: 25px 15px; color: var(--muted); }
+    .empty-txn i { font-size: 32px; color: #cfe3d6; margin-bottom: 10px; display: block; }
+    .empty-txn p { font-size: 12px; font-weight: 600; }
+
+    .retry-card {
+        background: #fff5f5; border: 1.5px solid rgba(231,76,60,0.25);
+        border-radius: 20px; padding: 24px 20px;
+        margin: 0 20px 16px; text-align: center;
+        display: none;
+    }
+    .retry-card .retry-icon {
+        width: 60px; height: 60px; border-radius: 50%;
+        background: rgba(231,76,60,0.1); color: var(--danger); font-size: 26px;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 14px;
+    }
+    .retry-card h3 { font-size: 15px; font-weight: 800; color: var(--danger); margin-bottom: 6px; }
+    .retry-card p { font-size: 12.5px; color: var(--muted); line-height: 1.5; margin-bottom: 14px; }
+    .retry-card .retry-btn {
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white; border: none;
+        padding: 12px 24px; border-radius: 12px;
+        font-family: inherit; font-size: 13.5px; font-weight: 800;
+        cursor: pointer; box-shadow: 0 8px 20px rgba(11,122,46,0.3);
+        margin: 0 4px;
+    }
+    .retry-card .retry-btn.danger {
+        background: linear-gradient(135deg, var(--red), #ff4747);
+        box-shadow: 0 8px 20px rgba(227,6,19,0.3);
+    }
+
+    .coming-soon {
+        background: linear-gradient(135deg, #f4f9f6 0%, #eaf6ee 100%);
+        border: 1.5px dashed rgba(11,122,46,0.25);
+        border-radius: 20px; padding: 26px 20px;
+        margin: 0 20px 16px; text-align: center;
+    }
+    .coming-soon .cs-icon {
+        width: 68px; height: 68px; border-radius: 50%;
+        background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+        color: var(--green-dark); font-size: 28px;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 16px;
+    }
+    .coming-soon h3 { font-size: 16px; font-weight: 800; color: var(--green); margin-bottom: 8px; }
+    .coming-soon p { font-size: 12.5px; color: var(--muted); line-height: 1.6; max-width: 320px; margin: 0 auto; }
+
+    .btn-primary {
+        width: 100%; padding: 16px; border-radius: 14px; border: none;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white; font-family: inherit; font-size: 15px; font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.3);
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-secondary {
+        padding: 14px; border-radius: 14px;
+        border: 1.5px solid var(--border); background: white;
+        color: var(--green-dark); font-family: inherit; font-size: 13.5px;
+        font-weight: 700; cursor: pointer;
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .action-grid .btn-primary { grid-column: span 2; }
+    .action-grid .btn-secondary.span-2 { grid-column: span 2; }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+        position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+        width: 100%; max-width: 480px; background: var(--card);
+        border-top: 1px solid var(--border);
+        display: flex; justify-content: space-around; align-items: center;
+        padding: 8px 0 12px; z-index: 100;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+    }
+    .bottom-nav a {
+        text-decoration: none; display: flex; flex-direction: column;
+        align-items: center; gap: 4px; font-size: 10px;
+        color: var(--muted); font-weight: 600; flex: 1;
+        padding-top: 4px;
+    }
+    .bottom-nav a i { font-size: 22px; }
+    .bottom-nav a.active { color: var(--green); }
+    .bottom-nav a.active::after {
+        content: ''; display: block; width: 20px; height: 3px;
+        background: var(--gold); border-radius: 3px; margin-top: 2px;
+    }
+    .bottom-nav .center-btn {
+        width: 60px; height: 60px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 24px; margin-top: -25px;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.4);
+        cursor: pointer; border: 3px solid var(--bg);
+    }
+
+    /* TOAST */
+    .toast {
+        position: fixed; top: 20px; left: 50%;
+        transform: translateX(-50%) translateY(-20px);
+        background: var(--green); color: white;
+        padding: 14px 24px; border-radius: 30px;
+        z-index: 99999; opacity: 0; visibility: hidden;
+        font-size: 13px; font-weight: 700;
+        max-width: 90%; text-align: center;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 30px rgba(11,122,46,0.3);
+    }
+    .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+
+    /* LOADING */
+    #loading-overlay {
+        position: fixed; inset: 0;
+        background: rgba(244,249,246,0.96);
+        backdrop-filter: blur(6px);
+        display: flex; flex-direction: column;
+        justify-content: center; align-items: center;
+        z-index: 9998; color: var(--green);
+        animation: autoHideOverlay 5s 1 forwards;
+    }
+    @keyframes autoHideOverlay {
+        0%, 88% { opacity: 1; visibility: visible; }
+        100% { opacity: 0; visibility: hidden; pointer-events: none; }
+    }
+    #loading-overlay.hide { animation: none; opacity: 0; pointer-events: none; visibility: hidden; }
+    .spinner {
+        width: 46px; height: 46px;
+        border: 5px solid var(--border);
+        border-top-color: var(--green);
+        border-right-color: var(--gold);
+        border-radius: 50%; animation: spin 1s linear infinite;
+    }
+</style>
+</head>
+<body>
+
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <p style="margin-top:14px; font-weight:700; font-size:13px;">Loading account...</p>
+</div>
+
+<div class="app-container">
+
+    <header class="top-header">
+        <div class="header-left">
+            <button class="back-btn" onclick="window.location.href='userdashboard.html'">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="profile-section">
+                <div class="avatar-wrapper">
+                    <img id="profilePic" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230B7A2E'/><circle cx='50' cy='38' r='18' fill='%23FFC72C'/><path d='M18 92c0-20 14-34 32-34s32 14 32 34' fill='%23FFC72C'/></svg>" alt="Profile">
+                    <div class="verified-badge"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="greeting">
+                    <h4 id="greetingTime">Welcome,</h4>
+                    <h2 id="userName">Customer</h2>
+                    <div class="acc-num" id="userAccNum">CITFUND Member</div>
+                </div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button onclick="refreshAll()" id="refreshBtn" title="Refresh">
+                <i class="fa-solid fa-rotate"></i>
+            </button>
+            <a href="usernotification.html" title="Alerts">
+                <i class="fa-regular fa-bell"></i>
+            </a>
+        </div>
+    </header>
+
+    <div class="balance-card">
+        <div class="label">Available Balance</div>
+        <h1 id="balanceDisplay">GHS 0.00</h1>
+        <div class="mini-stats">
+            <div class="mini-stat">
+                <div class="s-label">Member ID</div>
+                <div class="s-value" id="miniMemberID">—</div>
+            </div>
+            <div class="mini-stat">
+                <div class="s-label">KYC Status</div>
+                <div class="s-value pill warn" id="miniKYC"><i class="fa-solid fa-hourglass-half"></i> Not verified</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="retry-card" id="retryCard">
+        <div class="retry-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h3 id="retryTitle">Could Not Load Account</h3>
+        <p id="retryMsg">Please check your internet connection and try again.</p>
+        <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+            <button class="retry-btn" onclick="refreshAll()">
+                <i class="fa-solid fa-rotate"></i>&nbsp; Try Again
+            </button>
+            <button class="retry-btn danger" onclick="forceRelogin()">
+                <i class="fa-solid fa-right-from-bracket"></i>&nbsp; Re-login
+            </button>
+        </div>
+    </div>
+
+    <div class="cit-card-wrap" id="citCardWrap">
+        <div class="cit-card">
+            <div class="cc-top">
+                <div class="cc-brand">
+                    <div class="cc-logo">C</div>
+                    CITFUND ENTERPRISE
+                </div>
+                <div class="cc-status"><span class="status-dot"></span> Active</div>
+            </div>
+            <div class="cc-label">CITFUND Account Number</div>
+            <div class="cc-account" id="ccAccountNumber">— — — — — —</div>
+            <div class="cc-bottom">
+                <div style="min-width: 0;">
+                    <div class="cc-name-label">Account Holder</div>
+                    <div class="cc-name" id="ccAccountName">—</div>
+                </div>
+                <button class="cc-copy-btn" onclick="copyField('ccAccountNumber', this)" title="Copy account number">
+                    <i class="fa-regular fa-copy"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <a href="userdeposit.html" class="qa-item">
+            <div class="qa-icon"><i class="fa-solid fa-circle-plus"></i></div>
+            <div class="qa-label">Deposit</div>
+        </a>
+        <a href="withdraw.html" class="qa-item">
+            <div class="qa-icon gold"><i class="fa-solid fa-money-bill-transfer"></i></div>
+            <div class="qa-label">Withdraw</div>
+        </a>
+        <a href="usertransfer.html" class="qa-item">
+            <div class="qa-icon blue"><i class="fa-solid fa-paper-plane"></i></div>
+            <div class="qa-label">Transfer</div>
+        </a>
+        <button onclick="shareDetails()" class="qa-item">
+            <div class="qa-icon purple"><i class="fa-solid fa-share-nodes"></i></div>
+            <div class="qa-label">Share</div>
+        </button>
+    </div>
+
+    <div class="form-card">
+        <div class="card-title">Account Information</div>
+
+        <div class="detail-row">
+            <div class="label"><i class="fa-solid fa-hashtag"></i> Account Number</div>
+            <div class="value-wrap">
+                <span class="value mono" id="rowAccountNumber">—</span>
+                <button class="copy-btn" onclick="copyField('rowAccountNumber', this)">
+                    <i class="fa-regular fa-copy"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label"><i class="fa-solid fa-user"></i> Account Name</div>
+            <div class="value-wrap">
+                <span class="value" id="rowAccountName">—</span>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label"><i class="fa-solid fa-id-card"></i> Member ID</div>
+            <div class="value-wrap">
+                <span class="value mono" id="rowMemberID">—</span>
+                <button class="copy-btn" onclick="copyField('rowMemberID', this)">
+                    <i class="fa-regular fa-copy"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label"><i class="fa-solid fa-building-columns"></i> Account Type</div>
+            <div class="value-wrap">
+                <span class="value" id="rowAccType">Savings</span>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label"><i class="fa-solid fa-money-bill"></i> Currency</div>
+            <div class="value-wrap">
+                <span class="value">GHS — Ghana Cedi</span>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="label"><i class="fa-solid fa-phone"></i> Registered Phone</div>
+            <div class="value-wrap">
+                <span class="value mono" id="rowPhone">—</span>
+            </div>
+        </div>
+
+        <div class="action-grid">
+            <button class="btn-secondary" onclick="copyAll()">
+                <i class="fa-regular fa-copy"></i> Copy All
+            </button>
+            <button class="btn-secondary" onclick="shareDetails()">
+                <i class="fa-solid fa-share-nodes"></i> Share
+            </button>
+        </div>
+    </div>
+
+    <div class="form-card">
+        <div class="card-title">Saved Payment Methods</div>
+        <div class="pm-item">
+            <div class="pm-icon gold"><i class="fa-solid fa-mobile-screen-button"></i></div>
+            <div class="pm-info">
+                <div class="name">Mobile Money</div>
+                <div class="value" id="pmMomo">No MoMo saved yet</div>
+            </div>
+            <a href="accountnumberupdate.html" class="pm-action"><i class="fa-solid fa-pen"></i> Update</a>
+        </div>
+        <div class="pm-item">
+            <div class="pm-icon"><i class="fa-solid fa-building-columns"></i></div>
+            <div class="pm-info">
+                <div class="name">Bank Account</div>
+                <div class="value" id="pmBank">No bank saved yet</div>
+            </div>
+            <a href="accountnumberupdate.html" class="pm-action"><i class="fa-solid fa-pen"></i> Update</a>
+        </div>
+    </div>
+
+    <div class="form-card">
+        <div class="card-title">Recent Transactions</div>
+        <div id="recentTxns">
+            <div class="empty-txn">
+                <i class="fa-regular fa-clock"></i>
+                <p>No transactions yet.</p>
+            </div>
+        </div>
+        <div class="action-grid" style="margin-top: 12px;">
+            <button class="btn-secondary span-2" onclick="location.href='usernotification.html'">
+                <i class="fa-solid fa-list"></i> View All Transactions
+            </button>
+        </div>
+    </div>
+
+    <div class="form-card">
+        <div class="card-title">How to Receive Money</div>
+        <div class="info-box">
+            <i class="fa-solid fa-users"></i>
+            <div>
+                <strong>From another CITFUND member</strong>
+                Share your CITFUND account number above. Transfers between CITFUND members are <strong>instant and FREE</strong>.
+            </div>
+        </div>
+        <div class="info-box">
+            <i class="fa-solid fa-clock"></i>
+            <div>
+                <strong>From any bank or mobile money</strong>
+                Dedicated virtual account is coming soon.
+            </div>
+        </div>
+    </div>
+
+    <div class="coming-soon">
+        <div class="cs-icon"><i class="fa-solid fa-hammer"></i></div>
+        <h3>Dedicated Virtual Account Coming Soon</h3>
+        <p>We're working with our banking partners to give you a dedicated virtual account number that can receive money from any Ghanaian bank or mobile money wallet.</p>
+    </div>
+
+</div>
+
+<nav class="bottom-nav">
+    <a href="userdashboard.html"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="account.html" class="active"><i class="fa-solid fa-book"></i> Accounts</a>
+    <button class="center-btn" onclick="location.href='userdeposit.html'"><i class="fa-solid fa-plus"></i></button>
+    <a href="usernotification.html"><i class="fa-solid fa-bell"></i> Alerts</a>
+    <a href="myprofile.html"><i class="fa-solid fa-user"></i> Profile</a>
+</nav>
+
+<div id="toast" class="toast"></div>
+
+<script>
+/* ============================================================
+   CITFUND ACCOUNT PAGE — CLEAN v2
+   ============================================================ */
+(function () {
+    'use strict';
+
+    /* ---------- SESSION ---------- */
+    var SESSION = null;
+    try {
+        SESSION = JSON.parse(localStorage.getItem('cit_session') || 'null');
+    } catch (e) {
+        SESSION = null;
+    }
+    if (!SESSION || !SESSION.uid) {
+        try { localStorage.removeItem('cit_session'); } catch (e) {}
+        var ov = document.getElementById('loading-overlay');
+        if (ov) ov.classList.add('hide');
+        setTimeout(function () { window.location.href = 'userlogin.html'; }, 100);
+        return;
+    }
+    var UID = SESSION.uid;
+
+    /* ---------- STATE ---------- */
+    var currentUser = null;
+    var toastTimer = null;
+    var DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230B7A2E'/><circle cx='50' cy='38' r='18' fill='%23FFC72C'/><path d='M18 92c0-20 14-34 32-34s32 14 32 34' fill='%23FFC72C'/></svg>";
+
+    /* ---------- HELPERS ---------- */
+    function $(id) { return document.getElementById(id); }
+
+    function showToast(msg, type) {
+        var t = $('toast');
+        if (!t) return;
+        t.textContent = msg;
+        t.className = 'toast ' + (type || '') + ' show';
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { t.classList.remove('show'); }, 3000);
+    }
+
+    function hideLoading() {
+        var el = $('loading-overlay');
+        if (!el) return;
+        el.classList.add('hide');
+        setTimeout(function () { if (el.parentNode) el.style.display = 'none'; }, 400);
+    }
+
+    function setText(id, value) {
+        var el = $(id);
+        if (el) el.textContent = value;
+    }
+
+    function setGreeting() {
+        var el = $('greetingTime');
+        if (!el) return;
+        var h = new Date().getHours();
+        if (h < 12) el.textContent = 'Good Morning,';
+        else if (h < 17) el.textContent = 'Good Afternoon,';
+        else el.textContent = 'Good Evening,';
+    }
+
+    function prettyAccount(acc) {
+        if (!acc) return '— — — — — —';
+        return String(acc).replace(/(\d{3})(?=\d)/g, '$1 ');
+    }
+
+    /* ---------- API ---------- */
+    function api(path, body) {
+        var controller = new AbortController();
+        var timer = setTimeout(function () { controller.abort(); }, 15000);
+        return fetch(path + '?t=' + Date.now(), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body || {}),
+            cache: 'no-store',
+            signal: controller.signal
+        })
+        .then(function (res) {
+            clearTimeout(timer);
+            return res.text();
+        })
+        .then(function (raw) {
+            if (!raw) return { success: false, error: 'Empty response' };
+            if (raw.charAt(0) === '<') return { success: false, error: 'Server returned HTML' };
+            try { return JSON.parse(raw); }
+            catch (e) { return { success: false, error: 'Invalid JSON' }; }
+        })
+        .catch(function (e) {
+            clearTimeout(timer);
+            if (e.name === 'AbortError') return { success: false, error: 'Request timed out' };
+            return { success: false, error: 'Network error' };
+        });
+    }
+
+    /* ---------- COPY ---------- */
+    function copyText(text, btn, successMsg) {
+        var done = function () {
+            if (btn) {
+                var orig = btn.innerHTML;
+                btn.classList.add('copied');
+                btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                setTimeout(function () {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = orig;
+                }, 1500);
+            }
+            showToast(successMsg || '📋 Copied', 'success');
+        };
+        var fallback = function () {
+            try {
+                var ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                done();
+            } catch (e) { showToast('Copy failed', 'error'); }
+        };
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(done).catch(fallback);
+        } else fallback();
+    }
+
+    function copyField(elId, btn) {
+        var el = $(elId);
+        if (!el) return;
+        var text = '';
+        for (var i = 0; i < el.childNodes.length; i++) {
+            if (el.childNodes[i].nodeType === 3) text += el.childNodes[i].textContent;
+        }
+        text = text.trim();
+        if (!text || text === '—' || text === '— — — — — —') {
+            showToast('Nothing to copy', 'error');
+            return;
+        }
+        copyText(text, btn);
+    }
+
+    function copyAll() {
+        if (!currentUser) { showToast('Loading...', 'info'); return; }
+        var u = currentUser;
+        var text =
+            'CITFUND ENTERPRISE – Account Details\n' +
+            '================================\n' +
+            'Account Number: ' + (u.accountNumber || '-') + '\n' +
+            'Account Name:   ' + (u.fullName || '-') + '\n' +
+            'Member ID:      ' + (u.memberID || '-') + '\n' +
+            'Account Type:   ' + (u.accType || 'Savings') + '\n' +
+            'Currency:       GHS\n' +
+            'Phone:          ' + (u.phone || '-');
+        copyText(text, null, '📋 All details copied');
+    }
+
+    function shareDetails() {
+        if (!currentUser) { showToast('Loading...', 'info'); return; }
+        var u = currentUser;
+        var text =
+            'My CITFUND Account\n' +
+            'Account Number: ' + (u.accountNumber || '-') + '\n' +
+            'Account Name: ' + (u.fullName || '-') + '\n' +
+            'Member ID: ' + (u.memberID || '-') + '\n\n' +
+            'Send me money instantly — free for CITFUND members.';
+        if (navigator.share) {
+            navigator.share({ title: 'My CITFUND Account', text: text }).catch(function () {
+                copyText(text, null, '📋 Copied for sharing');
+            });
+        } else {
+            copyText(text, null, '📋 Copied for sharing');
+        }
+    }
+
+    /* ---------- TRANSACTIONS ---------- */
+    function renderTxns(txs) {
+        var wrap = $('recentTxns');
+        if (!wrap) return;
+        var list = Object.keys(txs || {})
+            .map(function (k) { return txs[k]; })
+            .filter(function (tx) { return tx && tx.date; })
+            .sort(function (a, b) { return new Date(b.date || 0) - new Date(a.date || 0); })
+            .slice(0, 3);
+
+        if (!list.length) {
+            wrap.innerHTML = '<div class="empty-txn"><i class="fa-regular fa-clock"></i><p>No transactions yet.</p></div>';
+            return;
+        }
+
+        var titles = {
+            deposit: 'Deposit',
+            withdraw: 'Withdrawal',
+            transfer: 'Transfer',
+            invest: 'Investment',
+            order: 'Purchase',
+            bill: 'Bill Payment',
+            airtime: 'Airtime'
+        };
+
+        var html = '';
+        for (var i = 0; i < list.length; i++) {
+            var tx = list[i];
+            var type = String(tx.type || '').toLowerCase();
+            var status = String(tx.status || 'pending').toLowerCase();
+            var amt = Number(tx.amount || 0);
+            var isCredit = (type === 'deposit' || type === 'transfer_in' || type === 'received');
+
+            var iconClass = 'pending', iconName = 'fa-clock', amountClass = 'pending', prefix = '';
+
+            if (status === 'success' || status === 'successful' || status === 'completed') {
+                if (isCredit) { iconClass = 'credit'; iconName = 'fa-arrow-down'; amountClass = 'credit'; prefix = '+'; }
+                else { iconClass = 'debit'; iconName = 'fa-arrow-up'; amountClass = 'debit'; prefix = '-'; }
+            } else if (status === 'failed' || status === 'cancelled' || status === 'reversed') {
+                iconClass = 'debit'; iconName = 'fa-xmark'; amountClass = 'debit';
+            }
+
+            var title = titles[type] || (type.charAt(0).toUpperCase() + type.slice(1));
+            var date = tx.date
+                ? new Date(tx.date).toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+                : '—';
+
+            html +=
+                '<div class="txn-item">' +
+                    '<div class="txn-icon ' + iconClass + '"><i class="fa-solid ' + iconName + '"></i></div>' +
+                    '<div class="txn-info">' +
+                        '<div class="title">' + title + '</div>' +
+                        '<div class="meta">' + date + '</div>' +
+                    '</div>' +
+                    '<div class="txn-amount">' +
+                        '<div class="value ' + amountClass + '">' + prefix + ' GHS ' + amt.toFixed(2) + '</div>' +
+                        '<div class="status ' + amountClass + '">' + status + '</div>' +
+                    '</div>' +
+                '</div>';
+        }
+        wrap.innerHTML = html;
+    }
+
+    /* ---------- PAYMENT METHODS ---------- */
+    function renderPaymentMethods(u) {
+        var momo = $('pmMomo');
+        var bank = $('pmBank');
+        if (momo && u.momoPhone && u.momoNetwork) {
+            momo.textContent = String(u.momoNetwork).toUpperCase() + ' · ' + u.momoPhone;
+            momo.style.color = 'var(--green-dark)';
+            momo.style.fontWeight = '800';
+        }
+        if (bank && u.bankAccount && (u.bankName || u.bankCode)) {
+            bank.textContent = (u.bankName || 'Bank') + ' · ' + u.bankAccount;
+            bank.style.color = 'var(--green-dark)';
+            bank.style.fontWeight = '800';
+        }
+    }
+
+    /* ---------- KYC PILL ---------- */
+    function renderKYC(u) {
+        var status = (u.kyc && u.kyc.status) || 'none';
+        var el = $('miniKYC');
+        if (!el) return;
+        el.classList.remove('ok', 'warn', 'bad');
+        if (status === 'approved') {
+            el.classList.add('ok');
+            el.innerHTML = '<i class="fa-solid fa-circle-check"></i> Verified';
+        } else if (status === 'pending') {
+            el.classList.add('warn');
+            el.innerHTML = '<i class="fa-solid fa-hourglass-half"></i> Pending';
+        } else if (status === 'rejected') {
+            el.classList.add('bad');
+            el.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Rejected';
+        } else {
+            el.classList.add('warn');
+            el.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Not verified';
+        }
+    }
+
+    /* ---------- RENDER USER ---------- */
+    function renderUser(u) {
+        currentUser = u;
+        var bal = parseFloat(u.balance) || 0;
+
+        setText('balanceDisplay', 'GHS ' + bal.toFixed(2));
+        setText('userName', u.fullName || 'Customer');
+        setText('userAccNum', u.accountNumber ? ('Acc ' + u.accountNumber) : 'CITFUND Member');
+        setText('miniMemberID', u.memberID || '—');
+        setText('ccAccountNumber', prettyAccount(u.accountNumber));
+        setText('ccAccountName', (u.fullName || '—').toUpperCase());
+        setText('rowAccountNumber', u.accountNumber || '—');
+        setText('rowAccountName', u.fullName || '—');
+        setText('rowMemberID', u.memberID || '—');
+        setText('rowAccType', u.accType || 'Savings');
+        setText('rowPhone', u.phone || '—');
+
+        var pic = $('profilePic');
+        if (pic) {
+            pic.src = (u.photo && String(u.photo).trim()) ? u.photo : DEFAULT_AVATAR;
+            pic.onerror = function () { pic.onerror = null; pic.src = DEFAULT_AVATAR; };
+        }
+
+        renderKYC(u);
+        renderPaymentMethods(u);
+        renderTxns(u.transactions || {});
+
+        var rc = $('retryCard');
+        if (rc) rc.style.display = 'none';
+        var cw = $('citCardWrap');
+        if (cw) cw.style.display = 'block';
+    }
+
+    /* ---------- RETRY CARD ---------- */
+    function showRetry(msg, title) {
+        var rc = $('retryCard');
+        var rmsg = $('retryMsg');
+        var rt = $('retryTitle');
+        if (title && rt) rt.textContent = title;
+        if (rmsg) rmsg.textContent = msg || 'Please check your connection and try again.';
+        if (rc) rc.style.display = 'block';
+        var cw = $('citCardWrap');
+        if (cw) cw.style.display = 'none';
+    }
+
+    function forceRelogin() {
+        try { localStorage.removeItem('cit_session'); } catch (e) {}
+        window.location.href = 'userlogin.html';
+    }
+
+    /* ---------- LOAD ---------- */
+    var refreshing = false;
+
+    function refreshAll() {
+        if (refreshing) return;
+        refreshing = true;
+        var btn = $('refreshBtn');
+        if (btn) btn.classList.add('spin');
+        loadUser(true).then(function () {
+            if (btn) btn.classList.remove('spin');
+            refreshing = false;
+        });
+    }
+
+    function loadUser(isManual) {
+        setGreeting();
+        return api('/api/dashboard', { uid: UID }).then(function (data) {
+            if (data && data.success && data.user && (data.user.fullName || data.user.accountNumber)) {
+                renderUser(data.user);
+                if (isManual) showToast('✅ Refreshed', 'success');
+            } else if (data && data.error && /not found/i.test(data.error)) {
+                showRetry('Your session has expired. Please log in again.', 'Session Expired');
+                try { localStorage.removeItem('cit_session'); } catch (e) {}
+            } else {
+                // Try secondary endpoint
+                return api('/api/user-data', { uid: UID }).then(function (data2) {
+                    if (data2 && data2.success && data2.user && (data2.user.fullName || data2.user.accountNumber)) {
+                        renderUser(data2.user);
+                        if (isManual) showToast('✅ Refreshed', 'success');
+                    } else {
+                        var errMsg = (data && data.error) || (data2 && data2.error) || 'Could not load account';
+                        showRetry(errMsg, 'Could Not Load Account');
+                    }
+                });
+            }
+        }).catch(function (e) {
+            showRetry('Unexpected error', 'Could Not Load Account');
+        }).then(function () {
+            hideLoading();
+        });
+    }
+
+    /* ---------- GLOBAL ERROR CATCH ---------- */
+    window.addEventListener('error', function () { hideLoading(); });
+    window.addEventListener('unhandledrejection', function () { hideLoading(); });
+
+    /* ---------- BOOT ---------- */
+    function boot() {
+        setTimeout(hideLoading, 3000);
+        loadUser(false);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+    } else {
+        boot();
+    }
+
+    setTimeout(hideLoading, 8000);
+
+    /* ---------- EXPOSE GLOBALS ---------- */
+    window.copyField = copyField;
+    window.copyAll = copyAll;
+    window.shareDetails = shareDetails;
+    window.refreshAll = refreshAll;
+    window.forceRelogin = forceRelogin;
+
+})();
+</script>
+</body>
+</html>

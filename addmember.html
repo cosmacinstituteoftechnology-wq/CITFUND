@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIT FUND | Premier Account Opening</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- CryptoJS for Encryption (Handled by Server Side, but used here for sending secure payloads) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+
+    <style>
+        :root {
+            --navy: #0b1f4a;
+            --navy-dark: #06183d;
+            --gold: #e0a800;
+            --gold-light: #ffc107;
+            --bg: #f4f6fb;
+            --white: #ffffff;
+            --text: #333333;
+            --text-muted: #6b7a8f;
+            --border: #e8edf5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg); color: var(--text); }
+
+        /* ================= PREMIUM HEADER ================= */
+        .top-header {
+            background: var(--white);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .brand { display: flex; align-items: center; gap: 15px; }
+        .brand-icon {
+            width: 50px; height: 50px;
+            background: url('https://cdn-icons-png.flaticon.com/512/3135/3135755.png') center/contain no-repeat;
+            filter: drop-shadow(0 5px 10px rgba(224,168,0,0.4));
+        }
+        .brand h1 { font-size: 26px; font-weight: 800; color: var(--navy); }
+        .brand p { font-size: 10px; letter-spacing: 2px; color: var(--text-muted); }
+
+        /* ================= HERO BANNER ================= */
+        .hero-banner {
+            background: url('https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=1920&auto=format&fit=crop') center/cover;
+            height: 220px; position: relative;
+        }
+        .hero-banner::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(11,31,74,0.9), rgba(6,24,61,0.7)); }
+        .banner-content { position: relative; z-index: 1; text-align: center; color: white; padding-top: 60px; }
+        .banner-content h2 { font-size: 40px; font-weight: 800; text-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .banner-content p { font-size: 16px; color: #d4deee; }
+
+        /* ================= LAYOUT ================= */
+        .page-container { padding: 30px 50px; max-width: 1400px; margin: 0 auto; }
+        .main-grid { display: grid; grid-template-columns: 280px 1fr 320px; gap: 30px; }
+
+        /* ================= LEFT SIDEBAR ================= */
+        .sidebar-card { background: var(--white); border-radius: 20px; padding: 25px; border: 1px solid var(--border); margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+        .sidebar-card h4 { color: var(--navy); font-size: 14px; font-weight: 700; margin-bottom: 20px; }
+        .step-wrapper { display: flex; gap: 15px; margin-bottom: 15px; cursor: pointer; }
+        .step-icon { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #ddd; display: flex; align-items: center; justify-content: center; font-weight: bold; background: white; }
+        .step-icon.active { background: var(--gold); border-color: var(--gold); color: white; box-shadow: 0 5px 15px rgba(224,168,0,0.3); }
+        .step-icon.completed { background: #4caf50; border-color: #4caf50; color: white; font-size: 12px; }
+        .step-text h5 { font-size: 14px; font-weight: 600; color: var(--navy); }
+        .step-text p { font-size: 12px; color: var(--text-muted); }
+
+        .why-bank { background: linear-gradient(135deg, #f0f4ff, #fff); border-radius: 20px; padding: 25px; text-align: center; border: 1px solid #dce5f5; }
+        .why-bank img { width: 80px; margin-bottom: 15px; }
+        .why-bank ul { list-style: none; text-align: left; font-size: 13px; color: var(--text-muted); }
+        .why-bank li { margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+
+        /* ================= CENTER FORM ================= */
+        .center-content { background: var(--white); padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--border); }
+        .step-container { display: none; animation: fadeInSlide 0.4s ease; }
+        .step-container.active { display: block; }
+        @keyframes fadeInSlide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-title { font-size: 22px; color: var(--navy); font-weight: 800; margin-bottom: 25px; border-bottom: 2px solid #f0f4ff; padding-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .section-title i { color: var(--gold); font-size: 24px; }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
+        .form-group input, .form-group select { padding: 15px; border: 1px solid var(--border); border-radius: 12px; font-size: 15px; background: #fafbfc; transition: 0.3s; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--gold); outline: none; background: white; box-shadow: 0 0 0 4px rgba(224,168,0,0.1); }
+
+        .upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .upload-box {
+            border: 2px dashed #ccc; border-radius: 15px; padding: 30px; text-align: center;
+            background: url('https://cdn-icons-png.flaticon.com/512/2910/2910763.png') center/contain no-repeat, #fafbfc; /* Subtle support bg */
+            cursor: pointer; transition: 0.3s;
+        }
+        .upload-box:hover { border-color: var(--gold); background: #fff8e1; }
+        .upload-box i { font-size: 40px; color: var(--gold); margin-bottom: 10px; }
+        .upload-box strong { color: var(--navy); display: block; margin-top: 10px; }
+        .file-input { display: none; }
+
+        .btn-row { display: flex; justify-content: space-between; margin-top: 40px; }
+        .btn { padding: 16px 45px; border-radius: 12px; font-weight: 700; cursor: pointer; border: none; font-size: 16px; transition: 0.3s; }
+        .btn-back { background: white; border: 2px solid var(--border); color: var(--text-muted); }
+        .btn-next, .btn-submit { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--navy); box-shadow: 0 10px 25px rgba(224,168,0,0.3); }
+        .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* ================= RIGHT SIDEBAR ================= */
+        .account-summary { background: url('https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=1200&auto=format&fit=crop') center/cover; border-radius: 20px; padding: 25px; color: white; position: relative; overflow: hidden; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(11,31,74,0.3); }
+        .account-summary::before { content: ''; position: absolute; inset: 0; background: rgba(11,31,74,0.92); }
+        .account-summary img { width: 80px; position: absolute; right: 20px; top: 20px; opacity: 0.2; }
+        .account-summary h4, .account-summary div { position: relative; z-index: 1; }
+        .summary-row { font-size: 14px; display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+        .checklist-card { background: var(--white); border-radius: 20px; padding: 25px; border: 1px solid var(--border); margin-bottom: 20px; }
+        .check-icon { color: #4caf50; margin-right: 10px; }
+
+        .help-card { background: var(--white); border-radius: 20px; padding: 25px; text-align: center; border: 1px solid var(--border); }
+        .help-card img { width: 60px; margin-bottom: 15px; }
+
+        @media (max-width: 1200px) { .main-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { .page-container { padding: 20px; } .form-row { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<header class="top-header">
+    <div class="brand">
+        <div class="brand-icon"></div>
+        <div>
+            <h1>CIT FUND</h1>
+            <p>PROFESSIONAL BANKING SYSTEM<br>YOUR TRUST, OUR PRIORITY</p>
+        </div>
+    </div>
+    <div class="header-right">
+        <div class="user-profile">
+            <i class="fa-solid fa-user-circle" style="font-size: 30px; color: var(--gold);"></i>
+            <div><strong>New Applicant</strong><br><small style="color: var(--text-muted);">Secure Signup</small></div>
+        </div>
+    </div>
+</header>
+
+<div class="hero-banner">
+    <div class="banner-content">
+        <h2>Open a Premier Account</h2>
+        <p>Join CIT FUND today and enjoy secure, reliable and innovative banking.</p>
+    </div>
+</div>
+
+<div class="page-container">
+    <div class="main-grid">
+        
+        <!-- LEFT SIDEBAR -->
+        <div class="left-sidebar">
+            <div class="sidebar-card">
+                <h4>ACCOUNT OPENING STEPS</h4>
+                <div class="step-wrapper" onclick="goToStep(1)"><div class="step-icon active" id="stepIcon1">1</div><div class="step-text"><h5>Personal Info</h5><p>Basic details</p></div></div>
+                <div class="step-wrapper" onclick="goToStep(2)"><div class="step-icon" id="stepIcon2">2</div><div class="step-text"><h5>Contact Info</h5><p>Reach details</p></div></div>
+                <div class="step-wrapper" onclick="goToStep(3)"><div class="step-icon" id="stepIcon3">3</div><div class="step-text"><h5>Identification</h5><p>Verification</p></div></div>
+                <div class="step-wrapper" onclick="goToStep(4)"><div class="step-icon" id="stepIcon4">4</div><div class="step-text"><h5>Account Info</h5><p>Preferences</p></div></div>
+                <div class="step-wrapper" onclick="goToStep(5)"><div class="step-icon" id="stepIcon5">5</div><div class="step-text"><h5>Next of Kin</h5><p>Emergency</p></div></div>
+                <div class="step-wrapper" onclick="goToStep(6)"><div class="step-icon" id="stepIcon6">6</div><div class="step-text"><h5>Security & Pay</h5><p>Encrypt & Submit</p></div></div>
+            </div>
+
+            <div class="why-bank">
+                <img src="https://cdn-icons-png.flaticon.com/512/3063/3063822.png" alt="Shield">
+                <h4>Why bank with us?</h4>
+                <ul>
+                    <li><i class="fa-solid fa-circle-check" style="color: var(--gold);"></i> 100% Bank-Grade Security</li>
+                    <li><i class="fa-solid fa-circle-check" style="color: var(--gold);"></i> Fast Account Opening</li>
+                    <li><i class="fa-solid fa-circle-check" style="color: var(--gold);"></i> 24/7 Customer Support</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CENTER FORM -->
+        <div class="center-content">
+            <!-- STEP 1 -->
+            <div class="step-container active" id="step1">
+                <div class="section-title"><i class="fa-solid fa-user"></i> 1. PERSONAL INFO</div>
+                <div class="form-row">
+                    <div class="form-group"><label>Full Name *</label><input type="text" id="fullName" required></div>
+                    <div class="form-group"><label>Date of Birth *</label><input type="date" id="dob" required></div>
+                    <div class="form-group"><label>Gender *</label><select id="gender" required><option value="">Select</option><option>Male</option><option>Female</option></select></div>
+                    <div class="form-group"><label>Marital Status *</label><select id="marital" required><option value="">Select</option><option>Single</option><option>Married</option></select></div>
+                    <div class="form-group"><label>Nationality *</label><select id="nationality" required><option value="">Select</option><option>Ghanaian</option><option>Nigerian</option><option>Ivorian</option><option>Togolese</option><option>Burkinabe</option></select></div>
+                    <div class="form-group"><label>Place of Birth *</label><input type="text" id="placeOfBirth" required></div>
+                </div>
+                <div class="btn-row"><button class="btn btn-back" disabled>← Back</button><button class="btn btn-next" onclick="goToStep(2)">Continue →</button></div>
+            </div>
+
+            <!-- STEP 2 -->
+            <div class="step-container" id="step2">
+                <div class="section-title"><i class="fa-solid fa-phone"></i> 2. CONTACT INFO</div>
+                <div class="form-row">
+                    <div class="form-group"><label>Phone *</label><div style="display:flex;"><select style="width:80px; border-radius:12px 0 0 12px;"><option>🇬🇭 +233</option></select><input type="tel" id="phone" style="border-radius: 0 12px 12px 0;" required></div></div>
+                    <div class="form-group"><label>Email *</label><input type="email" id="email" required></div>
+                    <div class="form-group"><label>Address *</label><input type="text" id="address" required></div>
+                    <div class="form-group"><label>City *</label><input type="text" id="city" required></div>
+                    <div class="form-group"><label>Region *</label><select id="region" required><option>Greater Accra</option><option>Ashanti</option><option>Western</option><option>Central</option><option>Volta</option><option>Northern</option></select></div>
+                    <div class="form-group"><label>Postal Code *</label><input type="text" id="postal" required></div>
+                </div>
+                <div class="btn-row"><button class="btn btn-back" onclick="goToStep(1)">← Back</button><button class="btn btn-next" onclick="goToStep(3)">Continue →</button></div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div class="step-container" id="step3">
+                <div class="section-title"><i class="fa-solid fa-id-card"></i> 3. IDENTIFICATION</div>
+                <div class="form-row">
+                    <div class="form-group"><label>ID Type *</label><select id="idType" required><option value="">Select</option><option>Ghana Card</option><option>Passport</option></select></div>
+                    <div class="form-group"><label>ID Number *</label><input type="text" id="idNumber" required></div>
+                </div>
+                <div class="upload-grid">
+                    <div class="upload-box" onclick="document.getElementById('idFrontInput').click()">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <p>ID Front *</p><strong id="idFrontName">Upload</strong>
+                        <input type="file" id="idFrontInput" class="file-input" required onchange="updateFileName(this, 'idFrontName')">
+                    </div>
+                    <div class="upload-box" onclick="document.getElementById('idBackInput').click()">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <p>ID Back *</p><strong id="idBackName">Upload</strong>
+                        <input type="file" id="idBackInput" class="file-input" required onchange="updateFileName(this, 'idBackName')">
+                    </div>
+                </div>
+                <div class="upload-grid" style="margin-top:20px;">
+                    <div class="upload-box" onclick="document.getElementById('passportInput').click()">
+                        <i class="fa-solid fa-user-tie"></i>
+                        <p>Passport Photo *</p><strong id="passportName">Upload</strong>
+                        <input type="file" id="passportInput" class="file-input" required onchange="updateFileName(this, 'passportName')">
+                    </div>
+                </div>
+                <div class="btn-row"><button class="btn btn-back" onclick="goToStep(2)">← Back</button><button class="btn btn-next" onclick="goToStep(4)">Continue →</button></div>
+            </div>
+
+            <!-- STEP 4 -->
+            <div class="step-container" id="step4">
+                <div class="section-title"><i class="fa-solid fa-building-columns"></i> 4. ACCOUNT INFO</div>
+                <div style="background: #f0f4ff; border-left: 5px solid var(--gold); padding: 20px; border-radius: 8px; margin-bottom: 30px; text-align: center;">
+                    <small>Your Secured Account Number</small>
+                    <h2 id="generatedAccount" style="margin-top:10px; font-family:monospace; font-size:28px; color:var(--navy);">N/A</h2>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Account Type *</label><select id="accType" onchange="generateNumericAccount()" required><option value="">Select</option><option value="SAV">Savings</option><option value="CUR">Current</option></select></div>
+                    <div class="form-group"><label>Branch *</label><select id="branch" required><option>Main Branch - Accra</option></select></div>
+                    <div class="form-group"><label>Initial Deposit *</label><input type="number" id="deposit" value="1" min="1" required></div>
+                    <div class="form-group"><label>Currency</label><select id="currency"><option>GHS - Ghana Cedi</option></select></div>
+                </div>
+                <div class="btn-row"><button class="btn btn-back" onclick="goToStep(3)">← Back</button><button class="btn btn-next" onclick="goToStep(5)">Continue →</button></div>
+            </div>
+
+            <!-- STEP 5 -->
+            <div class="step-container" id="step5">
+                <div class="section-title"><i class="fa-solid fa-user-group"></i> 5. NEXT OF KIN</div>
+                <div class="form-row">
+                    <div class="form-group"><label>Full Name *</label><input type="text" id="nokName" required></div>
+                    <div class="form-group"><label>Relationship *</label><select id="nokRel" required><option>Spouse</option><option>Parent</option><option>Sibling</option><option>Child</option></select></div>
+                    <div class="form-group"><label>Phone *</label><input type="tel" id="nokPhone" required></div>
+                </div>
+                <div class="btn-row"><button class="btn btn-back" onclick="goToStep(4)">← Back</button><button class="btn btn-next" onclick="goToStep(6)">Continue →</button></div>
+            </div>
+
+            <!-- STEP 6 -->
+            <div class="step-container" id="step6">
+                <div class="section-title"><i class="fa-solid fa-lock"></i> 6. SECURITY & PAY</div>
+                <div class="form-row">
+                    <div class="form-group"><label>Occupation *</label><select id="occupation" required><option value="">Select</option><option>Student</option><option>Civil Servant</option><option>Private Sector</option><option>Business Owner</option></select></div>
+                    <div class="form-group"><label>Employer *</label><input type="text" id="employer" required></div>
+                    <div class="form-group"><label>Monthly Income *</label><select id="income" required><option>Below GHS 1,000</option><option>GHS 1,000 - 5,000</option><option>Above GHS 5,000</option></select></div>
+                    <div class="form-group"><label>Source of Funds *</label><select id="sourceFunds" required><option>Salary</option><option>Business</option><option>Savings</option></select></div>
+                </div>
+
+                <div style="background:#fff8e1; padding:20px; border-radius:10px; margin-bottom:20px;">
+                    <h4><i class="fa-solid fa-key"></i> Set Security Password</h4>
+                    <div class="form-row">
+                        <div class="form-group"><label>Password *</label><input type="password" id="password" placeholder="Min 8, 1 Uppercase, 1 Num" required></div>
+                        <div class="form-group"><label>Confirm *</label><input type="password" id="confirmPassword" required></div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <label><input type="checkbox" id="declaration" checked> I accept the <u>Terms & Conditions</u>.</label>
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn btn-back" onclick="goToStep(5)">← Back</button>
+                    <button class="btn btn-submit" id="submitBtn" onclick="payAndSubmit()"><i class="fa-solid fa-shield-halved"></i> Pay & Submit Securely</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR -->
+        <div class="right-sidebar">
+            <div class="account-summary">
+                <img src="https://cdn-icons-png.flaticon.com/512/3014/3014461.png" alt="Card">
+                <h4>ACCOUNT SUMMARY</h4>
+                <div class="summary-row"><span>Account Type</span><strong>Savings</strong></div>
+                <div class="summary-row"><span>Currency</span><strong>GHS</strong></div>
+                <div class="summary-row"><span>Deposit</span><strong id="summaryDeposit">GH¢ 1.00</strong></div>
+                <div class="summary-row"><span>Account No.</span><strong id="summaryAccount">N/A</strong></div>
+            </div>
+
+            <div class="checklist-card">
+                <h4>DOCUMENTS CHECKLIST</h4>
+                <div class="checklist-item"><span class="check-icon">✔</span> Valid ID (Front & Back)</div>
+                <div class="checklist-item"><span class="check-icon">✔</span> Proof of Address</div>
+                <div class="checklist-item"><span class="check-icon">✔</span> Passport Photo</div>
+            </div>
+
+            <div class="help-card">
+                <img src="https://cdn-icons-png.flaticon.com/512/2910/2910763.png" alt="Support">
+                <h4>NEED HELP?</h4>
+                <button class="btn" style="background: var(--gold); color: white;">Contact Support</button>
+                <p style="margin-top:15px;">Call: 0302 123 456</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================= -->
+<!-- SECURE FRONTEND LOGIC (NO KEYS HERE - COMMUNICATES WITH SERVER) -->
+<!-- ============================================================= -->
+<script>
+    // 1. Account Generation Logic
+    window.generateNumericAccount = function() {
+        const name = document.getElementById('fullName').value.trim();
+        const type = document.getElementById('accType').value;
+        if(!name || !type) return;
+        
+        const namePart = name.substring(0, 3).toUpperCase();
+        let typeCode = type === 'SAV' ? 11 : 22;
+        const base = `CIT${namePart}${typeCode}`;
+        let hash = 0;
+        for (let i = 0; i < base.length; i++) hash = (hash * 31 + base.charCodeAt(i)) % 10000000000;
+        let accNum = "215" + String(hash).padStart(10, '0');
+        let memberHash = (hash * 7) % 10000000;
+        let memID = "CIT" + String(memberHash).padStart(7, '0');
+        
+        document.getElementById('generatedAccount').innerText = accNum;
+        document.getElementById('summaryAccount').innerText = accNum;
+        window.generatedAccountNum = accNum;
+        window.generatedMemberID = memID;
+    }
+
+    // 2. File Name Update
+    window.updateFileName = function(input, targetId) {
+        if(input.files && input.files[0]) document.getElementById(targetId).innerText = input.files[0].name;
+    }
+
+    // 3. Step Navigation
+    window.goToStep = function(step) {
+        document.querySelectorAll('.step-container').forEach(el => el.classList.remove('active'));
+        document.getElementById('step' + step).classList.add('active');
+        
+        for(let i = 1; i <= 6; i++) {
+            const icon = document.getElementById('stepIcon' + i);
+            icon.className = 'step-icon';
+            icon.innerHTML = i;
+            if(i === step) icon.classList.add('active');
+            else if(i < step) { icon.classList.add('completed'); icon.innerHTML = '✔'; }
+        }
+    }
+
+    // 4. Main Payment & Submission Logic (Calls Server)
+    window.payAndSubmit = async function() {
+        // --- Security Checks ---
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const pass = document.getElementById('password').value;
+        const confirm = document.getElementById('confirmPassword').value;
+        const deposit = parseFloat(document.getElementById('deposit').value);
+
+        if(!document.getElementById('fullName').value) return alert("Name required");
+        if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert("Invalid Email");
+        if(!/^(?=.*[A-Z])(?=.*\d).{8,}$/.test(pass)) return alert("Password must be 8+ chars, 1 Uppercase, 1 Number");
+        if(pass !== confirm) return alert("Passwords do not match");
+        if(!window.generatedAccountNum) return alert("Select Account Type");
+        if(isNaN(deposit) || deposit < 1) return alert("Minimum deposit is 1 GHS");
+        if(!document.getElementById('idFrontInput').files.length) return alert("Upload ID Front");
+        if(!document.getElementById('idBackInput').files.length) return alert("Upload ID Back");
+
+        // Lock Button
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Contacting Server...';
+
+        // ==== NEW SERVER CALLS (REMOVED ALL API KEYS) ====
+        try {
+            // STEP 1: Ask server to initialize Paystack
+            const initRes = await fetch('/api/init-deposit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: deposit, email: email })
+            });
+            const initData = await initRes.json();
+
+            if(!initData.authorization_url) throw new Error("Could not initialize payment");
+
+            // STEP 2: Redirect to Paystack
+            window.location.href = initData.authorization_url;
+
+            // (Server will handle the rest in the background, 
+            // and you would normally redirect back to userdashboard.html)
+            
+        } catch (error) {
+            alert("Server Error: " + error.message);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Pay & Submit Securely';
+        }
+    }
+</script>
+
+<!-- ============================================================= -->
+<!-- SERVER SIDE ENDPOINT REQUIREMENTS (Add these to server.js)   -->
+<!-- ============================================================= -->
+<!-- 
+1. POST /api/init-deposit (Initialize Paystack payment using sk_live)
+   req: { amount, email }
+   res: { authorization_url }
+
+2. POST /api/complete-registration (Verify payment, process data, save to Firebase/SQL)
+   req: { reference, fullName, dob, gender, ..., accountNumber, memberID, password, ... }
+   res: { success: true }
+-->
+</body>
+</html>

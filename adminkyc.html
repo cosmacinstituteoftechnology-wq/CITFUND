@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CIT FUND | Admin KYC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+        body { background:#f4f6fb; padding:20px; }
+        .container { max-width:1200px; margin:0 auto; }
+        .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px; }
+        .header h1 { font-size:24px; color:#0b1f4a; display:flex; align-items:center; gap:10px; }
+        .header h1 i { color:#ff5a00; }
+        .logout-btn { background:#e74c3c; color:white; border:none; padding:10px 20px; border-radius:30px; font-weight:600; cursor:pointer; transition:0.3s; }
+        .logout-btn:hover { background:#c0392b; }
+        #loginSection { background:white; padding:30px; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.1); max-width:400px; margin:40px auto; }
+        #loginSection h2 { margin-bottom:16px; }
+        #loginSection input { width:100%; padding:12px; border:2px solid #e0e0e0; border-radius:10px; margin-bottom:12px; font-size:15px; }
+        #loginSection button { width:100%; padding:12px; background:#ff5a00; color:white; border:none; border-radius:10px; font-weight:700; font-size:16px; cursor:pointer; }
+        #loginError { color:#e74c3c; margin-top:10px; text-align:center; }
+        .controls { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px; align-items:center; }
+        .controls .filter-group { display:flex; gap:8px; flex-wrap:wrap; }
+        .controls .filter-group button { padding:8px 18px; border:2px solid #ddd; border-radius:30px; background:white; font-weight:600; cursor:pointer; transition:0.3s; }
+        .controls .filter-group button.active { background:#0b1f4a; color:white; border-color:#0b1f4a; }
+        .controls .refresh-btn { padding:8px 18px; background:#ff5a00; color:white; border:none; border-radius:30px; font-weight:600; cursor:pointer; margin-left:auto; }
+        .controls .refresh-btn:hover { background:#e04f00; }
+        .controls .count { font-size:14px; color:#6b7a8f; }
+        .table-wrap { background:white; border-radius:16px; overflow:auto; box-shadow:0 4px 12px rgba(0,0,0,0.05); }
+        table { width:100%; border-collapse:collapse; min-width:800px; }
+        th { background:#f8f9fc; color:#1a2b4c; font-weight:700; font-size:13px; padding:14px 12px; text-align:left; border-bottom:2px solid #e8edf5; }
+        td { padding:12px; border-bottom:1px solid #e8edf5; vertical-align:middle; font-size:14px; }
+        tr:hover { background:#f8f9fc; }
+        .status-badge { display:inline-block; padding:4px 14px; border-radius:20px; font-size:12px; font-weight:600; }
+        .status-pending { background:#fff3e0; color:#e65100; }
+        .status-approved { background:#e8f5e9; color:#1e5a1e; }
+        .status-denied { background:#ffebee; color:#c62828; }
+        .status-none { background:#f5f5f5; color:#6b7a8f; }
+        .img-thumb { width:60px; height:60px; object-fit:cover; border-radius:8px; cursor:pointer; border:2px solid #ddd; transition:0.2s; }
+        .img-thumb:hover { transform:scale(1.05); border-color:#ff5a00; box-shadow:0 2px 8px rgba(255,90,0,0.3); }
+        .img-thumb[src=""] { display:none; }
+        .action-btn { padding:4px 12px; border:none; border-radius:20px; font-weight:600; font-size:12px; cursor:pointer; transition:0.3s; margin:2px; }
+        .action-btn.approve { background:#4caf50; color:white; }
+        .action-btn.approve:hover { background:#388e3c; }
+        .action-btn.deny { background:#e74c3c; color:white; }
+        .action-btn.deny:hover { background:#c0392b; }
+        .action-btn.reset { background:#ff9800; color:white; }
+        .action-btn.reset:hover { background:#e68900; }
+        .action-btn:disabled { opacity:0.4; cursor:not-allowed; }
+        .images-group { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+        .image-label { font-size:10px; color:#999; display:block; margin-top:2px; }
+        .img-wrapper { display:flex; flex-direction:column; align-items:center; }
+        .lightbox { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:999; justify-content:center; align-items:center; flex-direction:column; }
+        .lightbox.show { display:flex; }
+        .lightbox img { max-width:90%; max-height:80%; border-radius:8px; box-shadow:0 8px 30px rgba(0,0,0,0.5); }
+        .lightbox .close { position:absolute; top:20px; right:30px; color:white; font-size:40px; cursor:pointer; transition:0.3s; z-index:1; }
+        .lightbox .close:hover { color:#ff5a00; }
+        .lightbox .caption { color:white; margin-top:16px; font-size:14px; opacity:0.8; }
+        .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#0b1f4a; color:white; padding:14px 28px; border-radius:30px; z-index:9999; display:none; font-weight:500; box-shadow:0 8px 30px rgba(0,0,0,0.2); animation:slideUp 0.35s ease; max-width:90%; text-align:center; }
+        .toast.show { display:block; }
+        .toast.error { background:#e74c3c; }
+        .toast.success { background:#4caf50; }
+        @keyframes slideUp { from { opacity:0; transform:translateX(-50%) translateY(30px) scale(0.95); } to { opacity:1; transform:translateX(-50%) translateY(0) scale(1); } }
+        .loading { text-align:center; padding:40px; color:#6b7a8f; }
+        @media (max-width:600px) {
+            .header h1 { font-size:20px; }
+            .controls { flex-direction:column; align-items:stretch; }
+            .controls .filter-group { justify-content:center; }
+            .controls .refresh-btn { margin-left:0; }
+            .table-wrap { overflow-x:auto; }
+            td, th { padding:8px 6px; font-size:12px; }
+            .img-thumb { width:50px; height:50px; }
+            .action-btn { font-size:10px; padding:2px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+    <div class="header">
+        <h1><i class="fa-solid fa-shield-halved"></i> KYC Admin</h1>
+        <button class="logout-btn" id="logoutBtn" onclick="logout()"><i class="fa-solid fa-sign-out-alt"></i> Logout</button>
+    </div>
+
+    <!-- Login Section -->
+    <div id="loginSection">
+        <h2>Admin Login</h2>
+        <input type="password" id="adminPassword" placeholder="Enter admin password" />
+        <button onclick="adminLogin()">Login</button>
+        <div id="loginError"></div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" style="display:none;">
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="filter-group">
+                <button class="active" data-filter="all" onclick="setFilter('all')">All</button>
+                <button data-filter="pending" onclick="setFilter('pending')">Pending</button>
+                <button data-filter="approved" onclick="setFilter('approved')">Approved</button>
+                <button data-filter="denied" onclick="setFilter('denied')">Denied</button>
+            </div>
+            <span class="count" id="recordCount">0 records</span>
+            <button class="refresh-btn" onclick="loadKYC()"><i class="fa-solid fa-sync"></i> Refresh</button>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrap" id="tableWrap">
+            <div class="loading">Loading KYC records...</div>
+        </div>
+    </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <span class="close">&times;</span>
+    <img id="lightboxImg" src="" alt="KYC Image">
+    <div class="caption" id="lightboxCaption"></div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<script>
+    // ============================================================
+    // ADMIN KYC – Direct Firebase Access, No Server API Needed
+    // ============================================================
+
+    const KYC_DB_URL = 'https://kyc-cit-user-default-rtdb.firebaseio.com';
+    const FIREBASE_SECRET = '90tPeiM0evu2QTt9dODNXPo04ktQ5wCAu8wQbL4O';
+    const ADMIN_PASSWORD = 'Admin@2025!Secure'; // Must match server.js
+
+    // ===== TOAST =====
+    function showToast(msg, type = 'info') {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast';
+        if (type === 'error') t.classList.add('error');
+        else if (type === 'success') t.classList.add('success');
+        t.classList.add('show');
+        clearTimeout(t._timeout);
+        t._timeout = setTimeout(() => t.classList.remove('show'), 4000);
+    }
+
+    // ===== LIGHTBOX =====
+    function openLightbox(src, label) {
+        document.getElementById('lightboxImg').src = src;
+        document.getElementById('lightboxCaption').textContent = label || 'KYC Image';
+        document.getElementById('lightbox').classList.add('show');
+    }
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.remove('show');
+    }
+
+    // ===== ADMIN LOGIN (Local Check) =====
+    function adminLogin() {
+        const password = document.getElementById('adminPassword').value.trim();
+        if (!password) {
+            document.getElementById('loginError').textContent = 'Please enter the admin password.';
+            return;
+        }
+        if (password === ADMIN_PASSWORD) {
+            localStorage.setItem('cit_admin_logged', 'true');
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            loadKYC();
+            showToast('✅ Admin logged in', 'success');
+        } else {
+            document.getElementById('loginError').textContent = 'Invalid password';
+        }
+    }
+
+    // ===== LOGOUT =====
+    function logout() {
+        localStorage.removeItem('cit_admin_logged');
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('loginSection').style.display = 'block';
+        document.getElementById('adminPassword').value = '';
+        document.getElementById('loginError').textContent = '';
+        showToast('Logged out', 'info');
+    }
+
+    // ===== FETCH KYC FROM FIREBASE =====
+    let allKYC = [];
+    let currentFilter = 'all';
+
+    async function loadKYC() {
+        if (!localStorage.getItem('cit_admin_logged')) {
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('dashboard').style.display = 'none';
+            return;
+        }
+
+        const wrap = document.getElementById('tableWrap');
+        wrap.innerHTML = '<div class="loading">Loading KYC records...</div>';
+
+        try {
+            const res = await fetch(`${KYC_DB_URL}/kyc.json`);
+            if (!res.ok) throw new Error('Failed to fetch KYC data');
+            const data = await res.json();
+            if (!data) {
+                allKYC = [];
+            } else {
+                allKYC = Object.keys(data).map(uid => {
+                    const kyc = data[uid];
+                    return {
+                        uid,
+                        kyc,
+                        fullName: kyc.fullName || 'Unknown'
+                    };
+                });
+            }
+            renderTable();
+        } catch (e) {
+            wrap.innerHTML = `<div class="loading" style="color:red;">Error loading KYC: ${e.message}</div>`;
+        }
+    }
+
+    // ===== RENDER TABLE =====
+    function renderTable() {
+        const filter = currentFilter;
+        let filtered = allKYC;
+        if (filter !== 'all') {
+            filtered = allKYC.filter(rec => rec.kyc.status === filter);
+        }
+
+        const wrap = document.getElementById('tableWrap');
+        document.getElementById('recordCount').textContent = filtered.length + ' records';
+
+        if (filtered.length === 0) {
+            wrap.innerHTML = `<div class="loading">No KYC records ${filter !== 'all' ? 'with status "'+filter+'"' : ''}.</div>`;
+            return;
+        }
+
+        let html = `<table>
+            <thead><tr>
+                <th>User</th>
+                <th>ID Details</th>
+                <th>Images</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr></thead><tbody>`;
+
+        filtered.forEach(rec => {
+            const kyc = rec.kyc;
+            const status = kyc.status || 'none';
+            const statusClass = 'status-' + status;
+
+            // Image fields
+            const images = [
+                { label: 'Front', url: kyc.idFront },
+                { label: 'Back', url: kyc.idBack },
+                { label: 'Address', url: kyc.addressProof },
+                { label: 'Selfie', url: kyc.selfie }
+            ];
+
+            let imgs = '';
+            images.forEach(img => {
+                if (img.url && (img.url.startsWith('http') || img.url.startsWith('data:image'))) {
+                    imgs += `
+                        <div class="img-wrapper">
+                            <img src="${img.url}" class="img-thumb" onclick="event.stopPropagation(); openLightbox('${img.url}','${img.label}')" title="${img.label}" />
+                            <span class="image-label">${img.label}</span>
+                        </div>
+                    `;
+                } else {
+                    imgs += `<span style="font-size:10px;color:#999;">${img.label}: no image</span>`;
+                }
+            });
+
+            const canAction = (status === 'pending' || status === 'none');
+
+            html += `<tr>
+                <td><strong>${rec.fullName || 'Unknown'}</strong><br><span style="font-size:12px;color:#6b7a8f;">UID: ${rec.uid}</span></td>
+                <td style="font-size:13px;">
+                    ${kyc.idType || 'N/A'}<br>
+                    ${kyc.idNumber || ''}<br>
+                    <span style="font-size:11px;color:#999;">${kyc.dob || ''}</span>
+                </td>
+                <td><div class="images-group">${imgs}</div></td>
+                <td><span class="status-badge ${statusClass}">${status.toUpperCase()}</span></td>
+                <td>
+                    ${canAction ? `
+                        <button class="action-btn approve" onclick="updateStatus('${rec.uid}','approved')">Approve</button>
+                        <button class="action-btn deny" onclick="updateStatus('${rec.uid}','denied')">Deny</button>
+                    ` : ''}
+                    <button class="action-btn reset" onclick="resetKYC('${rec.uid}')">Reset</button>
+                </td>
+            </tr>`;
+        });
+
+        html += '</tbody></table>';
+        wrap.innerHTML = html;
+    }
+
+    // ===== SET FILTER =====
+    function setFilter(filter) {
+        currentFilter = filter;
+        document.querySelectorAll('.filter-group button').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.filter === filter) btn.classList.add('active');
+        });
+        renderTable();
+    }
+
+    // ===== UPDATE KYC STATUS (Approve/Deny) =====
+    async function updateStatus(uid, newStatus) {
+        if (!confirm(`Are you sure you want to ${newStatus} this KYC?`)) return;
+        try {
+            const payload = {
+                status: newStatus,
+                updatedAt: Date.now(),
+                reviewedBy: 'admin'
+            };
+            const res = await fetch(`${KYC_DB_URL}/kyc/${uid}.json?auth=${FIREBASE_SECRET}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error('Failed to update status');
+            showToast(`✅ KYC ${newStatus} successfully`, 'success');
+            loadKYC();
+        } catch (e) {
+            showToast('❌ Error: ' + e.message, 'error');
+        }
+    }
+
+    // ===== RESET KYC =====
+    async function resetKYC(uid) {
+        if (!confirm('⚠️ This will reset the KYC status to "none". Are you sure?')) return;
+        try {
+            const payload = {
+                status: 'none',
+                submittedAt: null,
+                updatedAt: Date.now()
+            };
+            const res = await fetch(`${KYC_DB_URL}/kyc/${uid}.json?auth=${FIREBASE_SECRET}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error('Failed to reset');
+            showToast('🔄 KYC reset successfully', 'success');
+            loadKYC();
+        } catch (e) {
+            showToast('❌ Error: ' + e.message, 'error');
+        }
+    }
+
+    // ===== AUTO-LOGIN CHECK =====
+    (function checkSession() {
+        if (localStorage.getItem('cit_admin_logged') === 'true') {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            loadKYC();
+        } else {
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('dashboard').style.display = 'none';
+        }
+    })();
+
+    // ===== KEYBOARD SHORTCUT (enter to login) =====
+    document.getElementById('adminPassword').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') adminLogin();
+    });
+
+    // ===== CLOSE LIGHTBOX ON ESC =====
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeLightbox();
+    });
+</script>
+</body>
+</html>

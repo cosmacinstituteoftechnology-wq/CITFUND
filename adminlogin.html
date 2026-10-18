@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CIT FUND | Admin Login</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #0b1f4a;
+            --primary-dark: #06183d;
+            --primary-light: #1a3a7a;
+            --accent: #ff5a00;
+            --accent-hover: #e04f00;
+            --bg: #f4f6fb;
+            --card: #ffffff;
+            --text: #1a2b4c;
+            --text-light: #6b7a8f;
+            --border: #e8edf5;
+            --success: #00c853;
+            --danger: #e74c3c;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --radius: 16px;
+            --transition: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-image: radial-gradient(ellipse at 10% 20%, rgba(11, 31, 74, 0.03) 0%, transparent 50%),
+                              radial-gradient(ellipse at 90% 80%, rgba(255, 90, 0, 0.05) 0%, transparent 50%);
+        }
+
+        /* ===== LOGIN CONTAINER ===== */
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+            animation: fadeUp 0.6s ease;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== BRAND ===== */
+        .brand {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .brand .logo {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--accent);
+            box-shadow: 0 8px 30px rgba(11, 31, 74, 0.2);
+            margin-bottom: 12px;
+        }
+        .brand h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+        .brand h1 span {
+            color: var(--accent);
+        }
+        .brand p {
+            font-size: 13px;
+            color: var(--text-light);
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        /* ===== LOGIN CARD ===== */
+        .login-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 36px 32px 40px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .login-card .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .login-card .card-title i {
+            color: var(--accent);
+            font-size: 22px;
+        }
+        .login-card .card-subtitle {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 28px;
+        }
+
+        /* ===== FORM ===== */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        .form-group label .required {
+            color: var(--danger);
+            margin-left: 2px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+        .input-wrapper .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 16px;
+            transition: color var(--transition);
+        }
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 16px 14px 44px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            background: var(--bg);
+            color: var(--text);
+            transition: all var(--transition);
+        }
+        .input-wrapper input:focus {
+            border-color: var(--accent);
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(255, 90, 0, 0.08);
+        }
+        .input-wrapper input:focus+.input-icon,
+        .input-wrapper input:focus~.input-icon {
+            color: var(--accent);
+        }
+        .input-wrapper input::placeholder {
+            color: #bbb;
+            font-weight: 400;
+        }
+
+        .input-wrapper .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+            transition: color var(--transition);
+        }
+        .input-wrapper .toggle-password:hover {
+            color: var(--text);
+        }
+
+        /* ===== OPTIONS ===== */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .form-options .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text);
+            cursor: pointer;
+        }
+        .form-options .remember-me input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+        .form-options .forgot-link {
+            font-size: 13px;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color var(--transition);
+        }
+        .form-options .forgot-link:hover {
+            color: var(--accent-hover);
+            text-decoration: underline;
+        }
+
+        /* ===== SUBMIT BUTTON ===== */
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 90, 0, 0.35);
+        }
+        .btn-login:active {
+            transform: scale(0.98);
+        }
+        .btn-login:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .btn-login i {
+            font-size: 18px;
+        }
+
+        /* ===== ERROR MESSAGE ===== */
+        #loginError {
+            display: none;
+            background: var(--danger);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            align-items: center;
+            gap: 10px;
+            animation: shake 0.4s ease;
+        }
+        #loginError.show {
+            display: flex;
+        }
+        #loginError i {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-8px);
+            }
+            75% {
+                transform: translateX(8px);
+            }
+        }
+
+        /* ===== FOOTER ===== */
+        .login-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        .login-footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .login-footer .divider {
+            display: inline-block;
+            margin: 0 10px;
+            color: var(--border);
+        }
+
+        /* ===== SHIELD BADGE ===== */
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        .security-badge i {
+            color: var(--success);
+            font-size: 14px;
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 30px;
+            z-index: 9999;
+            display: none;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.35s ease;
+            max-width: 90%;
+            text-align: center;
+            font-size: 14px;
+        }
+        .toast.show {
+            display: block;
+        }
+        .toast.error {
+            background: var(--danger);
+        }
+        .toast.success {
+            background: var(--success);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0) scale(1);
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 28px 20px 32px;
+            }
+            .brand .logo {
+                width: 60px;
+                height: 60px;
+                font-size: 26px;
+            }
+            .brand h1 {
+                font-size: 24px;
+            }
+            .login-card .card-title {
+                font-size: 18px;
+            }
+            .form-options {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .btn-login {
+                font-size: 16px;
+                padding: 14px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .login-card {
+                padding: 20px 16px 24px;
+            }
+            .input-wrapper input {
+                padding: 12px 14px 12px 38px;
+                font-size: 14px;
+            }
+            .input-wrapper .input-icon {
+                left: 12px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== TOAST ===== -->
+    <div id="toast" class="toast"></div>
+
+    <div class="login-container">
+
+        <!-- ===== BRAND ===== -->
+        <div class="brand">
+            <div class="logo">C</div>
+            <h1>CIT <span>FUND</span></h1>
+            <p>Administrator Control Panel</p>
+        </div>
+
+        <!-- ===== LOGIN CARD ===== -->
+        <div class="login-card">
+
+            <!-- Error Message -->
+            <div id="loginError">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span id="loginErrorText">Invalid credentials</span>
+            </div>
+
+            <!-- Title -->
+            <div class="card-title">
+                <i class="fa-solid fa-lock"></i> Admin Login
+            </div>
+            <p class="card-subtitle">Enter your credentials to access the admin dashboard</p>
+
+            <!-- Form -->
+            <form id="loginForm" novalidate>
+                <div class="form-group">
+                    <label>Email or Username <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input type="text" id="adminEmail" placeholder="Enter your admin email" value="admin@citfund.com" autocomplete="username" required>
+                        <i class="fa-regular fa-envelope input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input type="password" id="adminPassword" placeholder="Enter your password" value="Admin@2025!Secure" autocomplete="current-password" required>
+                        <i class="fa-regular fa-lock input-icon"></i>
+                        <button type="button" class="toggle-password" onclick="togglePassword()" aria-label="Toggle password visibility">
+                            <i class="fa-regular fa-eye" id="passwordToggleIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Options -->
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" id="rememberMe" checked>
+                        Remember me
+                    </label>
+                    <a href="#" class="forgot-link" onclick="showToast('Contact support to reset your password.', 'info'); return false;">
+                        Forgot password?
+                    </a>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="btn-login" id="loginBtn">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    <span id="loginBtnText">Sign In</span>
+                </button>
+            </form>
+
+            <!-- Security Badge -->
+            <div class="security-badge">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>256-bit SSL encrypted connection</span>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="login-footer">
+            <span>© 2026 CIT FUND Bank</span>
+            <span class="divider">|</span>
+            <a href="userlogin.html">Customer Login</a>
+            <span class="divider">|</span>
+            <a href="selfaccountopen.html">Open Account</a>
+        </div>
+
+    </div>
+
+    <script>
+        // ============================================================
+        // TOGGLE PASSWORD VISIBILITY
+        // ============================================================
+        function togglePassword() {
+            const input = document.getElementById('adminPassword');
+            const icon = document.getElementById('passwordToggleIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-regular fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-regular fa-eye';
+            }
+        }
+
+        // ============================================================
+        // TOAST
+        // ============================================================
+        let toastTimeout = null;
+
+        function showToast(msg, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = 'toast';
+            if (type === 'error') toast.classList.add('error');
+            else if (type === 'success') toast.classList.add('success');
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        // ============================================================
+        // SHOW ERROR
+        // ============================================================
+        function showLoginError(msg) {
+            const errorEl = document.getElementById('loginError');
+            document.getElementById('loginErrorText').textContent = msg;
+            errorEl.classList.add('show');
+            // Auto-hide after 5 seconds
+            clearTimeout(window._errorTimeout);
+            window._errorTimeout = setTimeout(() => {
+                errorEl.classList.remove('show');
+            }, 5000);
+        }
+
+        function hideLoginError() {
+            document.getElementById('loginError').classList.remove('show');
+        }
+
+        // ============================================================
+        // LOGIN FORM SUBMIT
+        // ============================================================
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            hideLoginError();
+
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value.trim();
+            const btn = document.getElementById('loginBtn');
+            const btnText = document.getElementById('loginBtnText');
+
+            // Validation
+            if (!email || !password) {
+                showLoginError('Please enter both email and password.');
+                return;
+            }
+
+            // Disable button
+            btn.disabled = true;
+            btnText.textContent = 'Signing in...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
+
+            try {
+                // The server uses password only for admin login,
+                // but we'll send the password as the main credential.
+                // If the server expects just 'password', we send that.
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        password: password // The server checks ADMIN_PASSWORD
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store token
+                    localStorage.setItem('adminToken', data.token);
+
+                    // Also store admin session info
+                    const adminSession = {
+                        uid: 'admin',
+                        fullName: 'Administrator',
+                        email: email,
+                        token: data.token,
+                        loginTime: Date.now()
+                    };
+                    localStorage.setItem('admin_session', JSON.stringify(adminSession));
+
+                    showToast('✅ Welcome back, Admin!', 'success');
+
+                    // Redirect to admin dashboard
+                    setTimeout(() => {
+                        window.location.href = 'admin.html';
+                    }, 600);
+                } else {
+                    showLoginError(data.error || 'Invalid credentials. Please try again.');
+                    btn.disabled = false;
+                    btnText.textContent = 'Sign In';
+                    btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showLoginError('Network error. Please check your connection.');
+                btn.disabled = false;
+                btnText.textContent = 'Sign In';
+                btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In';
+            }
+        });
+
+        // ============================================================
+        // KEYBOARD SHORTCUTS
+        // ============================================================
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+Enter to submit
+            if (e.ctrlKey && e.key === 'Enter') {
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // ============================================================
+        // CHECK IF ALREADY LOGGED IN
+        // ============================================================
+        (function checkExistingSession() {
+            const token = localStorage.getItem('adminToken');
+            if (token) {
+                // Verify token is still valid
+                fetch('/api/admin/server-stats', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                })
+                .then(res => {
+                    if (res.ok) {
+                        // Already logged in, redirect to admin
+                        window.location.href = 'admin.html';
+                    } else {
+                        // Token invalid, clear it
+                        localStorage.removeItem('adminToken');
+                        localStorage.removeItem('admin_session');
+                    }
+                })
+                .catch(() => {
+                    localStorage.removeItem('adminToken');
+                    localStorage.removeItem('admin_session');
+                });
+            }
+
+            // Pre-fill from session if available
+            const session = JSON.parse(localStorage.getItem('admin_session') || 'null');
+            if (session && session.email) {
+                document.getElementById('adminEmail').value = session.email;
+            }
+        })();
+
+        // ============================================================
+        // DEMO AUTO-FILL (remove in production)
+        // ============================================================
+        console.log('🔐 Admin Login Page Loaded');
+        console.log('ℹ️  Default credentials: admin@citfund.com / Admin@2025!Secure');
+    </script>
+</body>
+</html>
