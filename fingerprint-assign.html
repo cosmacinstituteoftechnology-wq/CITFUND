@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CITFUND ENTERPRISE | Fingerprint Setup</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    :root {
+        --green: #0B7A2E; --green-dark: #075C22; --green-light: #14A344;
+        --gold: #FFC72C; --gold-soft: #FFD75E; --red: #E30613;
+        --bg: #f4f9f6; --card: #ffffff; --text: #1a2b4c; --muted: #6b7a8f;
+        --border: #e6f0e9; --success: #00a86b; --danger: #e74c3c; --warning: #ff9800;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+    .app-container { max-width: 480px; margin: 0 auto; background: var(--bg); min-height: 100vh; position: relative; padding-bottom: 100px; }
+
+    .top-header {
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        padding: 22px 20px 70px;
+        display: flex; align-items: center; justify-content: space-between;
+        border-radius: 0 0 30px 30px;
+        position: relative; z-index: 1; gap: 10px; overflow: hidden;
+    }
+    .top-header::before {
+        content: ''; position: absolute; top: -80px; right: -60px;
+        width: 220px; height: 220px;
+        background: radial-gradient(circle, rgba(255,199,44,0.28), transparent 70%);
+        border-radius: 50%; pointer-events: none;
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; position: relative; z-index: 2; }
+    .back-btn {
+        width: 40px; height: 40px; border-radius: 50%;
+        background: rgba(255,255,255,0.15); color: white;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 15px; flex-shrink: 0; border: none; cursor: pointer;
+        text-decoration: none;
+    }
+    .header-text { min-width: 0; flex: 1; }
+    .header-text h4 { font-size: 11.5px; color: rgba(255,255,255,0.75); font-weight: 400; margin-bottom: 2px; }
+    .header-text h2 { font-size: 18px; font-weight: 800; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .header-icon {
+        width: 42px; height: 42px; border-radius: 50%;
+        background: rgba(255,199,44,0.2); color: var(--gold);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 18px; flex-shrink: 0; z-index: 2;
+    }
+
+    .user-profile-card {
+        display: flex; align-items: center; gap: 14px;
+        background: var(--card); border-radius: 20px;
+        padding: 16px 18px; margin: -55px 20px 16px;
+        box-shadow: 0 15px 40px rgba(11,122,46,0.12);
+        border: 1px solid rgba(11,122,46,0.06);
+        position: relative; z-index: 4;
+    }
+    .user-avatar-wrapper { position: relative; flex-shrink: 0; width: 60px; height: 60px; }
+    .user-avatar-img {
+        width: 60px; height: 60px; border-radius: 50%; object-fit: cover;
+        border: 3px solid var(--gold);
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        box-shadow: 0 8px 20px rgba(11,122,46,0.25); display: block;
+    }
+    .user-avatar-initial {
+        position: absolute; inset: 0; width: 60px; height: 60px; border-radius: 50%;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white; display: none; align-items: center; justify-content: center;
+        font-size: 24px; font-weight: 900;
+        border: 3px solid var(--gold);
+        box-shadow: 0 8px 20px rgba(11,122,46,0.25);
+    }
+    .user-avatar-wrapper.no-photo .user-avatar-img { display: none; }
+    .user-avatar-wrapper.no-photo .user-avatar-initial { display: flex; }
+    .user-verified-badge {
+        position: absolute; bottom: -2px; right: -2px;
+        background: var(--gold); color: var(--green-dark);
+        width: 22px; height: 22px; border-radius: 50%;
+        display: none; align-items: center; justify-content: center;
+        font-size: 10px; border: 2.5px solid var(--card);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    .user-verified-badge.show { display: flex; }
+    .user-profile-info { flex: 1; min-width: 0; }
+    .user-profile-info .u-label {
+        font-size: 10px; font-weight: 800; color: var(--muted);
+        text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px;
+    }
+    .user-profile-info .u-name {
+        font-size: 15px; font-weight: 900; color: var(--green-dark);
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        line-height: 1.25; margin-bottom: 2px;
+    }
+    .user-profile-info .u-account {
+        font-size: 11px; font-weight: 700; color: var(--muted);
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .user-profile-info .u-account .mono { font-family: 'Courier New', monospace; color: var(--green); }
+    .user-profile-info .u-skeleton {
+        display: inline-block; height: 12px; border-radius: 6px;
+        background: linear-gradient(90deg, #e6f0e9 0%, #d4ebdc 50%, #e6f0e9 100%);
+        background-size: 200% 100%; animation: shimmer 1.4s ease-in-out infinite;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    .status-banner {
+        display: flex; align-items: center; gap: 12px;
+        background: var(--card); border-radius: 16px;
+        padding: 14px 16px; margin: 0 20px 16px;
+        box-shadow: 0 8px 25px rgba(11,122,46,0.06);
+        border: 1px solid rgba(11,122,46,0.06);
+        position: relative; z-index: 3;
+    }
+    .status-banner .sb-icon {
+        width: 44px; height: 44px; border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px; flex-shrink: 0;
+    }
+    .status-banner.ok .sb-icon { background: rgba(0,168,107,0.15); color: var(--success); }
+    .status-banner.warn .sb-icon { background: rgba(255,152,0,0.15); color: var(--warning); }
+    .status-banner.bad .sb-icon { background: rgba(231,76,60,0.12); color: var(--danger); }
+    .status-banner .sb-text { flex: 1; min-width: 0; }
+    .status-banner .sb-text h4 { font-size: 13.5px; font-weight: 800; color: var(--green-dark); margin-bottom: 2px; }
+    .status-banner .sb-text p { font-size: 11.5px; color: var(--muted); font-weight: 600; line-height: 1.4; }
+    .status-banner .sb-badge {
+        font-size: 9px; font-weight: 900; padding: 3px 9px; border-radius: 20px;
+        text-transform: uppercase; letter-spacing: 0.4px; flex-shrink: 0;
+    }
+    .status-banner.ok .sb-badge { background: #e6fff0; color: var(--success); }
+    .status-banner.warn .sb-badge { background: #fff8e1; color: #a06d00; }
+    .status-banner.bad .sb-badge { background: #ffe6e6; color: var(--danger); }
+
+    .hero-card {
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        border-radius: 22px; padding: 28px 20px; margin: 0 20px 16px;
+        color: white; text-align: center; position: relative; overflow: hidden;
+        box-shadow: 0 20px 45px rgba(11,122,46,0.3);
+    }
+    .hero-card::before {
+        content: ''; position: absolute; top: -80px; right: -60px;
+        width: 220px; height: 220px;
+        background: radial-gradient(circle, rgba(255,199,44,0.32), transparent 70%);
+        border-radius: 50%; pointer-events: none;
+    }
+    .hero-fp {
+        width: 110px; height: 110px; margin: 0 auto 18px; border-radius: 50%;
+        background: rgba(255,255,255,0.12); border: 2px dashed rgba(255,199,44,0.5);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 56px; color: var(--gold);
+        animation: fpPulse 2.4s ease-in-out infinite;
+        position: relative; z-index: 1;
+    }
+    @keyframes fpPulse {
+        0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,199,44,0.4); }
+        50% { transform: scale(1.04); box-shadow: 0 0 0 20px rgba(255,199,44,0); }
+    }
+    .hero-card h3 { font-size: 18px; font-weight: 900; margin-bottom: 8px; position: relative; z-index: 1; }
+    .hero-card p {
+        font-size: 12.5px; opacity: 0.9; font-weight: 500; line-height: 1.55;
+        margin-bottom: 20px; position: relative; z-index: 1;
+        max-width: 320px; margin-left: auto; margin-right: auto;
+    }
+    .hero-btn {
+        background: var(--gold); color: var(--green-dark);
+        border: none; padding: 15px 26px; border-radius: 14px;
+        font-family: inherit; font-size: 14px; font-weight: 900;
+        cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+        box-shadow: 0 10px 25px rgba(255,199,44,0.4); transition: 0.25s;
+        position: relative; z-index: 1; width: 100%; max-width: 320px; justify-content: center;
+    }
+    .hero-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(255,199,44,0.55); }
+    .hero-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .section-header {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 0 20px; margin-bottom: 10px; margin-top: 8px;
+    }
+    .section-header h3 {
+        font-size: 13px; font-weight: 800; color: var(--green);
+        text-transform: uppercase; letter-spacing: 0.5px;
+        display: flex; align-items: center; gap: 8px;
+    }
+    .section-header h3::before { content: ''; width: 4px; height: 14px; background: var(--gold); border-radius: 2px; }
+    .section-header .count {
+        font-size: 10px; font-weight: 900; padding: 3px 9px; border-radius: 20px;
+        background: rgba(11,122,46,0.08); color: var(--green); letter-spacing: 0.3px;
+    }
+
+    .cred-list { padding: 0 20px; }
+    .cred-item {
+        background: var(--card); border-radius: 16px; padding: 14px; margin-bottom: 10px;
+        display: flex; align-items: center; gap: 12px;
+        border: 1px solid var(--border); transition: 0.2s;
+    }
+    .cred-item:hover { border-color: var(--green); }
+    .cred-item.current {
+        border-color: var(--gold);
+        background: linear-gradient(135deg, #fffdf5 0%, #fff9e6 100%);
+    }
+    .cred-item .cred-icon {
+        width: 44px; height: 44px; border-radius: 12px;
+        background: linear-gradient(135deg, rgba(11,122,46,0.12), rgba(20,163,68,0.18));
+        color: var(--green); display: flex; align-items: center; justify-content: center;
+        font-size: 20px; flex-shrink: 0;
+    }
+    .cred-item.current .cred-icon {
+        background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+        color: var(--green-dark);
+    }
+    .cred-info { flex: 1; min-width: 0; }
+    .cred-info .cred-name {
+        font-size: 13.5px; font-weight: 800; color: var(--green-dark);
+        margin-bottom: 3px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        display: flex; align-items: center; gap: 6px;
+    }
+    .cred-info .cred-name .tag-this {
+        font-size: 8px; font-weight: 900;
+        background: var(--gold); color: var(--green-dark);
+        padding: 2px 6px; border-radius: 20px;
+        letter-spacing: 0.4px; text-transform: uppercase;
+    }
+    .cred-info .cred-meta {
+        font-size: 10.5px; color: var(--muted); font-weight: 600;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cred-del {
+        width: 36px; height: 36px; border-radius: 10px;
+        background: rgba(231,76,60,0.08); color: var(--danger);
+        border: 1px solid rgba(231,76,60,0.15); cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px; flex-shrink: 0; transition: 0.2s;
+    }
+    .cred-del:hover { background: var(--danger); color: white; border-color: var(--danger); }
+
+    .empty-list {
+        text-align: center; padding: 40px 24px;
+        background: var(--card); border-radius: 16px;
+        border: 1px dashed var(--border); margin: 0 20px;
+    }
+    .empty-list i { font-size: 44px; color: #cfe3d6; margin-bottom: 14px; display: block; }
+    .empty-list h3 { font-size: 14px; font-weight: 800; color: var(--green); margin-bottom: 6px; }
+    .empty-list p { font-size: 12px; color: var(--muted); font-weight: 600; line-height: 1.55; }
+
+    .info-card {
+        background: linear-gradient(135deg, #f4f9f6 0%, #eaf6ee 100%);
+        border: 1px solid rgba(11,122,46,0.1);
+        border-radius: 16px; padding: 16px; margin: 16px 20px;
+    }
+    .info-card h4 {
+        font-size: 12.5px; font-weight: 800; color: var(--green-dark);
+        margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+    }
+    .info-card h4 i { color: var(--green); font-size: 13px; }
+    .info-card ul { list-style: none; }
+    .info-card ul li {
+        display: flex; align-items: flex-start; gap: 10px;
+        padding: 6px 0; font-size: 12px; color: var(--green-dark);
+        font-weight: 600; line-height: 1.5;
+    }
+    .info-card ul li i { color: var(--success); font-size: 12px; margin-top: 3px; flex-shrink: 0; }
+
+    .not-supported {
+        text-align: center; padding: 50px 30px; margin: 0 20px;
+        background: var(--card); border-radius: 20px; border: 1px solid var(--border);
+    }
+    .not-supported i { font-size: 60px; color: var(--danger); margin-bottom: 18px; display: block; }
+    .not-supported h3 { font-size: 17px; font-weight: 900; color: var(--danger); margin-bottom: 10px; }
+    .not-supported p { font-size: 13px; color: var(--muted); font-weight: 600; line-height: 1.6; margin-bottom: 20px; }
+
+    .modal-bg {
+        position: fixed; inset: 0;
+        background: rgba(7,92,34,0.75); backdrop-filter: blur(6px);
+        z-index: 9999; display: none; align-items: center; justify-content: center;
+        padding: 20px;
+    }
+    .modal-bg.show { display: flex; }
+    .modal {
+        background: white; border-radius: 22px; padding: 26px 22px;
+        max-width: 400px; width: 100%; animation: modalIn 0.3s ease;
+    }
+    @keyframes modalIn {
+        from { transform: scale(0.92); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    .modal h3 { font-size: 17px; font-weight: 900; color: var(--green-dark); margin-bottom: 8px; text-align: center; }
+    .modal p { font-size: 12.5px; color: var(--muted); line-height: 1.6; margin-bottom: 18px; text-align: center; }
+    .modal .m-input {
+        width: 100%; padding: 15px 16px; border-radius: 12px;
+        border: 1.5px solid var(--border); font-family: inherit; font-size: 18px;
+        font-weight: 700; text-align: center; letter-spacing: 4px;
+        color: var(--green-dark); background: var(--bg); outline: none; transition: 0.2s;
+    }
+    .modal .m-input:focus {
+        border-color: var(--green); background: white;
+        box-shadow: 0 0 0 4px rgba(11,122,46,0.1);
+    }
+    .modal .modal-actions { display: flex; gap: 10px; margin-top: 18px; }
+    .modal .modal-actions button {
+        flex: 1; padding: 14px; border-radius: 12px; border: none;
+        font-family: inherit; font-size: 13.5px; font-weight: 800; cursor: pointer;
+    }
+    .modal .btn-cancel { background: var(--bg); color: var(--green-dark); border: 1.5px solid var(--border); }
+    .modal .btn-confirm {
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        color: white; box-shadow: 0 8px 20px rgba(11,122,46,0.3);
+    }
+    .modal .btn-confirm:disabled { opacity: 0.55; cursor: not-allowed; }
+    .modal .btn-danger {
+        background: linear-gradient(135deg, var(--danger), #ff6b6b);
+        color: white; box-shadow: 0 8px 20px rgba(231,76,60,0.3);
+    }
+
+    .loading-overlay {
+        position: fixed; inset: 0;
+        background: rgba(244,249,246,0.97); backdrop-filter: blur(6px);
+        display: none; flex-direction: column;
+        justify-content: center; align-items: center;
+        z-index: 9998; color: var(--green);
+    }
+    .loading-overlay.show { display: flex; }
+    .loading-overlay .spinner {
+        width: 54px; height: 54px; border: 5px solid var(--border);
+        border-top-color: var(--green); border-right-color: var(--gold);
+        border-radius: 50%; animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-overlay p {
+        margin-top: 16px; font-weight: 700; font-size: 13px;
+        text-align: center; max-width: 260px; line-height: 1.5;
+    }
+
+    .toast {
+        position: fixed; top: 20px; left: 50%;
+        transform: translateX(-50%) translateY(-20px);
+        background: var(--green); color: white;
+        padding: 14px 24px; border-radius: 30px;
+        z-index: 99999; opacity: 0; visibility: hidden;
+        font-size: 13px; font-weight: 700;
+        max-width: 90%; text-align: center;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 30px rgba(11,122,46,0.3); line-height: 1.4;
+    }
+    .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+    .toast.warning { background: var(--warning); }
+
+    .bottom-nav {
+        position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+        width: 100%; max-width: 480px; background: var(--card);
+        border-top: 1px solid var(--border);
+        display: flex; justify-content: space-around; align-items: center;
+        padding: 8px 0 12px; z-index: 100;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+    }
+    .bottom-nav a {
+        text-decoration: none; display: flex; flex-direction: column;
+        align-items: center; gap: 4px; font-size: 10px;
+        color: var(--muted); font-weight: 600; flex: 1; padding-top: 4px;
+    }
+    .bottom-nav a i { font-size: 22px; }
+    .bottom-nav a.active { color: var(--green); }
+    .bottom-nav a.active::after {
+        content: ''; display: block; width: 20px; height: 3px;
+        background: var(--gold); border-radius: 3px; margin-top: 2px;
+    }
+    .bottom-nav .center-btn {
+        width: 60px; height: 60px;
+        background: linear-gradient(135deg, var(--green), var(--green-light));
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 24px; margin-top: -25px;
+        box-shadow: 0 10px 25px rgba(11,122,46,0.4);
+        cursor: pointer; border: 3px solid var(--bg);
+    }
+    .hidden { display: none !important; }
+
+    @media (max-width: 360px) {
+        .user-profile-card { padding: 14px; }
+        .user-avatar-wrapper, .user-avatar-img, .user-avatar-initial { width: 52px; height: 52px; font-size: 20px; }
+        .user-profile-info .u-name { font-size: 14px; }
+    }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <header class="top-header">
+        <div class="header-left">
+            <a href="myprofile.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="header-text">
+                <h4>Security & Privacy</h4>
+                <h2>Fingerprint Setup</h2>
+            </div>
+        </div>
+        <div class="header-icon"><i class="fa-solid fa-fingerprint"></i></div>
+    </header>
+
+    <div class="user-profile-card" id="userProfileCard">
+        <div class="user-avatar-wrapper" id="userAvatarWrapper">
+            <img id="userAvatarImg" class="user-avatar-img" src="" alt="Profile" style="display:none;">
+            <div id="userAvatarInitial" class="user-avatar-initial">C</div>
+            <div class="user-verified-badge" id="userVerifiedBadge"><i class="fa-solid fa-check"></i></div>
+        </div>
+        <div class="user-profile-info">
+            <div class="u-label">Account Holder</div>
+            <div class="u-name" id="userDisplayName"><span class="u-skeleton" style="width: 120px;"></span></div>
+            <div class="u-account" id="userDisplayAccount"><span class="u-skeleton" style="width: 150px;"></span></div>
+        </div>
+    </div>
+
+    <div class="status-banner" id="statusBanner">
+        <div class="sb-icon" id="statusIcon"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
+        <div class="sb-text">
+            <h4 id="statusTitle">Checking support...</h4>
+            <p id="statusSub">Please wait</p>
+        </div>
+        <div class="sb-badge" id="statusBadge">—</div>
+    </div>
+
+    <div id="mainContent" class="hidden">
+        <div class="hero-card" id="heroCard">
+            <div class="hero-fp"><i class="fa-solid fa-fingerprint"></i></div>
+            <h3 id="heroTitle">Add Your Fingerprint</h3>
+            <p id="heroSub">Use your device's fingerprint or Face ID to log in faster and safer — no password needed.</p>
+            <button class="hero-btn" id="btnAddFingerprint" onclick="FPA.startAdd()">
+                <i class="fa-solid fa-plus"></i>
+                <span>Add This Device</span>
+            </button>
+        </div>
+
+        <div class="section-header">
+            <h3>Registered Devices</h3>
+            <span class="count" id="credCount">0 / 5</span>
+        </div>
+
+        <div class="cred-list" id="credList">
+            <div class="empty-list">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <h3>Loading devices...</h3>
+                <p>Please wait</p>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h4><i class="fa-solid fa-shield-halved"></i> How we keep it safe</h4>
+            <ul>
+                <li><i class="fa-solid fa-check"></i><span>Your fingerprint never leaves your device</span></li>
+                <li><i class="fa-solid fa-check"></i><span>Only a public encryption key is stored on CITFUND servers</span></li>
+                <li><i class="fa-solid fa-check"></i><span>You can remove any device at any time</span></li>
+                <li><i class="fa-solid fa-check"></i><span>Your PIN is required to add a new device</span></li>
+                <li><i class="fa-solid fa-check"></i><span>Works with fingerprint, Face ID, and Windows Hello</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="notSupported" class="hidden">
+        <div class="not-supported">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <h3>Not Supported</h3>
+            <p id="notSupportedMsg">Your browser or device doesn't support fingerprint or biometric login.</p>
+            <a href="myprofile.html" class="hero-btn" style="background: linear-gradient(135deg, var(--green), var(--green-light)); color: white;">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Back to Profile</span>
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<nav class="bottom-nav">
+    <a href="userdashboard.html"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="account.html"><i class="fa-solid fa-book"></i> Accounts</a>
+    <button class="center-btn" onclick="location.href='userdashboard.html'"><i class="fa-solid fa-plus"></i></button>
+    <a href="statement.html"><i class="fa-solid fa-file-invoice"></i> Statement</a>
+    <a href="myprofile.html" class="active"><i class="fa-solid fa-user"></i> Profile</a>
+</nav>
+
+<div class="modal-bg" id="pinModal">
+    <div class="modal">
+        <h3>Confirm Your Identity</h3>
+        <p>Enter your transaction PIN to add a fingerprint to this device.</p>
+        <input type="password" id="pinInput" class="m-input" inputmode="numeric" maxlength="6" placeholder="••••">
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="FPA.closePinModal()">Cancel</button>
+            <button class="btn-confirm" id="pinConfirmBtn" onclick="FPA.confirmPin()">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-bg" id="removeModal">
+    <div class="modal">
+        <h3>Remove Device?</h3>
+        <p id="removeDeviceName">This device will no longer be able to log in with fingerprint.</p>
+        <input type="password" id="removePinInput" class="m-input" inputmode="numeric" maxlength="6" placeholder="PIN">
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="FPA.closeRemoveModal()">Cancel</button>
+            <button class="btn-danger" id="removeConfirmBtn" onclick="FPA.confirmRemove()">Remove</button>
+        </div>
+    </div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <p id="loadingText">Please approve the prompt on your device...</p>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CITFUND — Fingerprint Assignment v3.0 (BUG FIXED)
+   - Fixed: closePinModal() was resetting state BEFORE check
+   - Fixed: WebAuthn create() called immediately (no setTimeout)
+   - Added: Detailed console logging for debugging
+   - Added: Better error messages
+   ============================================================ */
+(function () {
+    'use strict';
+
+    var CONFIG = {
+        RP_NAME: 'CITFUND ENTERPRISE',
+        MAX_DEVICES: 5,
+        PIN_MIN: 4,
+        PIN_MAX: 6
+    };
+
+    var state = {
+        session: null,
+        user: null,
+        supportOK: false,
+        platformAuthOK: false,
+        credentials: [],
+        pendingAdd: false,
+        pendingRemoveId: null,
+        sessionToken: null,
+        initializing: true,
+        nextAction: null    // ⭐ NEW: 'add' or 'remove'
+    };
+
+    function log() {
+        try {
+            var args = Array.prototype.slice.call(arguments);
+            console.log.apply(console, ['[FPA]'].concat(args));
+        } catch (e) {}
+    }
+
+    // ---------- Helpers ----------
+    function $(id) { return document.getElementById(id); }
+    function safeGet(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+    function safeSet(key, val) { try { localStorage.setItem(key, val); return true; } catch (e) { return false; } }
+    function escapeHtml(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    var toastTimer = null;
+    function showToast(msg, type) {
+        var t = $('toast');
+        if (!t) return;
+        t.textContent = msg;
+        t.className = 'toast show ' + (type || '');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { t.classList.remove('show'); }, 4000);
+    }
+
+    function showLoading(text) {
+        var el = $('loadingOverlay');
+        var tx = $('loadingText');
+        if (tx && text) tx.textContent = text;
+        if (el) el.classList.add('show');
+    }
+    function hideLoading() {
+        var el = $('loadingOverlay');
+        if (el) el.classList.remove('show');
+    }
+
+    // ---------- Base64url <-> bytes ----------
+    function b64urlToUint8(str) {
+        try {
+            str = String(str).replace(/-/g, '+').replace(/_/g, '/');
+            while (str.length % 4) str += '=';
+            var bin = atob(str);
+            var bytes = new Uint8Array(bin.length);
+            for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+            return bytes;
+        } catch (e) {
+            log('b64urlToUint8 error:', e.message);
+            return new Uint8Array(0);
+        }
+    }
+    function uint8ToB64url(buf) {
+        try {
+            var bytes = new Uint8Array(buf);
+            var bin = '';
+            for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+            return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        } catch (e) {
+            log('uint8ToB64url error:', e.message);
+            return '';
+        }
+    }
+
+    function getDeviceName() {
+        var ua = navigator.userAgent || '';
+        var b = 'Browser';
+        if (/Edg\//.test(ua)) b = 'Edge';
+        else if (/Chrome\//.test(ua) && !/Edg\//.test(ua)) b = 'Chrome';
+        else if (/Firefox\//.test(ua)) b = 'Firefox';
+        else if (/Safari\//.test(ua) && !/Chrome/.test(ua)) b = 'Safari';
+        var p = 'Device';
+        if (/Android/i.test(ua)) p = 'Android';
+        else if (/iPhone|iPad|iPod/i.test(ua)) p = 'iOS';
+        else if (/Windows/i.test(ua)) p = 'Windows';
+        else if (/Mac OS X/i.test(ua)) p = 'Mac';
+        else if (/Linux/i.test(ua)) p = 'Linux';
+        return p + ' · ' + b;
+    }
+
+    // ---------- API ----------
+    function api(path, body, timeoutMs) {
+        timeoutMs = timeoutMs || 20000;
+        var controller;
+        try { controller = new AbortController(); } catch (e) { controller = null; }
+        var timer = controller ? setTimeout(function () { controller.abort(); }, timeoutMs) : null;
+
+        var opts = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body || {}),
+            cache: 'no-store'
+        };
+        if (controller) opts.signal = controller.signal;
+
+        log('POST', path, body);
+
+        return fetch(path + '?t=' + Date.now(), opts)
+        .then(function (res) {
+            if (timer) clearTimeout(timer);
+            log('Response', path, res.status);
+            return res.text().then(function (raw) {
+                if (!raw) return { success: false, error: 'Empty response from server' };
+                if (raw.charAt(0) === '<') return { success: false, error: 'Server error (returned HTML)' };
+                try {
+                    var parsed = JSON.parse(raw);
+                    log('Parsed', path, parsed);
+                    return parsed;
+                }
+                catch (e) { return { success: false, error: 'Invalid server response' }; }
+            });
+        })
+        .catch(function (e) {
+            if (timer) clearTimeout(timer);
+            log('Network error', path, e.message);
+            if (e.name === 'AbortError') return { success: false, error: 'Request timed out' };
+            return { success: false, error: 'Network error: ' + e.message };
+        });
+    }
+
+    // ============================================================
+    // USER PROFILE
+    // ============================================================
+    function renderUserProfile() {
+        var u = state.user || {};
+        var session = state.session || {};
+        var name = u.fullName || session.fullName || session.name || 'CITFUND Member';
+        var account = u.accountNumber || session.account || '';
+        var memberID = u.memberID || session.memberID || '';
+        var photo = u.photo && String(u.photo).trim() ? String(u.photo).trim() : '';
+
+        var wrapper = $('userAvatarWrapper');
+        var img = $('userAvatarImg');
+        var initialEl = $('userAvatarInitial');
+
+        if (photo && /^(https?:|data:image)/i.test(photo)) {
+            if (wrapper) wrapper.classList.remove('no-photo');
+            if (img) {
+                img.src = photo;
+                img.style.display = 'block';
+                img.onerror = function () {
+                    img.style.display = 'none';
+                    if (wrapper) wrapper.classList.add('no-photo');
+                };
+            }
+        } else {
+            if (wrapper) wrapper.classList.add('no-photo');
+            if (img) img.style.display = 'none';
+        }
+
+        if (initialEl) {
+            initialEl.textContent = String(name).trim().charAt(0).toUpperCase() || 'C';
+        }
+
+        var nameEl = $('userDisplayName');
+        if (nameEl) nameEl.textContent = name;
+
+        var accEl = $('userDisplayAccount');
+        if (accEl) {
+            var parts = [];
+            if (account) parts.push('Acc <span class="mono">' + escapeHtml(account) + '</span>');
+            if (memberID) parts.push('ID <span class="mono">' + escapeHtml(memberID) + '</span>');
+            accEl.innerHTML = parts.length ? parts.join(' · ') : 'CITFUND Member';
+        }
+
+        var badge = $('userVerifiedBadge');
+        if (badge) {
+            var kycStatus = (u.kyc && u.kyc.status) || 'none';
+            if (kycStatus === 'approved') badge.classList.add('show');
+            else badge.classList.remove('show');
+        }
+    }
+
+    // ---------- Status banner ----------
+    function setStatus(type, title, sub, badge) {
+        var sb = $('statusBanner');
+        var icon = $('statusIcon');
+        var ttl = $('statusTitle');
+        var s = $('statusSub');
+        var bg = $('statusBadge');
+        if (!sb) return;
+        sb.classList.remove('ok', 'warn', 'bad');
+        sb.classList.add(type);
+        if (icon) {
+            if (type === 'ok') icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+            else if (type === 'warn') icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            else icon.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+        }
+        if (ttl) ttl.textContent = title;
+        if (s) s.textContent = sub;
+        if (bg) bg.textContent = badge;
+    }
+
+    // ---------- Credentials list ----------
+    function renderCredentials() {
+        var list = $('credList');
+        var countEl = $('credCount');
+        if (!list) return;
+
+        var creds = state.credentials || [];
+        if (countEl) countEl.textContent = creds.length + ' / ' + CONFIG.MAX_DEVICES;
+
+        var btn = $('btnAddFingerprint');
+        if (btn) {
+            if (creds.length >= CONFIG.MAX_DEVICES) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-circle-info"></i><span>Device limit reached</span>';
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-plus"></i><span>Add This Device</span>';
+            }
+        }
+
+        var heroTitle = $('heroTitle');
+        var heroSub = $('heroSub');
+        if (creds.length > 0) {
+            if (heroTitle) heroTitle.textContent = 'Add Another Device';
+            if (heroSub) heroSub.textContent = 'Register fingerprint or Face ID on this device for quick, secure login.';
+        } else {
+            if (heroTitle) heroTitle.textContent = 'Add Your Fingerprint';
+            if (heroSub) heroSub.textContent = 'Use your device\'s fingerprint or Face ID to log in faster and safer — no password needed.';
+        }
+
+        if (!creds.length) {
+            list.innerHTML = '<div class="empty-list">' +
+                '<i class="fa-solid fa-fingerprint"></i>' +
+                '<h3>No fingerprints yet</h3>' +
+                '<p>Add your first device to enable fingerprint login.</p>' +
+                '</div>';
+            return;
+        }
+
+        var html = '';
+        creds.forEach(function (c) {
+            var isCurrent = c.isCurrent ? 'current' : '';
+            var tag = c.isCurrent ? '<span class="tag-this">This device</span>' : '';
+            var date = c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-GB', {
+                day: '2-digit', month: 'short', year: 'numeric'
+            }) : 'Unknown date';
+            var safeId = String(c.id || '').replace(/[^a-zA-Z0-9_-]/g, '');
+            var safeName = String(c.name || 'Registered Device').replace(/[^a-zA-Z0-9 ._-]/g, '');
+
+            html += '<div class="cred-item ' + isCurrent + '">' +
+                '<div class="cred-icon"><i class="fa-solid fa-fingerprint"></i></div>' +
+                '<div class="cred-info">' +
+                '<div class="cred-name">' + escapeHtml(safeName) + ' ' + tag + '</div>' +
+                '<div class="cred-meta">Added ' + date + '</div>' +
+                '</div>' +
+                '<button class="cred-del" onclick="FPA.openRemoveModal(\'' + safeId + '\',\'' + safeName + '\')">' +
+                '<i class="fa-solid fa-trash"></i>' +
+                '</button>' +
+                '</div>';
+        });
+        list.innerHTML = html;
+    }
+
+    // ---------- Session ----------
+    function loadSession() {
+        var raw = safeGet('cit_session');
+        if (!raw) return null;
+        try {
+            var s = JSON.parse(raw);
+            if (s && s.uid) return s;
+        } catch (e) {}
+        return null;
+    }
+
+    function loadCredentials() {
+        if (!state.session || !state.session.uid) return Promise.resolve();
+        return api('/api/webauthn/list', { uid: state.session.uid })
+            .then(function (r) {
+                if (r && r.success && Array.isArray(r.credentials)) {
+                    state.credentials = r.credentials;
+                } else {
+                    state.credentials = [];
+                }
+                renderCredentials();
+            })
+            .catch(function (e) {
+                state.credentials = [];
+                renderCredentials();
+                log('loadCredentials failed:', e.message || e);
+            });
+    }
+
+    function loadUserDetails() {
+        if (!state.session || !state.session.uid) return Promise.resolve();
+        renderUserProfile();
+        return api('/api/user-data', { uid: state.session.uid })
+            .then(function (r) {
+                if (r && r.success && r.user) {
+                    state.user = r.user;
+                    var session = state.session;
+                    session.fullName = r.user.fullName || session.fullName;
+                    session.account = r.user.accountNumber || session.account;
+                    session.memberID = r.user.memberID || session.memberID;
+                    session.email = r.user.email || session.email;
+                    session.phone = r.user.phone || session.phone;
+                    safeSet('cit_session', JSON.stringify(session));
+                    renderUserProfile();
+                }
+            })
+            .catch(function (e) { log('user-data failed:', e.message || e); });
+    }
+
+    // ---------- PIN modal ----------
+    function openPinModal(nextAction) {
+        state.nextAction = nextAction || 'add';
+        state.pendingAdd = state.nextAction === 'add';
+        state.pendingRemoveId = state.nextAction === 'remove' ? state.pendingRemoveId : null;
+
+        var m = $('pinModal');
+        var inp = $('pinInput');
+        if (inp) inp.value = '';
+        if (m) m.classList.add('show');
+        setTimeout(function () { if (inp) inp.focus(); }, 150);
+    }
+    function closePinModal() {
+        var m = $('pinModal');
+        if (m) m.classList.remove('show');
+        // ⭐ FIX: Don't reset pendingAdd/pendingRemoveId here anymore
+        // They are reset by their specific flows after success
+    }
+
+    function confirmPin() {
+        var pin = ($('pinInput').value || '').trim();
+        if (!pin || pin.length < CONFIG.PIN_MIN || pin.length > CONFIG.PIN_MAX) {
+            showToast('Enter your ' + CONFIG.PIN_MIN + '–' + CONFIG.PIN_MAX + ' digit PIN', 'error');
+            return;
+        }
+
+        var btn = $('pinConfirmBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Verifying...';
+
+        // ⭐ FIX: Capture intent BEFORE any state is modified
+        var pendingAction = state.nextAction;
+        var pendingRemoveId = state.pendingRemoveId;
+
+        log('PIN verify. Pending action:', pendingAction);
+
+        api('/api/webauthn/verify-pin', {
+            uid: state.session.uid,
+            pin: pin
+        })
+        .then(function (r) {
+            log('PIN result:', r);
+            if (r && r.success && r.sessionToken) {
+                state.sessionToken = r.sessionToken;
+                closePinModal();
+                showToast('PIN verified ✓', 'success');
+
+                // ⭐ FIX: Use the captured action instead of checking state
+                if (pendingAction === 'add') {
+                    state.nextAction = null;
+                    state.pendingAdd = false;
+                    // ⭐ CRITICAL: Call immediately (no setTimeout) to preserve user gesture
+                    log('Starting WebAuthn registration now...');
+                    startWebAuthnRegistration();
+                } else if (pendingAction === 'remove' && pendingRemoveId) {
+                    state.nextAction = null;
+                    state.pendingRemoveId = null;
+                    log('Removing credential:', pendingRemoveId);
+                    doRemoveCredential(pendingRemoveId);
+                } else {
+                    log('No pending action after PIN. State:', state);
+                }
+            } else {
+                showToast((r && r.error) || 'Incorrect PIN', 'error');
+            }
+        })
+        .catch(function (e) {
+            log('PIN verify error:', e);
+            showToast('Verification failed. Try again.', 'error');
+        })
+        .finally(function () {
+            btn.disabled = false;
+            btn.innerHTML = 'Confirm';
+        });
+    }
+
+    // ---------- WebAuthn Registration ----------
+    function startWebAuthnRegistration() {
+        log('=== startWebAuthnRegistration called ===');
+        showLoading('Preparing secure registration...');
+
+        if (!state.sessionToken) {
+            log('ERROR: No session token');
+            hideLoading();
+            showToast('Session expired. Please try again.', 'error');
+            return;
+        }
+
+        api('/api/webauthn/register-start', {
+            uid: state.session.uid,
+            sessionToken: state.sessionToken
+        })
+        .then(function (r) {
+            log('register-start response:', r);
+            if (!r || !r.success || !r.challenge) {
+                throw new Error((r && r.error) || 'Could not start registration');
+            }
+
+            // Build WebAuthn options
+            var publicKey = {
+                challenge: b64urlToUint8(r.challenge),
+                rp: {
+                    id: r.rpId || window.location.hostname,
+                    name: r.rpName || CONFIG.RP_NAME
+                },
+                user: {
+                    id: b64urlToUint8(r.userId),
+                    name: r.userName || (state.user && state.user.email) || (state.session && state.session.email) || 'user',
+                    displayName: r.userDisplayName || (state.user && state.user.fullName) || (state.session && state.session.fullName) || 'CITFUND User'
+                },
+                pubKeyCredParams: [
+                    { type: 'public-key', alg: -7 },   // ES256
+                    { type: 'public-key', alg: -257 }  // RS256
+                ],
+                timeout: 120000,
+                attestation: 'none',
+                authenticatorSelection: {
+                    // ⭐ FIX: Use 'platform' for biometrics, but allow fallback
+                    authenticatorAttachment: 'platform',
+                    userVerification: 'required',
+                    residentKey: 'preferred',
+                    requireResidentKey: false
+                },
+                excludeCredentials: (r.excludeCredentials || []).map(function (c) {
+                    return {
+                        type: 'public-key',
+                        id: b64urlToUint8(c.id),
+                        transports: c.transports || []
+                    };
+                })
+            };
+
+            log('Calling navigator.credentials.create()...');
+            log('rpId:', publicKey.rp.id);
+            log('challenge length:', publicKey.challenge.length);
+            log('user.id length:', publicKey.user.id.length);
+
+            showLoading('Approve the fingerprint prompt on your device...');
+            return navigator.credentials.create({ publicKey: publicKey });
+        })
+        .then(function (credential) {
+            log('credential created:', credential ? 'OK' : 'null');
+            if (!credential) throw new Error('Registration was cancelled or failed');
+
+            var response = credential.response;
+            var transports = [];
+            try {
+                transports = (response.getTransports && response.getTransports()) || [];
+            } catch (e) {}
+
+            var payload = {
+                uid: state.session.uid,
+                sessionToken: state.sessionToken,
+                id: credential.id,
+                rawId: uint8ToB64url(credential.rawId),
+                type: credential.type,
+                response: {
+                    clientDataJSON: uint8ToB64url(response.clientDataJSON),
+                    attestationObject: uint8ToB64url(response.attestationObject),
+                    transports: transports
+                },
+                deviceName: getDeviceName()
+            };
+
+            log('Sending register-finish, id:', credential.id);
+            showLoading('Saving your fingerprint...');
+            return api('/api/webauthn/register-finish', payload, 30000);
+        })
+        .then(function (r) {
+            hideLoading();
+            log('register-finish response:', r);
+            if (r && r.success) {
+                showToast('✅ Fingerprint added successfully!', 'success');
+                state.sessionToken = null;
+                return loadCredentials();
+            } else {
+                showToast((r && r.error) || 'Could not save fingerprint', 'error');
+                state.sessionToken = null;
+            }
+        })
+        .catch(function (e) {
+            hideLoading();
+            state.sessionToken = null;
+            log('WebAuthn error:', e.name, e.message);
+
+            var msg = e.message || 'Something went wrong';
+
+            // Better error messages
+            if (e.name === 'NotAllowedError' || /cancel|abort|not allowed/i.test(msg)) {
+                showToast('Registration cancelled or fingerprint not recognized', 'warning');
+            } else if (e.name === 'InvalidStateError' || /already registered/i.test(msg)) {
+                showToast('This device is already registered', 'warning');
+            } else if (e.name === 'NotSupportedError' || /not supported/i.test(msg)) {
+                showToast('Fingerprint not supported on this browser. Try Chrome or Safari.', 'error');
+            } else if (e.name === 'SecurityError' || /security/i.test(msg)) {
+                showToast('Security error: make sure you are on HTTPS', 'error');
+            } else if (e.name === 'AbortError') {
+                showToast('Registration was cancelled', 'warning');
+            } else {
+                showToast(msg, 'error');
+            }
+        });
+    }
+
+    // ---------- Remove ----------
+    function openRemoveModal(id, name) {
+        state.pendingRemoveId = id;
+        var m = $('removeModal');
+        var nm = $('removeDeviceName');
+        var inp = $('removePinInput');
+        if (nm) nm.textContent = '"' + name + '" will no longer be able to use fingerprint login.';
+        if (inp) inp.value = '';
+        if (m) m.classList.add('show');
+        setTimeout(function () { if (inp) inp.focus(); }, 150);
+    }
+    function closeRemoveModal() {
+        var m = $('removeModal');
+        if (m) m.classList.remove('show');
+        // Don't reset pendingRemoveId here either - let flow handle it
+    }
+    function confirmRemove() {
+        var pin = ($('removePinInput').value || '').trim();
+        if (!pin || pin.length < CONFIG.PIN_MIN) {
+            showToast('Enter your PIN', 'error');
+            return;
+        }
+        var idToRemove = state.pendingRemoveId;
+        if (!idToRemove) return;
+
+        var btn = $('removeConfirmBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Verifying...';
+
+        api('/api/webauthn/verify-pin', {
+            uid: state.session.uid,
+            pin: pin
+        })
+        .then(function (r) {
+            if (!r || !r.success || !r.sessionToken) {
+                throw new Error((r && r.error) || 'Incorrect PIN');
+            }
+            state.sessionToken = r.sessionToken;
+            return doRemoveCredential(idToRemove);
+        })
+        .catch(function (e) {
+            showToast(e.message || 'Verification failed', 'error');
+        })
+        .finally(function () {
+            btn.disabled = false;
+            btn.innerHTML = 'Remove';
+        });
+    }
+
+    function doRemoveCredential(id) {
+        return api('/api/webauthn/remove', {
+            uid: state.session.uid,
+            sessionToken: state.sessionToken,
+            credentialId: id
+        })
+        .then(function (r) {
+            if (r && r.success) {
+                closeRemoveModal();
+                showToast('Device removed', 'success');
+                state.sessionToken = null;
+                state.pendingRemoveId = null;
+                return loadCredentials();
+            } else {
+                showToast((r && r.error) || 'Could not remove device', 'error');
+            }
+        });
+    }
+
+    // ---------- WebAuthn support check ----------
+    function checkSupport() {
+        return new Promise(function (resolve) {
+            if (!window.PublicKeyCredential || !navigator.credentials || !navigator.credentials.create) {
+                return resolve({ ok: false, msg: 'Your browser doesn\'t support biometric login.' });
+            }
+            if (!window.isSecureContext) {
+                return resolve({ ok: false, msg: 'Fingerprint login requires HTTPS.' });
+            }
+            if (typeof PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable !== 'function') {
+                return resolve({ ok: true, platform: false });
+            }
+            PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
+                .then(function (ok) { resolve({ ok: true, platform: !!ok }); })
+                .catch(function () { resolve({ ok: true, platform: false }); });
+        });
+    }
+
+    // ---------- Boot ----------
+    function boot() {
+        log('=== BOOT ===');
+        state.session = loadSession();
+        renderUserProfile();
+
+        if (!state.session || !state.session.uid) {
+            try { localStorage.removeItem('cit_session'); } catch (e) {}
+            $('mainContent').classList.add('hidden');
+            $('notSupported').classList.remove('hidden');
+            var nm = $('notSupportedMsg');
+            if (nm) nm.textContent = 'You are not logged in. Please log in first.';
+            setStatus('bad', 'Not logged in', 'Redirecting to login...', 'GUEST');
+            setTimeout(function () { window.location.href = 'userlogin.html'; }, 2000);
+            return;
+        }
+
+        setStatus('warn', 'Checking support...', 'Detecting your device', 'WAIT');
+
+        var bootTimer = setTimeout(function () {
+            if (state.initializing) {
+                setStatus('warn', 'Slow connection', 'Still checking. Tap "Add This Device" to try.', 'LIMITED');
+                $('mainContent').classList.remove('hidden');
+                $('notSupported').classList.add('hidden');
+                state.initializing = false;
+            }
+        }, 6000);
+
+        Promise.all([loadUserDetails(), checkSupport()])
+        .then(function (results) {
+            var result = results[1];
+            clearTimeout(bootTimer);
+            state.initializing = false;
+
+            log('Support check:', result);
+
+            if (!result.ok) {
+                $('mainContent').classList.add('hidden');
+                $('notSupported').classList.remove('hidden');
+                var nm = $('notSupportedMsg');
+                if (nm) nm.textContent = result.msg || 'Your device doesn\'t support biometric login.';
+                setStatus('bad', 'Not supported', result.msg || 'Browser does not support WebAuthn', 'N/A');
+                return;
+            }
+
+            state.supportOK = true;
+            state.platformAuthOK = result.platform;
+
+            if (result.platform) {
+                setStatus('ok', 'Biometric Ready', 'Fingerprint or Face ID detected', 'READY');
+            } else {
+                setStatus('warn', 'Limited Support', 'No biometric sensor detected. You can still try to register.', 'LIMITED');
+            }
+
+            $('mainContent').classList.remove('hidden');
+            $('notSupported').classList.add('hidden');
+
+            loadCredentials();
+        })
+        .catch(function (e) {
+            clearTimeout(bootTimer);
+            state.initializing = false;
+            log('Boot error:', e);
+            $('mainContent').classList.remove('hidden');
+            $('notSupported').classList.add('hidden');
+            setStatus('warn', 'Limited Support', 'You can still try to register.', 'LIMITED');
+            loadCredentials();
+        });
+    }
+
+    // ---------- Wire events ----------
+    document.addEventListener('DOMContentLoaded', function () {
+        var pinModal = $('pinModal');
+        if (pinModal) {
+            pinModal.addEventListener('click', function (e) {
+                if (e.target === pinModal) closePinModal();
+            });
+        }
+        var removeModal = $('removeModal');
+        if (removeModal) {
+            removeModal.addEventListener('click', function (e) {
+                if (e.target === removeModal) closeRemoveModal();
+            });
+        }
+        var pinInp = $('pinInput');
+        if (pinInp) {
+            pinInp.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') { e.preventDefault(); confirmPin(); }
+            });
+        }
+        var removeInp = $('removePinInput');
+        if (removeInp) {
+            removeInp.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') { e.preventDefault(); confirmRemove(); }
+            });
+        }
+    });
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+    } else {
+        setTimeout(boot, 0);
+    }
+
+    // ---------- Public API ----------
+    window.FPA = {
+        startAdd: function () {
+            log('startAdd called');
+            if (state.credentials.length >= CONFIG.MAX_DEVICES) {
+                showToast('Maximum ' + CONFIG.MAX_DEVICES + ' devices allowed', 'warning');
+                return;
+            }
+            openPinModal('add');
+        },
+        openRemoveModal: openRemoveModal,
+        closePinModal: closePinModal,
+        confirmPin: confirmPin,
+        closeRemoveModal: closeRemoveModal,
+        confirmRemove: confirmRemove,
+        reload: loadCredentials,
+        reloadUser: loadUserDetails,
+        debug: function () { return state; }
+    };
+})();
+</script>
+</body>
+</html>
