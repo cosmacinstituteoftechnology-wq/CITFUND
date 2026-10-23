@@ -1,9 +1,10 @@
+
 name: CitFund Render Server Super-Wake & Test
 
 on:
   schedule:
-    # Runs every 14 minutes (Render sleeps at 15 mins, this keeps it awake 24/7 safely)
-    - cron: '*/14 * * * *'
+    # Runs every 4 minutes
+    - cron: '*/4 * * * *'
   workflow_dispatch: # Allows you to run it manually from GitHub
 
 jobs:
